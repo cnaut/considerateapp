@@ -20,6 +20,12 @@ def adduser(request):
 	return HttpResponse(user.id)
 
 @csrf_exempt
+def allusers(request):
+	users = User.objects.all()
+
+	return HttpResponse(users)
+
+@csrf_exempt
 def storetext(request):
 	data = request.raw_post_data
 	data = json.loads(data)	

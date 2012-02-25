@@ -6,8 +6,10 @@ from django.conf.urls.defaults import patterns, include, url
 
 urlpatterns = patterns('',
     # Examples:
-    # url(r'^$', 'mobilecombat.views.home', name='home'),
-    # url(r'^mobilecombat/', include('mobilecombat.foo.urls')),
+    url(r'^$', 'battles`.views.home', name='home'),
+    url(r'^storetext', 'battles.views.storetext', name='storetext'),
+    url(r'^wait', 'battles.views.wait', name='wait'),
+    url(r'^mobilecombat/', include('mobilecombat.foo.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),

@@ -1,13 +1,37 @@
 import json
+import django.dispatch 
 
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views.decorators.csrf import csrf_exempt
 from django.db import models 
+from django.core import serializers
 from battles.models import Battle
 from battles.models import User 
 from battles.forms import UserForm
+from django.dispatch import receiver
+from gevent.event import Event 
+
+
+class Battle(object):
+	def __init__(self):
+		self.new_user_event = Event()
+
+	def signaluser(self, request):
+		user_id = request.GET.get('id')	
+		print self.new_user_event.is_set()	
+		self.new_user_event.set()
+		self.new_user_event.clear()
+		return HttpResponse("New User Signaled")
+
+	def receiveuser(self, request):
+		self.new_user_event.wait()
+		return HttpResponse("New User Received")
+
+battle = Battle()
+signaluser = battle.signaluser
+receiveuser = battle.receiveuser
 
 def home(request):
 	return HttpResponse("Moble Combat Home")
@@ -33,6 +57,7 @@ def adduser(request):
 @csrf_exempt
 def allusers(request):
 	users = User.objects.all()
+	users = serializers.serialize("json", users)
 
 	return HttpResponse(users)
 
@@ -46,17 +71,6 @@ def userform(request):
 	)
 
 @csrf_exempt
-def storetext(request):
-	data = request.raw_post_data
-	data = json.loads(data)	
-	battle = Battle(text=data)
-	battle.save()
-	
-	print data['name']
-
-	return HttpResponse(data['name'])
-
-@csrf_exempt
 def wait(request):
 	while True:	
-		print "Hi"
+		print "hi"	

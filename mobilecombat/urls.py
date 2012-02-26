@@ -7,6 +7,9 @@ from django.conf.urls.defaults import patterns, include, url
 urlpatterns = patterns('',
     # Examples:
     url(r'^$', 'battles`.views.home', name='home'),
+    url(r'^allusers', 'battles.views.allusers', name='allusers'),
+    url(r'^adduser', 'battles.views.adduser', name='adduser'),
+    url(r'^userform', 'battles.views.userform', name='userform'),
     url(r'^storetext', 'battles.views.storetext', name='storetext'),
     url(r'^wait', 'battles.views.wait', name='wait'),
     url(r'^mobilecombat/', include('mobilecombat.foo.urls')),

@@ -38,8 +38,8 @@ def home(request):
 
 @csrf_exempt
 def adduser(request):
-	data = None;
-	name = None;
+	data = None
+	name = None
 	if(request.POST.get('name')):
 		data = request.POST
 		name = data.get('name')
@@ -75,9 +75,18 @@ def userform(request):
 def startbattle(request):
 	data = request.raw_post_data
 	data = json.loads(data)
+	
 	battle = Battle(users=data['users'])
 	battle.save()
 	return HttpResponse(battle.id)
+
+@csrf_exempt
+def getbattle(request):
+	data = request.raw_post_data
+	data = json.loads(data)
+	battle = Battle.objects.get()[]	
+	return HttpResponse(battle.id)
+
 
 @csrf_exempt
 def declaredefeat(request):
@@ -85,6 +94,8 @@ def declaredefeat(request):
 	data = json.loads(data)
 	battle = Battle.objects.get(id=data['battle_id'])	
 	battle.losers.extend([data['user_id']]) 
+	battle.save()
+	return HttpResponse(losers)
 
 @csrf_exempt
 def wait(request):

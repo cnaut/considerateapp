@@ -77,7 +77,14 @@ def startbattle(request):
 	data = json.loads(data)
 	battle = Battle(users=data['users'])
 	battle.save()
+	return HttpResponse(battle.id)
 
+@csrf_exempt
+def declaredefeat(request):
+	data = request.raw_post_data
+	data = json.loads(data)
+	battle = Battle.objects.get(id=data['battle_id'])	
+	battle.losers.extend([data['user_id']]) 
 
 @csrf_exempt
 def wait(request):

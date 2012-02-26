@@ -1,4 +1,5 @@
 from django.db import models
+from djangotoolbox.fields import ListField
 
 class User(models.Model):
 	name = models.TextField()
@@ -6,4 +7,6 @@ class User(models.Model):
 	joined_on = models.DateTimeField(auto_now_add=True, null=True)
 
 class Battle(models.Model):
-	text = models.TextField()
+	users = ListField()
+	losers = ListField()
+	started_on = models.DateTimeField(auto_now_add=True, null=True)

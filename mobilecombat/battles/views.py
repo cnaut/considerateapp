@@ -70,6 +70,15 @@ def userform(request):
 		context_instance=RequestContext(request)
 	)
 
+
+@csrf_exempt
+def startbattle(request):
+	data = request.raw_post_data
+	data = json.loads(data)
+	battle = Battle(users=data['users'])
+	battle.save()
+
+
 @csrf_exempt
 def wait(request):
 	while True:	

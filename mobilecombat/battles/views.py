@@ -14,7 +14,7 @@ from django.dispatch import receiver
 from gevent.event import Event 
 
 
-class Battle(object):
+class Signals(object):
 	def __init__(self):
 		self.new_user_event = Event()
 
@@ -29,9 +29,9 @@ class Battle(object):
 		self.new_user_event.wait()
 		return HttpResponse("New User Received")
 
-battle = Battle()
-signaluser = battle.signaluser
-receiveuser = battle.receiveuser
+signal = Signals()
+signaluser = signal.signaluser
+receiveuser = signal.receiveuser
 
 def home(request):
 	return HttpResponse("Moble Combat Home")
@@ -58,8 +58,10 @@ def adduser(request):
 def allusers(request):
 	users = User.objects.all()
 	users = serializers.serialize("json", users)
-
-	return HttpResponse(users)
+	
+	response = HttpResponse(users)
+	response['Cache-Control'] = 'no-cache'
+	return response
 
 @csrf_exempt
 def userform(request):
@@ -75,8 +77,13 @@ def userform(request):
 def startbattle(request):
 	data = request.raw_post_data
 	data = json.loads(data)
+
 	
-	battle = Battle(users=data['users'])
+ 	users = []
+	for user in data['users']:
+		users.append(user.encode("ascii"))
+	battle = Battle(users=users, losers=[])
+	print battle
 	battle.save()
 	return HttpResponse(battle.id)
 
@@ -84,18 +91,18 @@ def startbattle(request):
 def getbattle(request):
 	data = request.raw_post_data
 	data = json.loads(data)
-	battle = Battle.objects.get()[]	
+	battle = Battle.objects.get()	
 	return HttpResponse(battle.id)
 
 
 @csrf_exempt
 def declaredefeat(request):
-	data = request.raw_post_data
-	data = json.loads(data)
-	battle = Battle.objects.get(id=data['battle_id'])	
-	battle.losers.extend([data['user_id']]) 
+	data = request.GET
+	battle = Battle.objects.get(id=data.get('battleid'))	
+	battle.losers.extend([data.get('userid')]) 
 	battle.save()
-	return HttpResponse(losers)
+	print battle.losers
+	return HttpResponse(battle.losers)
 
 @csrf_exempt
 def wait(request):

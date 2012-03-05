@@ -9,7 +9,8 @@
 	  <link rel="stylesheet" href="master.css" type="text/css" media="screen" title="no title" charset="utf-8"/>
             
       <script type="text/javascript" charset="utf-8" src="phonegap-1.4.1.js"></script>
-       
+      <script type="text/javascript" charset="utf-8" src="main.js"></script>
+    
       <script type="text/javascript">
 
         document.addEventListener("deviceready",onDeviceReady,false);
@@ -19,7 +20,7 @@
         {
             document.getElementById("welcomeMsg").innerHTML += "PhoneGap is ready! version=" + window.device.phonegap;
             console.log("onDeviceReady. You should see this message in Visual Studio's output window.");
-            
+            getLocation();
         }
 
       </script>
@@ -31,5 +32,6 @@
   <body>
     <h1>Hello PhoneGap</h1>
     <div id="welcomeMsg"></div>
+    <p id="geolocation">Finding geolocation...</p>
   </body>
 </html>

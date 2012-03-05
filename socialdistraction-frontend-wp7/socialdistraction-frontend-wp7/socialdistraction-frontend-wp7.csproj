@@ -83,6 +83,7 @@
   <ItemGroup>
     <Content Include="GapLib\WP7GapClassLib.dll" />
     <Content Include="GapSourceDictionary.xml" />
+    <Content Include="www\main.js" />
     <Content Include="www\phonegap-1.4.1.js" />
     <None Include="ManifestProcessor.js" />
     <Content Include="www\index.html">

@@ -1,4 +1,4 @@
-# Django settings for gepetto project.
+# Django settings for geppetto project.
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -100,13 +100,13 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
 )
 
-ROOT_URLCONF = 'gepetto.urls'
+ROOT_URLCONF = 'geppetto.urls'
 
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-    '/home/ec2-user/gepetto/templates/',
+    '/home/ec2-user/geppetto/templates/',
 )
 
 INSTALLED_APPS = (

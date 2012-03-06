@@ -7,9 +7,9 @@ class User(models.Model):
 	photo = models.FileField(upload_to='user_photos') 
 	joined_on = models.DateTimeField(auto_now_add=True, null=True)
 
-class Combatant(models.Model)
+class Combatant(models.Model):
 	user = EmbeddedModelField('User')
-	health = models.IntgerField()
+	health = models.IntegerField()
 
 class War(models.Model):
 	combatant = ListField(EmbeddedModelField('Combatant'))
@@ -19,11 +19,12 @@ class War(models.Model):
 class Battle(models.Model):
 	users = ListField()
 	losers = ListField()
+	lat = models.DecimalField(max_digits=8, decimal_places=4, null=True)
+	long = models.DecimalField(max_digits=8, decimal_places=4, null=True)
 	checkin_time = models.DateTimeField(auto_now_add=True, null=True)
-	checkout_time = models.DateTimeField()
+	checkout_time = models.DateTimeField(auto_now_add=True, null=True)
 
 class Training(models.Model):
 	activity = models.TextField()
 	checkin_time = models.DateTimeField(auto_now_add=True, null=True)
 	checkout_time = models.DateTimeField()
-)

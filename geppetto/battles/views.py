@@ -11,27 +11,6 @@ from battles.models import Battle
 from battles.models import User 
 from battles.forms import UserForm
 from django.dispatch import receiver
-from gevent.event import Event 
-
-
-class Signals(object):
-	def __init__(self):
-		self.new_user_event = Event()
-
-	def signaluser(self, request):
-		user_id = request.GET.get('id')	
-		print self.new_user_event.is_set()	
-		self.new_user_event.set()
-		self.new_user_event.clear()
-		return HttpResponse("New User Signaled")
-
-	def receiveuser(self, request):
-		self.new_user_event.wait()
-		return HttpResponse("New User Received")
-
-signal = Signals()
-signaluser = signal.signaluser
-receiveuser = signal.receiveuser
 
 def home(request):
 	return HttpResponse("Moble Combat Home")
@@ -104,7 +83,12 @@ def declaredefeat(request):
 	print battle.losers
 	return HttpResponse(battle.losers)
 
+
+
 @csrf_exempt
-def wait(request):
-	while True:	
-		print "hi"	
+def location(request):
+	lat = request.POST.get('lat')
+	long = request.POST.get('long')
+	battle = Battle(users=[], losers=[], lat=lat, long=long)
+	battle.save()
+	return HttpResponse(battle.id)

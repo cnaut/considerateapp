@@ -30,7 +30,7 @@
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
             <ListBox Name="listBox1"
                      HorizontalAlignment="Left" 
-                     Margin="0,6,0,38" 
+                     Margin="0,6,0,72" 
                      Width="456"
                      ItemsSource="{Binding}"
                      SelectionMode="Multiple" SelectionChanged="listBox1_SelectionChanged">
@@ -56,12 +56,12 @@
                     Width="160"
                     Margin="0,0,0,7" Click="fightButton_Click" />
             <TextBlock Name="countdownText"
-                       Height="40"
                        Visibility="Collapsed"
+                       Height="40"
                        HorizontalAlignment="Center"
                        Text="TextBlock"
                        VerticalAlignment="Bottom"
-                       Margin="103,0,107,95"
+                       Margin="103,0,107,28"
                        FontSize="32"
                        Width="246"
                        TextAlignment="Center"/>
@@ -70,9 +70,12 @@
 
     <!--Sample code showing usage of ApplicationBar-->
     <phone:PhoneApplicationPage.ApplicationBar>
-        <shell:ApplicationBar IsVisible="True" IsMenuEnabled="True">
+        <shell:ApplicationBar Mode="Default" IsVisible="True" IsMenuEnabled="True">
+            <shell:ApplicationBarIconButton Text="settings" 
+                                                IconUri="/Images/appbar.feature.settings.rest.png" 
+                                                Click="ProfileMenu_Click"/>
             <shell:ApplicationBar.MenuItems>
-                <shell:ApplicationBarMenuItem Text="profile" Click="ProfileMenu_Click"/>
+                
             </shell:ApplicationBar.MenuItems>
         </shell:ApplicationBar>
     </phone:PhoneApplicationPage.ApplicationBar>

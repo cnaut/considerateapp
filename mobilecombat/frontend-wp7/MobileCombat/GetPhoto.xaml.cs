@@ -53,7 +53,8 @@ namespace MobileCombat
             string end = streamReader.ReadToEnd();
             IsolatedStorageSettings applicationSettings = IsolatedStorageSettings.ApplicationSettings;
             applicationSettings["id"] = end;
-            Deployment.Current.Dispatcher.BeginInvoke(new Action(base.NavigationService.GoBack));
+            System.Diagnostics.Debug.WriteLine(applicationSettings["id"]);
+            Deployment.Current.Dispatcher.BeginInvoke(() => { NavigationService.GoBack(); });
         }
 
         private void nameBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -117,7 +118,7 @@ namespace MobileCombat
             strs.Add("name", nameBox.Text);
             strs.Add("photo", new FormUpload.FileParameter(picData, "file.jpg", "application/octet-stream"));
             formData = FormUpload.GetMultipartFormData(strs);
-            HttpWebRequest request = FormUpload.GetRequest("http://184.169.136.30:8000/adduser", "");
+            HttpWebRequest request = FormUpload.GetRequest("http://184.169.136.30:8002/adduser", "");
             request.BeginGetRequestStream(GotRequestStream, request);
         }
 

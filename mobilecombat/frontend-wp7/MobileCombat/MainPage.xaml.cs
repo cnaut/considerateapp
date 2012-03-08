@@ -40,7 +40,7 @@ namespace MobileCombat
 
         public MainPage()
         {
-            baseAddress = "http://184.169.136.30:8000";
+            baseAddress = "http://184.169.136.30:8002";
             InitializeComponent();
             client = new WebClient();
             client.BaseAddress = baseAddress;
@@ -94,35 +94,13 @@ namespace MobileCombat
 
         private void fightButton_Click(object sender, RoutedEventArgs e)
         {
-            bool flag;
             UserIDList userIDList = new UserIDList();
-            ObservableCollection
-                    <User> observableCollection = new ObservableCollection
-                        <User>();
+            ObservableCollection<User> observableCollection = new ObservableCollection<User>();
             userIDList.users.Add((string)IsolatedStorageSettings.ApplicationSettings["id"]);
-            IEnumerator enumerator = listBox1.SelectedItems.GetEnumerator();
-            try
+            foreach (User u in listBox1.SelectedItems)
             {
-                while (true)
-                {
-                    flag = enumerator.MoveNext();
-                    if (!flag)
-                    {
-                        break;
-                    }
-                    User current = (User)enumerator.Current;
-                    userIDList.users.Add(current.pk);
-                    observableCollection.Add(current);
-                }
-            }
-            finally
-            {
-                IDisposable disposable = enumerator as IDisposable;
-                flag = disposable == null;
-                if (!flag)
-                {
-                    disposable.Dispose();
-                }
+                userIDList.users.Add(u.pk);
+                observableCollection.Add(u);
             }
             string str = Serialize(userIDList);
             Debug.WriteLine(str);
@@ -162,11 +140,10 @@ namespace MobileCombat
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            bool flag = IsolatedStorageSettings.ApplicationSettings.Contains("id");
-            if (flag)
+            if (IsolatedStorageSettings.ApplicationSettings.Contains("id"))
             {
-                //client.DownloadStringCompleted += StringDownloaded;
-                //client.UploadStringCompleted += StringUploaded;
+                client.DownloadStringCompleted += StringDownloaded;
+                client.UploadStringCompleted += StringUploaded;
                 fightButton.IsEnabled = false;
                 battling = false;
                 RefreshUsers(null, null);
@@ -209,8 +186,8 @@ namespace MobileCombat
 
         private void StartBattle()
         {
-            fightButton.Visibility = System.Windows.Visibility.Visible;
-            countdownText.Visibility = System.Windows.Visibility.Collapsed;
+            fightButton.Visibility = System.Windows.Visibility.Collapsed;
+            countdownText.Visibility = System.Windows.Visibility.Visible;
             tickerTimer = new DispatcherTimer();
             timeStarted = DateTime.Now;
             tickerTimer.Interval = new TimeSpan(0, 0, 1);
@@ -232,25 +209,13 @@ namespace MobileCombat
         private void StringDownloaded(object sender, DownloadStringCompletedEventArgs e)
         {
             User[] userArray;
-            bool flag2;
             DataContractJsonSerializer dataContractJsonSerializer = new DataContractJsonSerializer(typeof(User[]));
             MemoryStream memoryStream = new MemoryStream(Encoding.UTF8.GetBytes(e.Result));
-            try
-            {
-                userArray = (User[])dataContractJsonSerializer.ReadObject(memoryStream);
-            }
-            finally
-            {
-                flag2 = memoryStream == null;
-                if (!flag2)
-                {
-                    memoryStream.Dispose();
-                }
-            }
-            
+            userArray = (User[])dataContractJsonSerializer.ReadObject(memoryStream);
             foreach (User u in userArray)
             {
-                if (allUsers.Contains(u))
+                if (allUsers.Contains(u) || 
+                    (string)IsolatedStorageSettings.ApplicationSettings["id"] == u.pk)
                     continue;
                 
                 u.imageUri = new Uri(string.Concat(client.BaseAddress, "user_photos/", u.fields.photo), UriKind.Absolute);

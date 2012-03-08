@@ -2,7 +2,6 @@
         navigator.geolocation.getCurrentPosition(onSuccess, onError);
 		document.getElementById('checkin').style.display = 'none';
 		document.getElementById('checkout').style.display = 'block';
-
 }
 
 // onSuccess Geolocation
@@ -35,3 +34,20 @@ function onError(error) {
     alert('code: '    + error.code    + '\n' +
             'message: ' + error.message + '\n');
 }
+
+function checkin() {
+	var options = {};
+	PhoneGap.exec(null,null,"MobileCombat","checkin",options);
+}
+
+PhoneGap.addConstructor(function() {
+    navigator.plugins.pgMobileCombat =
+    {
+        checkin:function()
+        {
+            var options = {};
+
+            PhoneGap.exec(null,null,"MobileCombat","checkin",options);
+        }
+    }
+});

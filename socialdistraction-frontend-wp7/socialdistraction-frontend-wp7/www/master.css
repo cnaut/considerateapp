@@ -18,6 +18,23 @@ h1
 {
 	display: none;
 }
+
+#modes 
+{
+	margin: auto;
+}
+
+.modeBtn 
+{
+	display: inline-block;
+	width: 75px;
+	height: 40px;
+	padding: 10px;
+	background-color: white;
+	color: black;
+	vertical-align: middle;
+	text-align: center;
+}
  	
 
 

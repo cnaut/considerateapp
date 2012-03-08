@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- This file is auto-generated, do not edit! -jm -->
 <GapSourceDictionary>
+    <FilePath Value="www\battle.html"/>
     <FilePath Value="www\index.html"/>
     <FilePath Value="www\main.js"/>
     <FilePath Value="www\master.css"/>

@@ -3,8 +3,8 @@
   <head>
     <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=no;" />
     <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
-    
-    <title>Mobile Combat</title>
+      
+    <title>PhoneGap WP7</title>
     
 	  <link rel="stylesheet" href="master.css" type="text/css" media="screen" title="no title" charset="utf-8"/>
             
@@ -18,7 +18,7 @@
         // once the device ready event fires, you can safely do your thing! -jm
         function onDeviceReady()
         {
-          
+            document.getElementById("welcomeMsg").innerHTML += "PhoneGap is ready! version=" + window.device.phonegap;
         }
 
       </script>
@@ -28,23 +28,11 @@
 
   </head>
   <body>
-    <div>
-      <h1>Mobile Combat</h1>
-    </div>
-    
-    <div id="modes">
-      <div class="modeBtn">
-        <a href="battle.html">War</a>
-      </div>
-      <div class="modeBtn">
-        <a href="#" onclick="checkin()">Battle</a>
-      </div>
-      <div class="modeBtn">
-        <a href="">Training</a>
-      </div>
-    </div>
-
-    <div id="test"></div>
-    
+    <h1>Hello PhoneGap</h1>
+    <div id="welcomeMsg"></div>
+    <p id="geolocation"></p>
+    <a id="checkin" href="#" onclick="getLocation();">Check In</a>
+    <a id="checkout" href="#" onclick="">Check Out</a>
+    <p id="response"></p>
   </body>
 </html>

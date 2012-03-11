@@ -1,0 +1,83 @@
+﻿<phone:PhoneApplicationPage 
+    x:Class="MobileCombat.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+    xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    FontFamily="{StaticResource PhoneFontFamilyNormal}"
+    FontSize="{StaticResource PhoneFontSizeNormal}"
+    Foreground="{StaticResource PhoneForegroundBrush}"
+    SupportedOrientations="Portrait" Orientation="Portrait"
+    mc:Ignorable="d" d:DesignHeight="696" d:DesignWidth="480"
+    shell:SystemTray.IsVisible="True">
+
+    <!--LayoutRoot is the root grid where all page content is placed-->
+    <Grid x:Name="LayoutRoot" Background="Transparent">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!--TitlePanel contains the name of the application and page title-->
+        <StackPanel x:Name="TitlePanel" Grid.Row="0" Margin="12,17,0,28">
+            <TextBlock x:Name="ApplicationTitle" Text="MOBILE COMBAT" Style="{StaticResource PhoneTextNormalStyle}"/>
+            <TextBlock x:Name="PageTitle" Text="combatants" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}"/>
+        </StackPanel>
+
+        <!--ContentPanel - place additional content here-->
+        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
+            <ListBox Name="listBox1"
+                     HorizontalAlignment="Left" 
+                     Margin="0,6,0,72" 
+                     Width="456"
+                     ItemsSource="{Binding}"
+                     SelectionMode="Multiple" SelectionChanged="listBox1_SelectionChanged">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <Image Margin="3"
+                                                 Height="100"
+                                                 Width="100"
+                                                 Source="{Binding imageUri}"/>
+                            <TextBlock Text="{Binding name}"
+                                                 FontSize="48"
+                                                 VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            <Button Name="fightButton"
+                    Content="Fight!"
+                    Height="72"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Bottom"
+                    Width="160"
+                    Margin="0,0,0,7" Click="fightButton_Click" />
+            <TextBlock Name="countdownText"
+                       Visibility="Collapsed"
+                       Height="40"
+                       HorizontalAlignment="Center"
+                       Text="TextBlock"
+                       VerticalAlignment="Bottom"
+                       Margin="103,0,107,28"
+                       FontSize="32"
+                       Width="246"
+                       TextAlignment="Center"/>
+        </Grid>
+    </Grid>
+
+    <!--Sample code showing usage of ApplicationBar-->
+    <phone:PhoneApplicationPage.ApplicationBar>
+        <shell:ApplicationBar Mode="Default" IsVisible="True" IsMenuEnabled="True">
+            <shell:ApplicationBarIconButton Text="settings" 
+                                                IconUri="/Images/appbar.feature.settings.rest.png" 
+                                                Click="ProfileMenu_Click"/>
+            <shell:ApplicationBar.MenuItems>
+                
+            </shell:ApplicationBar.MenuItems>
+        </shell:ApplicationBar>
+    </phone:PhoneApplicationPage.ApplicationBar>
+
+</phone:PhoneApplicationPage>

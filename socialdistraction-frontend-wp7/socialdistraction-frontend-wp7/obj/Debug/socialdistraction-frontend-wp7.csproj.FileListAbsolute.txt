@@ -1,0 +1,16 @@
+C:\Users\Charles\Documents\CS 210\Code\meandmyphone\socialdistraction-frontend-wp7\socialdistraction-frontend-wp7\Bin\Debug\ApplicationIcon.png
+C:\Users\Charles\Documents\CS 210\Code\meandmyphone\socialdistraction-frontend-wp7\socialdistraction-frontend-wp7\Bin\Debug\Background.png
+C:\Users\Charles\Documents\CS 210\Code\meandmyphone\socialdistraction-frontend-wp7\socialdistraction-frontend-wp7\Bin\Debug\socialdistraction-frontend-wp7.dll
+C:\Users\Charles\Documents\CS 210\Code\meandmyphone\socialdistraction-frontend-wp7\socialdistraction-frontend-wp7\Bin\Debug\socialdistraction-frontend-wp7.pdb
+C:\Users\Charles\Documents\CS 210\Code\meandmyphone\socialdistraction-frontend-wp7\socialdistraction-frontend-wp7\Bin\Debug\AppManifest.xaml
+C:\Users\Charles\Documents\CS 210\Code\meandmyphone\socialdistraction-frontend-wp7\socialdistraction-frontend-wp7\Bin\Debug\socialdistraction_frontend_wp7.xap
+C:\Users\Charles\Documents\CS 210\Code\meandmyphone\socialdistraction-frontend-wp7\socialdistraction-frontend-wp7\Bin\Debug\WP7GapClassLib.dll
+C:\Users\Charles\Documents\CS 210\Code\meandmyphone\socialdistraction-frontend-wp7\socialdistraction-frontend-wp7\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\Charles\Documents\CS 210\Code\meandmyphone\socialdistraction-frontend-wp7\socialdistraction-frontend-wp7\obj\Debug\App.g.i.cs
+C:\Users\Charles\Documents\CS 210\Code\meandmyphone\socialdistraction-frontend-wp7\socialdistraction-frontend-wp7\obj\Debug\MainPage.g.i.cs
+C:\Users\Charles\Documents\CS 210\Code\meandmyphone\socialdistraction-frontend-wp7\socialdistraction-frontend-wp7\obj\Debug\socialdistraction-frontend-wp7.g.resources
+C:\Users\Charles\Documents\CS 210\Code\meandmyphone\socialdistraction-frontend-wp7\socialdistraction-frontend-wp7\obj\Debug\socialdistraction-frontend-wp7.dll
+C:\Users\Charles\Documents\CS 210\Code\meandmyphone\socialdistraction-frontend-wp7\socialdistraction-frontend-wp7\obj\Debug\socialdistraction-frontend-wp7.pdb
+C:\Users\Charles\Documents\CS 210\Code\meandmyphone\socialdistraction-frontend-wp7\socialdistraction-frontend-wp7\obj\Debug\XapCacheFile.xml
+C:\Users\Charles\Documents\CS 210\Code\meandmyphone\socialdistraction-frontend-wp7\socialdistraction-frontend-wp7\obj\Debug\GetPhoto.g.i.cs
+C:\Users\Charles\Documents\CS 210\Code\meandmyphone\socialdistraction-frontend-wp7\socialdistraction-frontend-wp7\obj\Debug\MCMain.g.i.cs

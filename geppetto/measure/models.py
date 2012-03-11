@@ -14,7 +14,7 @@ class User(models.Model):
 	joined_on = models.DateTimeField(auto_now_add=True, null=True)
 
 class Activity(models.Model):
-	activity = models.TextField()	
+	name = models.TextField()	
 	users = ListField()
 	lat = models.DecimalField(max_digits=8, decimal_places=4, null=True)
 	long = models.DecimalField(max_digits=8, decimal_places=4, null=True)

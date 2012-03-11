@@ -56,7 +56,6 @@ def userform(request):
 def startbattle(request):
 	data = request.raw_post_data
 	data = json.loads(data)
-
 	
  	users = []
 	for user in data['users']:

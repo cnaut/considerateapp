@@ -1,17 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Deployment xmlns="http://schemas.microsoft.com/windowsphone/2009/deployment" AppPlatformVersion="7.1">
-  <App xmlns="" ProductID="{ae90e92c-5696-43f9-8c1f-8e8609fc4c40}" Title="socialdistraction_frontend_wp7" 
+  <App xmlns="" ProductID="{000dc836-65f8-4c04-b1da-fee89d501050}" Title="mobilecombat_phonegap" 
        RuntimeType="Silverlight" Version="1.0.0.0" Genre="apps.normal"  
-       Author="socialdistraction_frontend_wp7 author" 
+       Author="mobilecombat_phonegap author" 
        Description="PhoneGap for Windows Phone 7" 
-       Publisher="socialdistraction_frontend_wp7">
+       Publisher="mobilecombat_phonegap">
     
     <IconPath IsRelative="true" IsResource="false">ApplicationIcon.png</IconPath>
     <Capabilities>
       <Capability Name="ID_CAP_IDENTITY_DEVICE" />
       <Capability Name="ID_CAP_IDENTITY_USER" />
       <Capability Name="ID_CAP_LOCATION" />
-      <Capability Name="ID_CAP_SENSORS"/>
       <Capability Name="ID_CAP_NETWORKING" />
       <Capability Name="ID_CAP_WEBBROWSERCOMPONENT" />
 
@@ -21,14 +20,13 @@
       <DefaultTask Name="_default" NavigationPage="MainPage.xaml" />
     </Tasks>
     <Tokens>
-      <PrimaryToken TokenID="socialdistraction_frontend_wp7Token" TaskName="_default">
+      <PrimaryToken TokenID="mobilecombat_phonegapToken" TaskName="_default">
         <TemplateType5>
           <BackgroundImageURI IsRelative="true" IsResource="false">Background.png</BackgroundImageURI>
           <Count>0</Count>
-          <Title>socialdistraction_frontend_wp7</Title>
+          <Title>mobilecombat_phonegap</Title>
         </TemplateType5>
       </PrimaryToken>
     </Tokens>
   </App>
 </Deployment>
-<!-- WPSDK Version 7.1.7720.0 -->

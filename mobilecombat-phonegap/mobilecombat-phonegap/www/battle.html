@@ -1,1 +1,61 @@
-﻿
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=no;" />
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
+    
+    <title>PhoneGap WP7</title>
+    
+	  <link rel="stylesheet" href="master.css" type="text/css" media="screen" title="no title" charset="utf-8"/>
+            
+      <script type="text/javascript" charset="utf-8" src="phonegap-1.4.1.js"></script>
+       
+      <script type="text/javascript">
+
+        var c=0;
+        var t;
+        var timer_is_on=0;
+
+        // document.addEventListener("deviceready",onDeviceReady,false);
+
+        // function onDeviceReady()
+        // {
+        //     document.getElementById("welcomeMsg").innerHTML += "PhoneGap is ready! version=" + window.device.phonegap;
+        //     console.log("onDeviceReady. You should see this message in Visual Studio's output window.");
+            
+        // }
+
+        
+
+        function startTimer() {
+          var t = setTimeout("alertMsg()", 3000);
+        }
+
+        
+
+      </script>
+      
+	 
+	  
+
+  </head>
+  <body>
+    <h1>Battle!</h1>
+
+    <table id="com_table">
+      <tr>
+        <td>
+          MOBILE  
+        </td>
+        <td>
+          KOMBAT
+        </td>
+      </tr>
+    </table>
+
+    <button id="fight_button" onclick="startTimer()">Fight!</button>    
+    
+    <!--<div id="welcomeMsg"></div>-->
+    
+  </body>
+</html>

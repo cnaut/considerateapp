@@ -13,16 +13,16 @@
     
       <script type="text/javascript">
 
-        var pictureSource;
-        var destinationType;
+        //var pictureSource;
+        //var destinationType;
 
         document.addEventListener("deviceready",onDeviceReady,false);
 
         // once the device ready event fires, you can safely do your thing! -jm
         function onDeviceReady()
         {
-          pictureSource = navigator.camera.pictureSourceType;
-          destinationType = navigator.camera.DestinationType;
+          //pictureSource = navigator.camera.pictureSourceType;
+          //destinationType = navigator.camera.DestinationType;
 
         }
 
@@ -32,22 +32,29 @@
         }
 
         function onSuccess(imageURI) {
-          // Uncomment to view the image file URI
-          console.log(imageURI);
 
+
+          //Uncomment to view the image file URI
+          //console.log(imageURI);
+          
+          //alert('Error Getting picture ndskvaksdkhf');
           // Get image handle
           var image = document.getElementById('image');
 
           // Unhide image elements
-          image.style.display = 'block';
+          image.style.visibility = 'visible';
+
+          var button = document.getElementById('save_button');
+          button.disabled = false;
 
           // Show the captured photo
           // The inline CSS rules are used to resize the image
+          //image.src = "data:image/jpeg;base64," + imageURI;
           image.src = imageURI;
         }
 
-         function onFail(message) {
-          alert('Failed because: ' + message);
+        function onFail(message) {
+          alert('Error Getting picture');
         }
 
       </script>
@@ -58,13 +65,17 @@
     <h1>Profile!</h1>
 
     <div>
-      <form>
-        Enter your name<input type="text" name ="name"></input>
-        <button onclick="getPhoto();">Select Photo</button>
-        <img style="display:none;" id="image" src="" />
-        <input type="submit" value="Save"></input>
-      </form>
-        
+      
+      
+      Enter your name<input type="text" name ="name"></input>
+      
+      <button id="photo_button" onclick="getPhoto();">Select Photo</button> <br/>
+      <img id="image" height = "200" width = "200" style="visibility:hidden" src="" />
+      <button id="save_button" disabled="true" onclick="location.href='nearby.html';">Save</button> 
+     
+
+      
+     
       
     </div>
     

@@ -56,6 +56,20 @@
         function onFail(message) {
           alert('Error Getting picture');
         }
+        
+        function sendRequest() {
+          var image = document.getElementById("image");
+          var name = document.getElementById("name");
+          
+          var xmlhttp = new XMLHttpRequest();
+          xmlhttp.onreadystatechange=function() {
+            if(xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+              
+            }
+          }
+          xmlhttp.open("POST", "http://184.169.136.30:8002/users", true);
+          xmlhttp.send("name=" + name.text + "&photo=" + image.src);
+        }
 
       </script>
     
@@ -71,12 +85,11 @@
       
       <button id="photo_button" onclick="getPhoto();">Select Photo</button> <br/>
       <img id="image" height = "200" width = "200" style="visibility:hidden" src="" />
-      <button id="save_button" disabled="true" onclick="location.href='nearby.html';">Save</button> 
-     
+      <button id="save_button" disabled="true" onclick="sendRequest();">Save</button>
 
-      
-     
-      
+      <!--"location.href='nearby.html';">Save</button>-->
+
+
     </div>
     
     <!--<div id="welcomeMsg"></div>-->

@@ -1,3 +1,3 @@
 @echo off
-mklink /D "%~dp0/frontend-wp7\mobilecombat-phonegap\www" "..\..\phonegap-src"
+mklink /D "%~dp0/mobilecombat-phonegap1.5\mobilecombat-phonegap1.5\www" "..\..\phonegap-src"
 PAUSE

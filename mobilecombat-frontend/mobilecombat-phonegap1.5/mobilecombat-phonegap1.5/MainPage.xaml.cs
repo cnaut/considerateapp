@@ -15,7 +15,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Resources;
 
 
-namespace mobilecombat_phonegap
+namespace mobilecombat_phonegap1._5
 {
     public partial class MainPage : PhoneApplicationPage
     {

@@ -32,27 +32,6 @@ def adduser(request):
 	user.save()
 	
 	return HttpResponse(user.id)
-
-@csrf_exempt
-def allusers(request):
-	users = User.objects.all()
-	users = serializers.serialize("json", users)
-	
-	response = HttpResponse(users)
-	response['Cache-Control'] = 'no-cache'
-	return response
-
-@csrf_exempt
-def userform(request):
-	form = UserForm() 
-	return render_to_response(
-		'userform.html',
-		{'form': form},
-		context_instance=RequestContext(request)
-	)
-
-
-@csrf_exempt
 def startbattle(request):
 	data = request.raw_post_data
 	data = json.loads(data)

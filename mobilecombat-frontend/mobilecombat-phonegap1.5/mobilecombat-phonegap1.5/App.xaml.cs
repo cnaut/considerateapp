@@ -13,7 +13,7 @@ using System.Windows.Shapes;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 
-namespace mobilecombat_phonegap
+namespace mobilecombat_phonegap1._5
 {
     public partial class App : Application
     {

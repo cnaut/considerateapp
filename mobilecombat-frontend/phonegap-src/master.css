@@ -17,7 +17,7 @@
   }
 
   .modeBtn 
-{
+  {
 	display: inline-block;
 	width: 75px;
 	height: 40px;
@@ -26,8 +26,17 @@
 	color: black;
 	vertical-align: middle;
 	text-align: center;
-}
+  }
 
+  .selectedRow
+  {
+	color: blue;
+  }
+
+  .deselectedRow
+  {
+	color: white;
+  }
  	
 
 

@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Deployment xmlns="http://schemas.microsoft.com/windowsphone/2009/deployment" AppPlatformVersion="7.1">
-  <App xmlns="" ProductID="{000dc836-65f8-4c04-b1da-fee89d501050}" Title="mobilecombat_phonegap" 
+  <App xmlns="" ProductID="{50fb19af-3aab-40c6-a0ff-9c24597a6e3d}" Title="mobilecombat_phonegap1._5" 
        RuntimeType="Silverlight" Version="1.0.0.0" Genre="apps.normal"  
-       Author="mobilecombat_phonegap author" 
+       Author="mobilecombat_phonegap1._5 author" 
        Description="PhoneGap for Windows Phone 7" 
-       Publisher="mobilecombat_phonegap">
+       Publisher="mobilecombat_phonegap1._5">
     
     <IconPath IsRelative="true" IsResource="false">ApplicationIcon.png</IconPath>
     <Capabilities>
@@ -20,11 +20,11 @@
       <DefaultTask Name="_default" NavigationPage="MainPage.xaml" />
     </Tasks>
     <Tokens>
-      <PrimaryToken TokenID="mobilecombat_phonegapToken" TaskName="_default">
+      <PrimaryToken TokenID="mobilecombat_phonegap1._5Token" TaskName="_default">
         <TemplateType5>
           <BackgroundImageURI IsRelative="true" IsResource="false">Background.png</BackgroundImageURI>
           <Count>0</Count>
-          <Title>mobilecombat_phonegap</Title>
+          <Title>mobilecombat_phonegap1._5</Title>
         </TemplateType5>
       </PrimaryToken>
     </Tokens>

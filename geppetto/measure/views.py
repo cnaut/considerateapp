@@ -3,6 +3,9 @@ from django.shortcuts import render_to_response
 from measure.models import TextMessage
 from measure.models import User
 from measure.models import Activity 
+from django.views.decorators.csrf import csrf_exempt
+from django.core import serializers
+from django.http import HttpResponse, HttpResponseRedirect
 
 def home(request):
     message = TextMessage(text="hi", sender="Charles", receiver="Pinokia" )
@@ -22,7 +25,6 @@ def adduser(request):
 	name = request.POST.get('name')
 	user = User(name=name, photo=request.FILES['photo'])
 	user.save()
-	
 	return HttpResponse(user.id)
 		
 @csrf_exempt

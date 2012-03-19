@@ -1,6 +1,6 @@
 ﻿var userURL = "http://184.169.136.30:8004/";
 var serverID;
-var maxNumPeopleInTable = 15;
+var maxNumPeopleInTable = 10;
 
 var cells;
 var users;

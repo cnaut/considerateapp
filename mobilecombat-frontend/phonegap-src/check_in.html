@@ -1,10 +1,12 @@
 ﻿<!DOCTYPE html>
 <html>
+  
   <head>
+    
     <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=no;" />
     <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
     
-    <title>PhoneGap WP7</title>
+    <title>Mobile Combat</title>
     
 	  <link rel="stylesheet" href="master.css" type="text/css" media="screen" title="no title" charset="utf-8"/>
             
@@ -12,30 +14,18 @@
     <script type="text/javascript" charset="utf-8" src="jquery.js"></script>
     <script type="text/javascript" charset="utf-8" src="main.js"></script>
        
-      <script type="text/javascript">
-
-        document.addEventListener("deviceready",onDeviceReady,false);
-
-        // once the device ready event fires, you can safely do your thing! -jm
-        function onDeviceReady()
-        {
-          console.log("nearby.html");
-          getNearbyUsers();
-        }
-
-      </script>
+    <script type="text/javascript" src="check_in.js"></script>
       
-	 
-	  
-
   </head>
+  
   <body>
+    
     <h1>Combatants</h1>
 
-    <table id="com_table">
-    </table>
+    <table id="com_table"></table>
 
     <button id="fight_button" onclick="sendRequestBattle();">Let's Fight!</button>
     
   </body>
+  
 </html>

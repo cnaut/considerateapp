@@ -228,3 +228,12 @@ function sendRequestBattle() {
   // Send the request
   xmlhttp.send(JSONtext);
 }
+
+document.addEventListener("deviceready", onDeviceReady,false);
+
+        // once the device ready event fires, you can safely do your thing!
+        function onDeviceReady()
+        {
+          console.log("nearby.html");
+          getNearbyUsers();
+        }

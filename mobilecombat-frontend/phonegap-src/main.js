@@ -208,9 +208,23 @@ function sendRequestBattle() {
 
   var JSONtext = "{\"users\":" + JSON.stringify(selectedUsers, null) + "}";
   console.log(JSONtext);
-  jQuery.post(userURL + "startbattle", JSONtext);
-  //, function(battleID) {
-  //  console.log("battleID : " + battleID);
-	//window.location = 'battle.html';
-  //});
+
+  var xmlhttp = getXmlhttpRequest();
+    // Open port to URL
+  xmlhttp.open("POST", userURL + "startbattle", true);
+
+  // Declare the callback function for request
+  xmlhttp.onreadystatechange = function() {
+	if (xmlhttp.readyState == 4) {
+      if(xmlhttp.status == 200) {
+		// On success, save the returned unique server ID
+		battleID = xmlhttp.responseText;
+        console.log(xmlhttp.responseText);
+		window.location = 'battle.html';
+	  }
+    }
+  }
+
+  // Send the request
+  xmlhttp.send(JSONtext);
 }

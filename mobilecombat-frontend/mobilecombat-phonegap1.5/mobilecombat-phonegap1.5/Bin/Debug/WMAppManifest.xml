@@ -13,7 +13,7 @@
       <Capability Name="ID_CAP_LOCATION" />
       <Capability Name="ID_CAP_NETWORKING" />
       <Capability Name="ID_CAP_WEBBROWSERCOMPONENT" />
-
+      <Capability Name="ID_CAP_SENSORS" />
     </Capabilities>
     
     <Tasks>

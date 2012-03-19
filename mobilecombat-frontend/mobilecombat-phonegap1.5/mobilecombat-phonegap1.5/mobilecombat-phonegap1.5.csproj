@@ -103,6 +103,14 @@
     <Content Include="Background.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="GapLib\www\battle.html" />
+    <Content Include="GapLib\www\cordova-1.5.0.js" />
+    <Content Include="GapLib\www\index.html" />
+    <Content Include="GapLib\www\jquery.js" />
+    <Content Include="GapLib\www\main.js" />
+    <Content Include="GapLib\www\master.css" />
+    <Content Include="GapLib\www\nearby.html" />
+    <Content Include="GapLib\www\profile.html" />
     <Content Include="SplashScreenImage.jpg" />
   </ItemGroup>
   <ItemGroup>

@@ -1,48 +1,39 @@
-  
-  
-  body 
-  {
+body 
+{
     background:#000 none repeat scroll 0 0;
     color:#ccc;
     font-family:Helvetica, Verdana, Geneva, sans-serif;
     margin:0;
     border-top:1px solid #393939;
-  }
+}
 
-  h1
-  {
-     text-align:center;
-     font-size:18px;
-     color:#FFC312; /* Mango me! */
-  }
+h1
+{
+    text-align:center;
+    font-size:18px;
+    color:#FFC312; /* Mango me! */
+}
 
-  .modeBtn 
-  {
-	display: inline-block;
-	width: 75px;
-	height: 40px;
-	padding: 10px;
-	background-color: white;
-	color: black;
-	vertical-align: middle;
-	text-align: center;
-  }
+.modeBtn 
+{
+    display: inline-block;
+    width: 75px;
+    height: 40px;
+    padding: 10px;
+    background-color: white;
+    color: black;
+    vertical-align: middle;
+    text-align: center;
+}
 
-  .selectedRow
-  {
-	color: blue;
-  }
+.selectedCell
+{
+    color: blue;
+}
 
-  .deselectedRow
-  {
-	color: white;
-  }
- 	
-
-
-
-
-
-
+.deselectedCell
+{
+    color: white;
+}
 
 

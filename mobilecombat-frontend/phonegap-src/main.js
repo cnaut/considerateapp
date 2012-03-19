@@ -1,4 +1,4 @@
-﻿var battleID;
+var battleID;
 var maxNumPeopleInTable = 15;
 
 var cells;

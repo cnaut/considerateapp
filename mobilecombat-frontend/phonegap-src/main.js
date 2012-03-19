@@ -1,5 +1,30 @@
-﻿var userURL = "http://184.169.136.30:8002/";
+﻿var userURL = "http://184.169.136.30:8004/";
 var serverID;
+var maxNumPeopleInTable = 15;
+
+var cells;
+var users;
+
+/*
+ * Get xmlhttprequest
+ */
+function getXmlhttpRequest() {
+  var xmlhttp;
+  try {
+    xmlhttp = new XMLHttpRequest();
+  } catch (trymicrosoft) {
+    try {
+      xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
+    } catch (othermicrosoft) {
+      try {
+        xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+      } catch (failed) {
+        alert("http request could not be created");
+      }
+    }
+  }
+  return xmlhttp;
+}
 
 /*
  * Function tto get photo from phone's photoalbum.
@@ -43,20 +68,7 @@ function sendRequest() {
   var name = document.getElementById("name");
 
   // Create an xmlhttprequest
-  var xmlhttp;
-  try {
-    xmlhttp = new XMLHttpRequest();
-  } catch (trymicrosoft) {
-    try {
-      xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
-    } catch (othermicrosoft) {
-      try {
-        xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-      } catch (failed) {
-        alert("http request could not be created");
-      }
-    }
-  }
+  var xmlhttp = getXmlhttpRequest();
 
   // Format the request string
   var boundaryString = "AaBbCcX30";
@@ -109,80 +121,96 @@ function getBase64Image(img) {
   // guess the original format, but be aware the using "image/jpg"
   // will re-encode the image.
   var dataURL = canvas.toDataURL("image/png");
-
+  console.log("data: " + dataURL);
   return dataURL.replace(/^data:image\/(png|jpg);base64,/, "");
 }
 
+/*
+ * Function called when nearby.html is opened.
+ */
 function getNearbyUsers() {
 
   // Create an xmlhttprequest
-  var xmlhttp;
-  try {
-    xmlhttp = new XMLHttpRequest();
-  } catch (trymicrosoft) {
-    try {
-      xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
-    } catch (othermicrosoft) {
-      try {
-        xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-      } catch (failed) {
-		alert("http request could not be created");
-      }
-    }
-  }
+  var xmlhttp = getXmlhttpRequest();
 
   // Open and send the get request
   xmlhttp.open("GET", userURL + "allusers", false);
   xmlhttp.send();
   
+  console.log(xmlhttp.responseText);
   // Parse json string into a jquery dictionary
-  var users = jQuery.parseJSON(xmlhttp.responseText);
+  users = jQuery.parseJSON(xmlhttp.responseText);
   if(users.length != 0) 
     loadUsers(users);
 }
 
-function loadUsers(users) {
+/*
+ * Load users dynamically onto table
+ */ 
+function loadUsers() {
   usersTable = document.getElementById('com_table');
-  for(var i = 0; i < users.length; i++) {
-    var row = usersTable.insertRow(i);
-    var cell = row.insertCell(0);
-	cell.setAttribute("selected", "y");
-    console.log(users[i].fields.name);
-	cell.innerHTML = users[i].fields.name;
+  
+  // Create the global array of the boolean variable 
+  cells = new Array();
+  
+  var numToDisplay = users.length;
+  if(numToDisplay > maxNumPeopleInTable) {
+    numToDisplay = maxNumPeopleInTable;
   }
-  usersTable.onload = addCellListeners();
+
+
+  for(var i = 0; i < numToDisplay; i++) {
+    var row = usersTable.insertRow(i);
+	row.onclick = changeSelect;
+	var photoCell = row.insertCell(0);
+	var photo = document.createElement("IMG");
+    photo.setAttribute("src",  userURL + "user_photos/" + users[i].fields.photo);
+	photo.setAttribute("width", "50");
+	photo.setAttribute("height", "50");
+	photoCell.appendChild(photo);
+
+    var nameCell = row.insertCell(1);
+    nameCell.style.color = "white";
+	cells[i] = false;
+    console.log(users[i].fields.name);
+	nameCell.innerHTML = users[i].fields.name;
+  }
 }
 
-function addCellListeners() {
-  function changeSelect() {
-    var cell = typeof this;
-    if(cell.getAttribute("selected") == "y") {
-      cell.style.color = "white";
-	  cell.setAttribute("selected", "n");
-      console.log("unselect");
-    } else {
-	  cell.style.color = "blue";
-	  cell.setAttribute("selected", "y");
-      console.log("select");
-    }
+function changeSelect() {
+  var row = this;
+  var rowNum = row.rowIndex;
+  var cell = row.childNodes[1];
+  if(cells[rowNum] == true) {
+    cell.style.color = "white";
+	cells[rowNum] = false;
+    console.log("unselect");
+  } else {
+	cell.style.color = "blue";
+	cells[rowNum] = true;
+    console.log("select");
   }
-  /* Check that the getElementById method is
-  * supported before trying to use it.
-  */
-  if(document.getElementById) {
-    /* Change the string, 'com_table', to reflect the actual id. */
-    var table = document.getElementById('com_table'), rows;
-    /* Ensure a reference was obtained and
-     * that we can access the rows.
-     */
-    if(table && (rows = table.rows)) { 
-      /* Add the listener to each row in the table. */
-	  console.log("here");
-      for(var i = 0, n = rows.length; i < n; ++i) {
-        rows[i].cells[0].onclick = changeSelect();
-      }
-	  
-	  console.log("here1");
-    }
+}
+
+/* 
+ * Create, format, and send a post request
+ */
+function sendRequestBattle() {
+  usersTable = document.getElementById('com_table');
+  var selectedUsers = new Array();
+  var index = 0;
+  for(var i = 0; i < cells.length; i++) {
+	if(cells[i] == true) {
+	  selectedUsers[index] = users[i].pk;
+	  index++;
+	}
   }
+
+  var JSONtext = "{\"users\":" + JSON.stringify(selectedUsers, null) + "}";
+  console.log(JSONtext);
+  jQuery.post(userURL + "startbattle", JSONtext);
+  //, function(battleID) {
+  //  console.log("battleID : " + battleID);
+	//window.location = 'battle.html';
+  //});
 }

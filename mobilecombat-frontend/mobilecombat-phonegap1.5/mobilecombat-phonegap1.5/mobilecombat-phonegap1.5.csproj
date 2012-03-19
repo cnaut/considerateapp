@@ -79,14 +79,20 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="CordovaSourceDictionary.xml" />
-    <Content Include="www\battle.html" />
+    <Content Include="www\battle.html">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="www\cordova-1.5.0.js" />
     <Content Include="www\index.html" />
     <Content Include="www\jquery.js" />
     <Content Include="www\main.js" />
     <Content Include="www\master.css" />
-    <Content Include="www\nearby.html" />
-    <Content Include="www\profile.html" />
+    <Content Include="www\nearby.html">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="www\profile.html">
+      <SubType>Designer</SubType>
+    </Content>
     <None Include="BuildManifestProcessor.js" />
     <Content Include="GapLib\WP7CordovaClassLib.dll" />
     <None Include="Properties\AppManifest.xml">

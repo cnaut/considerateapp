@@ -28,17 +28,16 @@
 	text-align: center;
   }
 
-  .selectedRow
+  .selectedCell
   {
 	color: blue;
   }
 
-  .deselectedRow
+  .deselectedCell
   {
 	color: white;
   }
  	
-
 
 
 

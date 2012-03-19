@@ -103,6 +103,7 @@ namespace MobileCombat
                 observableCollection.Add(u);
             }
             string str = Serialize(userIDList);
+            Debug.WriteLine("bobobobobo");
             Debug.WriteLine(str);
             client.UploadStringAsync(new Uri("/startbattle", UriKind.Relative), str);
             StartBattle();

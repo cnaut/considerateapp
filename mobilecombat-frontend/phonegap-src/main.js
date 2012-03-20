@@ -1,6 +1,6 @@
 ﻿var userURL = "http://184.169.136.30:8004/";
-var serverID;
-var maxNumPeopleInTable = 10;
+var userID;
+var maxNumPeopleInTable = 7;
 
 var cells;
 var users;
@@ -24,6 +24,16 @@ function getXmlhttpRequest() {
     }
   }
   return xmlhttp;
+}
+
+// Read a page's GET URL variables and return them as an associative array.
+function getUrlVars() {
+  var vars  , hash;
+  var hashes = window.location.href.slice(window.location.href.indexOf('#') + 1).split('&');
+
+  vars = hashes[0].split('=')[1];
+   
+  return vars;
 }
 
 /*
@@ -88,11 +98,9 @@ function sendRequest() {
   xmlhttp.onreadystatechange = function() {
 	if (xmlhttp.readyState == 4) {
       if(xmlhttp.status == 200) {
-		// On success, save the returned unique server ID
-		serverID = xmlhttp.responseText;
         console.log(xmlhttp.responseText);
-		window.location = 'nearby.html';
-	  }
+        window.location = 'nearby.html#userID=' + xmlhttp.responseText;
+	    }
     }
   }
 
@@ -129,6 +137,7 @@ function getBase64Image(img) {
  * Function called when nearby.html is opened.
  */
 function getNearbyUsers() {
+  userID = getUrlVars();
 
   // Create an xmlhttprequest
   var xmlhttp = getXmlhttpRequest();
@@ -175,6 +184,7 @@ function loadUsers() {
     console.log(users[i].fields.name);
 	nameCell.innerHTML = users[i].fields.name;
   }
+  pollForBattle();
 }
 
 function changeSelect() {
@@ -227,4 +237,23 @@ function sendRequestBattle() {
 
   // Send the request
   xmlhttp.send(JSONtext);
+}
+
+function pollForBattle() {
+  // Create an xmlhttprequest
+  var xmlhttp = getXmlhttpRequest();
+  // Open and send the get request
+  xmlhttp.open("POST", userURL + "getbattle", false);
+  xmlhttp.send("userID=" + userID);
+
+  console.log("Jabababab :  " + xmlhttp.responseText);
+  console.log("PFSas :  " + userID);
+
+  if (xmlhttp.responseText.length > 22 && xmlhttp.responseText.length < 27) {
+    console.log("dfdgg");
+    window.location = 'battle.html';
+  } else {
+    console.log("dfd");
+    setTimeout(pollForBattle(), 3000);
+  }
 }

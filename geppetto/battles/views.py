@@ -66,9 +66,15 @@ def startbattle(request):
 
 @csrf_exempt
 def getbattle(request):
-	data = request.raw_post_data
-	data = json.loads(data)
-	battle = Battle.objects.get()	
+	id = None
+	if(request.POST.get('id')):
+		id = data.get('id')
+	else:		
+		data = request.raw_post_data
+		data = json.loads(data)
+		id = data['id']	
+		
+	battle = Battle.objects.order_by("checkin_time").get(users=id)[:1]	
 	return HttpResponse(battle.id)
 
 

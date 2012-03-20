@@ -82,7 +82,9 @@
     <Content Include="www\battle.html">
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="www\battle.js" />
     <Content Include="www\cordova-1.5.0.js" />
+    <Content Include="www\httpRequest.js" />
     <Content Include="www\index.html">
       <SubType>Designer</SubType>
     </Content>
@@ -95,6 +97,7 @@
     <Content Include="www\profile.html">
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="www\profile.js" />
     <None Include="BuildManifestProcessor.js" />
     <Content Include="GapLib\WP7CordovaClassLib.dll" />
     <None Include="Properties\AppManifest.xml">

@@ -43,8 +43,6 @@ function onSuccess(acceleration) {
     }
 }
 
-
-
 //watch acceleration
 function startWatch() {
     valueX = document.getElementById("valueX");

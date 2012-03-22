@@ -1,44 +1,36 @@
-var battleID;
+﻿var battleID;
 var maxNumPeopleInTable = 15;
 
-var cells;
 var users;
 
-
 /*
- * Function called when nearby.html is opened.
+ * Parse response from server and load users into table
  */
-function getNearbyUsers() {
-
-    // Create an xmlhttprequest
-    var xmlhttp = getXmlhttpRequest();
-
-    // Open and send the get request
-    xmlhttp.open("GET", baseURL + "allusers", false);
-    xmlhttp.send();
-    
-    console.log(xmlhttp.responseText);
-    // Parse json string into a jquery dictionary
-    users = jQuery.parseJSON(xmlhttp.responseText);
+function onCombatantsRequestSuccess(serverResponse) {
+	// Parse json string into a jquery dictionary
+    users = jQuery.parseJSON(serverResponse);
     if(users.length != 0) { 
 		loadUsers(users);
 	}
 }
 
 /*
+ * Function called when nearby.html is opened.
+ */
+function getNearbyUsers() {
+	sendXmlhttpRequest("GET", null, "allusers", onCombatantsRequestSuccess, false, "");
+}
+
+/*
  * Load users dynamically onto table
  */ 
-function loadUsers() {
-    usersTable = document.getElementById('com_table');
-    
-    // Create the global array of the boolean variable 
-    cells = new Array();
-    
+function loadUsers(users) {
+    var usersTable = document.getElementById('com_table');
+       
     var numToDisplay = users.length;
     if(numToDisplay > maxNumPeopleInTable) {
 		numToDisplay = maxNumPeopleInTable;
     }
-
 
     for(var i = 0; i < numToDisplay; i++) {
 		var row = usersTable.insertRow(i);
@@ -51,58 +43,63 @@ function loadUsers() {
 		photoCell.appendChild(photo);
 
 		var nameCell = row.insertCell(1);
-		nameCell.style.color = "white";
-		cells[i] = false;
-		console.log(users[i].fields.name);
+		nameCell.className = "deselected";
 		nameCell.innerHTML = users[i].fields.name;
+		console.log("CHECKIN " + users[i].fields.name);
     }
 }
 
+/*
+ * Toggle whether or not a combatant is selected
+ */
 function changeSelect() {
     var row = this;
     var rowNum = row.rowIndex;
-    var cell = row.childNodes[1];
-    if(cells[rowNum] == true) {
-		cell.style.color = "white";
-		cells[rowNum] = false;
-		console.log("unselect");
+    var cell = row.cells[1];
+	if(cell.className === "selected") {
+		cell.className = "deselected";
+		console.log("CHECKIN " + rowNum + " deselected");
     } else {
-		cell.style.color = "blue";
-		cells[rowNum] = true;
-		console.log("select");
+		cell.className = "selected";
+		console.log("CHECKIN " + rowNum + " selected");
     }
 }
 
 /* 
- * Create, format, and send a post request
+ * Save the battleID returned by the server after
+ * we send them the combatants and start the battle
  */
-function onRequestSuccess(serverResponse) {
+function onBattleRequestSuccess(serverResponse) {
     // On success, save the returned unique server ID
     battleID = serverResponse;
     window.location = 'battle.html';
+	console.log("CHECKIN TO BATTLE");
 }
 
-function sendRequestBattle() {
-    usersTable = document.getElementById('com_table');
+/*
+ * Send combatants to the server
+ */
+function sendBattleRequest() {
+	var usersTable = document.getElementById('com_table').rows;
     var selectedUsers = new Array();
-    var index = 0;
-    for(var i = 0; i < cells.length; i++) {
-		if(cells[i] == true) {
-			selectedUsers[index] = users[i].pk;
-			index++;
+    for(var i = 0; i < usersTable.length; i++) {
+		cell = usersTable[i].cells[1];
+		if(cell.className === "selected") {
+			selectedUsers.push(users[i].pk);
 		}
     }
 
     var JSONtext = "{\"users\":" + JSON.stringify(selectedUsers, null) + "}";
-    console.log(JSONtext);
+    console.log("CHECKIN " + JSONtext);
 
-    sendXmlhttpRequest("POST", JSONtext, "startbattle", onRequestSuccess, false, "");
+    sendXmlhttpRequest("POST", JSONtext, "startbattle", onBattleRequestSuccess, false, "");
+}
+
+// Get nearby users once phone loads
+function onDeviceReady() {
+    console.log("CHECKIN");
+	document.getElementById("fight_button").addEventListener("click", sendBattleRequest, false);
+    getNearbyUsers();
 }
 
 document.addEventListener("deviceready", onDeviceReady, false);
-
-// once the device ready event fires, you can safely do your thing! -jm
-function onDeviceReady() {
-    console.log("nearby.html");
-    getNearbyUsers();
-}

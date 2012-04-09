@@ -1,16 +1,21 @@
 var userID;
 
 /* 
- * Create, format, and send a post request
+ * Saves the userID returned by the server after
+ * we send in our profile
  */
-
 function onRequestSuccess(serverResponse) {
     // On success, save the returned unique user ID
     userID = serverResponse;
-    window.location = 'nearby.html';
+    window.location = "nearby.html";
+    window.name = userID;
+	console.log("PROFILE TO CHECKIN");
 }
 
-function sendRequest() {
+/*
+ * Send profile information to the server
+ */
+function sendUserRequest() {
     var image = document.getElementById("image");
     var name = document.getElementById("name");
 
@@ -26,15 +31,14 @@ function sendRequest() {
 		getBase64Image(image) + "\r\n" + boundary + "\r\n";
 
     sendXmlhttpRequest("POST", postContent, "adduser", onRequestSuccess, true, boundaryString);
-
 }
 
 /*
- * Function to get photo from phone's photoalbum.
+ * Get photo from phone's photo album.
  */
 function getPhoto() {
     // Retrieve image file location from specified source
-    navigator.camera.getPicture(onSuccess, onFail,
+    navigator.camera.getPicture(onPhotoSuccess, onPhotoFail,
 				{sourceType : Camera.PictureSourceType.SAVEDPHOTOALBUM});
 }
 
@@ -42,7 +46,7 @@ function getPhoto() {
  * Callback function for success in getting photo.
  * Show photo in background and enable send button.
  */
-function onSuccess(imageURI) {
+function onPhotoSuccess(imageURI) {
 
     var image = document.getElementById('image');
 
@@ -59,7 +63,7 @@ function onSuccess(imageURI) {
 /*
  * Callback function for failure in getting photo
  */
-function onFail(message) {
+function onPhotoFail(message) {
     alert('Error Getting picture');
 }
 
@@ -85,9 +89,11 @@ function getBase64Image(img) {
     return dataURL.replace(/^data:image\/(png|jpg);base64,/, "");
 }
 
-document.addEventListener("deviceready", onDeviceReady, false);
-
-// once the device ready event fires, you can safely do your thing!
+// Log that we are in the PROFILE page
 function onDeviceReady() {
     console.log("PROFILE");
+	document.getElementById("photo_button").addEventListener("click", getPhoto, false);
+	document.getElementById("save_button").addEventListener("click", sendUserRequest, false);
 }
+
+document.addEventListener("deviceready", onDeviceReady, false);

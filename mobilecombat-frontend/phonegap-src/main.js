@@ -1,5 +1,5 @@
 var battleID;
-var maxNumPeopleInTable = 5;
+var maxNumPeopleInTable = 15;
 
 var userID;
 var cells;
@@ -67,7 +67,7 @@ function loadUsers() {
     console.log(users[i].fields.name);
 	nameCell.innerHTML = users[i].fields.name;
   }
-  //pollForBattle();
+  pollForBattle();
 }
 
 function changeSelect() {

@@ -95,4 +95,16 @@ function onDeviceReady() {
 	document.getElementById("save_button").addEventListener("click", sendUserRequest, false);
 }
 
-document.addEventListener("deviceready", onDeviceReady, false);
+function onBodyLoad()
+{
+	console.log("HERE")
+    //if phonegap, need to toggle these
+    //if (typeof navigator.device == "undefined"){
+    	//document.addEventListener("deviceready", onDeviceReady, false);
+    //} else {
+    	onDeviceReady();
+    //}
+
+}
+
+console.log("YO")

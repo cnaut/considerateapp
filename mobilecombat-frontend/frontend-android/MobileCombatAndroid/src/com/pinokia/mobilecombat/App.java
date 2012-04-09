@@ -1,7 +1,7 @@
 package com.pinokia.mobilecombat;
 
-import com.phonegap.*;
 import android.os.Bundle;
+import com.phonegap.*;
 
 public class App extends DroidGap
 {

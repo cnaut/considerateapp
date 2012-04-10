@@ -54,16 +54,21 @@ def getbattle(request):
 	if(request.POST.get('id')):
 		id = request.POST.get('id')
 	else:		
-		id = request.GET.get('id')	
-		
-	battle = Battle.objects.order_by("checkin_time").get()[0:1]	
+		data = request.raw_post_data
+		data = json.loads(data)
+		id = data['id']	
+    
+	battle = Battle.objects.order_by("checkin_time").get(users=id)[:1]	
+ 	if(battle.get('checkout_time') != null):
+   		battle = null
+  
 	return HttpResponse(battle.id)
 
 #Takes a battle id and a user id and adds user id to list of losers for battle 
 @csrf_exempt
 def declaredefeat(request):
 	data = request.GET
-	battle = Battle.objects.get(id=data.get('battleid'))	
+	battle = Battle.objects.get(id=data.get('battleid'))
 	battle.losers.extend([data.get('userid')]) 
 	battle.save()
 	return HttpResponse(battle.losers)

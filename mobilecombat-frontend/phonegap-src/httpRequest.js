@@ -1,3 +1,8 @@
+/*
+ * Handles communication to the server
+ *
+ */
+
 var baseURL = "http://184.169.136.30:8004/";
 
 /*
@@ -27,7 +32,7 @@ function getXmlhttpRequest() {
  * content: what you want to send
  * dest: "adduser" or "startbattle" or etc.
  * successFn: function to call on success (takes in a response from server)
- * multipart: whether we need a multipart request
+ * multipart: (bool) whether we need a multipart request
  * boundary: boundary if we do have a multipart request
  */
 function sendXmlhttpRequest(mode, content, dest, successFn, multipart, boundary) {

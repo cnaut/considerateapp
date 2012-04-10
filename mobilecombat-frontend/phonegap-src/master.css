@@ -26,12 +26,12 @@ h1
     text-align: center;
 }
 
-.selectedCell
+td.selected
 {
     color: blue;
 }
 
-.deselectedCell
+td.deselected
 {
     color: white;
 }

@@ -15,7 +15,15 @@ from django.dispatch import receiver
 def home(request):
 	return HttpResponse("Moble Combat Home")
 
-#Takes a name and a photo and adds user to the database then returns user id 
+@csrf_exempt
+def allusers(request):
+	users = User.objects.all()
+	users = serializers.serialize("json", users)
+	
+	response = HttpResponse(users)
+	response['Cache-Control'] = 'no-cache'
+	return response
+
 @csrf_exempt
 def adduser(request):
 	data = None
@@ -28,13 +36,22 @@ def adduser(request):
 		data = json.loads(data)
 		name = data['name']	
 		
-
 	user = User(name=name, photo=request.FILES['photo'])
+	print user.photo
 	user.save()
 	
 	return HttpResponse(user.id)
 
-#Takes list of users and creates battle then returns battle id
+
+@csrf_exempt
+def userform(request):
+	form = UserForm() 	
+	return render_to_response(
+		'userform.html',
+		{'form': form},
+		context_instance=RequestContext(request)
+	)
+
 def startbattle(request):
 	data = request.raw_post_data
 	data = json.loads(data)
@@ -47,28 +64,28 @@ def startbattle(request):
 	battle.save()
 	return HttpResponse(battle.id)
 
-#Takes user id and returns latest battle that user was in - still not done
 @csrf_exempt
 def getbattle(request):
 	id = None
 	if(request.POST.get('id')):
-		id = request.POST.get('id')
+		id = data.get('id')
 	else:		
 		data = request.raw_post_data
 		data = json.loads(data)
 		id = data['id']	
     
 	battle = Battle.objects.order_by("checkin_time").get(users=id)[:1]	
- 	if(battle.get('checkout_time') != null):
-   		battle = null
+  if(battle.get('checkout_time') != null):
+    battle = null
   
 	return HttpResponse(battle.id)
 
-#Takes a battle id and a user id and adds user id to list of losers for battle 
+
 @csrf_exempt
 def declaredefeat(request):
 	data = request.GET
 	battle = Battle.objects.get(id=data.get('battleid'))
 	battle.losers.extend([data.get('userid')]) 
 	battle.save()
+	print battle.losers
 	return HttpResponse(battle.losers)

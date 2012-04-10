@@ -1,126 +1,127 @@
 var battleID;
+var userID;
 var maxNumPeopleInTable = 15;
 
-var userID;
-var cells;
 var users;
 
 // Read a page's GET URL variables and return them as an associative array.
 function getUrlVars() {
-  var vars  , hash;
+  var vars, hash;
   var hashes = window.location.href.slice(window.location.href.indexOf('#') + 1).split('&');
-
+  console.log(window.location.href);
   vars = hashes[0].split('=')[1];
-   
+
   return vars;
 }
 
 /*
- * Function called when nearby.html is opened.
- */
-function getNearbyUsers() {
-    userID = getUrlVars();
-
-    // Create an xmlhttprequest
-    var xmlhttp = getXmlhttpRequest();
-
-    // Open and send the get request
-    xmlhttp.open("GET", baseURL + "allusers", false);
-    xmlhttp.send();
-    
-    console.log(xmlhttp.responseText);
-    // Parse json string into a jquery dictionary
-    users = jQuery.parseJSON(xmlhttp.responseText);
-    if(users.length != 0) { 
-		loadUsers(users);
-	}
+* Parse response from server and load users into table
+*/
+function onCombatantsRequestSuccess(serverResponse) {
+  // Parse json string into a jquery dictionary
+  users = jQuery.parseJSON(serverResponse);
+  if (users.length != 0) {
+    loadUsers(users);
+  }
 }
 
 /*
- * Load users dynamically onto table
- */ 
-function loadUsers() {
-  usersTable = document.getElementById('com_table');
-  
-  // Create the global array of the boolean variable 
-  cells = new Array();
-  
+* Function called when nearby.html is opened.
+*/
+function getNearbyUsers() {
+  userID = window.name;
+  sendXmlhttpRequest("GET", null, "allusers", onCombatantsRequestSuccess, false, "");
+}
+
+/*
+* Load users dynamically onto table
+*/
+function loadUsers(users) {
+  var usersTable = document.getElementById('com_table');
+
   var numToDisplay = users.length;
-  if(numToDisplay > maxNumPeopleInTable) {
+  if (numToDisplay > maxNumPeopleInTable) {
     numToDisplay = maxNumPeopleInTable;
   }
 
-
-  for(var i = 0; i < numToDisplay; i++) {
+  for (var i = 0; i < numToDisplay; i++) {
     var row = usersTable.insertRow(i);
-	row.onclick = changeSelect;
-	var photoCell = row.insertCell(0);
-	var photo = document.createElement("IMG");
-    photo.setAttribute("src",  baseURL + "user_photos/" + users[i].fields.photo);
-	photo.setAttribute("width", "50");
-	photo.setAttribute("height", "50");
-	photoCell.appendChild(photo);
+    row.onclick = changeSelect;
+
+    var photoCell = row.insertCell(0);
+    var photo = document.createElement("IMG");
+    photo.setAttribute("src", baseURL + "user_photos/" + users[i].fields.photo);
+    photo.setAttribute("width", "50");
+    photo.setAttribute("height", "50");
+    photoCell.appendChild(photo);
 
     var nameCell = row.insertCell(1);
-    nameCell.style.color = "white";
-	cells[i] = false;
-    console.log(users[i].fields.name);
-	nameCell.innerHTML = users[i].fields.name;
+    nameCell.className = "deselected";
+    nameCell.innerHTML = users[i].fields.name;
+    console.log("CHECKIN " + users[i].fields.name);
   }
-  pollForBattle();
+
+  //pollForBattle();
 }
 
+/*
+* Toggle whether or not a combatant is selected
+*/
 function changeSelect() {
-    var row = this;
-    var rowNum = row.rowIndex;
-    var cell = row.childNodes[1];
-    if(cells[rowNum] == true) {
-		cell.style.color = "white";
-		cells[rowNum] = false;
-		console.log("unselect");
-    } else {
-		cell.style.color = "blue";
-		cells[rowNum] = true;
-		console.log("select");
-    }
+  var row = this;
+  var rowNum = row.rowIndex;
+  var cell = row.cells[1];
+  if (cell.className === "selected") {
+    cell.className = "deselected";
+    console.log("CHECKIN " + rowNum + " deselected");
+  } else {
+    cell.className = "selected";
+    console.log("CHECKIN " + rowNum + " selected");
+  }
 }
 
 /* 
- * Create, format, and send a post request
- */
-function onRequestSuccess(serverResponse) {
-    // On success, save the returned unique server ID
-    battleID = serverResponse;
-    window.location = 'battle.html';
+* Save the battleID returned by the server after
+* we send them the combatants and start the battle
+*/
+function onBattleRequestSuccess(serverResponse) {
+  // On success, save the returned unique battle ID
+  battleID = serverResponse;
+  window.location = 'battle.html';
+  console.log("CHECKIN TO BATTLE " + battleID);
 }
 
-function sendRequestBattle() {
-    usersTable = document.getElementById('com_table');
-    var selectedUsers = new Array();
-    var index = 0;
-    for(var i = 0; i < cells.length; i++) {
-		if(cells[i] == true) {
-			selectedUsers[index] = users[i].pk;
-			index++;
-		}
+/*
+* Send combatants to the server
+*/
+function sendBattleRequest() {
+  var usersTable = document.getElementById('com_table').rows;
+  var selectedUsers = new Array();
+  for (var i = 0; i < usersTable.length; i++) {
+    cell = usersTable[i].cells[1];
+    if (cell.className === "selected") {
+      selectedUsers.push(users[i].pk);
     }
-    var JSONtext = "{\"users\":" + JSON.stringify(selectedUsers, null) + "}";
-    console.log(JSONtext);
+  }
+  var JSONtext = "{\"users\":" + JSON.stringify(selectedUsers, null) + "}";
+  console.log("CHECKIN " + JSONtext);
 
-    sendXmlhttpRequest("POST", JSONtext, "startbattle", onRequestSuccess, false, "");
+  sendXmlhttpRequest("POST", JSONtext, "startbattle", onBattleRequestSuccess, false, "");
+}
+
+// Get nearby users once phone loads
+function onDeviceReady() {
+  console.log("CHECKIN");
+  document.getElementById("fight_button").addEventListener("click", sendBattleRequest, false);
+  getNearbyUsers();
 }
 
 document.addEventListener("deviceready", onDeviceReady, false);
 
-// once the device ready event fires, you can safely do your thing! -jm
-function onDeviceReady() {
-  console.log("nearby.html");
-  getNearbyUsers();
-}
-
 function pollForBattle() {
   // Create an xmlhttprequest
   var xmlhttp = getXmlhttpRequest();
+
   // Open and send the get request
   xmlhttp.open("POST", baseURL + "getbattle", false);
   xmlhttp.send("userID=" + userID);

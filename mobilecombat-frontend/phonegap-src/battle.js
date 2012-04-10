@@ -1,8 +1,10 @@
+var userID;
+var battleID;
+
 //timer variables
-var c=0;
-var f=0;
-var t;
-var g;
+var count_down_time = 0;
+var count_up_time = 0;
+var battle_timeout;
 var timer_is_on=0;
 
 //accelerometer variables
@@ -15,6 +17,10 @@ var valueX;
 var valueY;
 var valueZ;
 
+function endBattleCallback() {
+  window.location = "index.html";
+}
+
 function stopWatch() {
     if (watchID) {
 		navigator.accelerometer.clearWatch(watchID);
@@ -24,7 +30,7 @@ function stopWatch() {
 
 function onSuccess(acceleration) {
     if (initial == 0) {
-		console.log("zerooooooooooo");
+		console.log("Let the battle begin");
         accX = acceleration.x;
         accY = acceleration.y;
         accZ = acceleration.z;
@@ -35,11 +41,12 @@ function onSuccess(acceleration) {
     } else {
         console.log(accX);
         if (acceleration.x != accX) {
-			document.getElementById("accelerometer").innerHTML = "You Lose!";
-			stopCount();
-			stopWatch();       
-			//ADD CODEEEEEE
-		}
+          stopCount();
+          stopWatch();
+          document.getElementById("accelerometer").innerHTML = "You Lose!";
+          sendXmlhttpRequest("GET", "userid=" + userID + "&battleid=" + battleID, "getbattle", onGetBattleRequestSuccess, false, "");
+          navigator.notification.alert("You lost the battle. Better luck next time.", endBattleCallback, "Defeat", "OK");
+		    }
     }
 }
 
@@ -53,20 +60,36 @@ function startWatch() {
 }
 
 function onError() {
-    alert('onError!');
+    alert('Accelerator error!');
+}
+
+function onGetBattleRequestSuccess(serverResponse) {
+  // On success, save the returned unique battle ID
+  battleID = serverResponse;
+  console.log("CHECK FOR LOSER IN BATTLE " + battleID);
+  if (battleID == null) {
+    stopCount();
+    stopWatch();
+    navigator.notification.alert("You have won the battle!!", endBattleCallback, "Victory", "OK");
+  }
 }
 
 function countUp() {
-    document.getElementById('count_up').innerHTML = f;
-    f = f+1;
-    g = setTimeout("countUp()",1000);
+  document.getElementById('count_up').innerHTML = count_up_time;
+  //Every 5 seconds, check to see if the battle has ended 
+  if (count_up_time % 5 == 0) {
+    sendXmlhttpRequest("POST", "id="+userID, "getbattle", onGetBattleRequestSuccess, false, "");
+  }
+  count_up_time = count_up_time + 1;
+  stopCount();
+  battle_timeout = setTimeout("countUp()", 1000);
 }
 
 function timedCount() {
-    document.getElementById('timer').innerHTML = (5-c);
-    c = c+1;
-    if (c != 6) {
-        t = setTimeout("timedCount()",1000);
+  document.getElementById('timer').innerHTML = (5 - count_down_time);
+  count_down_time = count_down_time + 1;
+    if (count_down_time < 6) {
+        setTimeout("timedCount()",1000);
     } else {
         countUp();
         startWatch();
@@ -74,6 +97,7 @@ function timedCount() {
 }
 
 function startTimer() {
+  userID = window.name;
     if (!timer_is_on) {
         timer_is_on = 1;
         timedCount();
@@ -81,7 +105,7 @@ function startTimer() {
 }
 
 function stopCount() {
-    clearTimeout(g);
+  clearTimeout(battle_timeout);
 }
 
 window.addEventListener('load', startTimer, false);

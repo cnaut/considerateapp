@@ -2,17 +2,9 @@
 var userID;
 var maxNumPeopleInTable = 15;
 
+var users_timeout;
+
 var users;
-
-// Read a page's GET URL variables and return them as an associative array.
-function getUrlVars() {
-  var vars, hash;
-  var hashes = window.location.href.slice(window.location.href.indexOf('#') + 1).split('&');
-  console.log(window.location.href);
-  vars = hashes[0].split('=')[1];
-
-  return vars;
-}
 
 /*
 * Parse response from server and load users into table
@@ -132,11 +124,12 @@ function pollForBattle() {
   console.log("BattleID:  " + xmlhttp.responseText);
   console.log("Number:  " + poll + " for " + userID);
 
+  clearTimeout(users_timeout);
   if (xmlhttp.responseText.length > 20) {
-    console.log("pulled in to battle!");
+    console.log("Let's battle!");
     window.location = 'battle.html';
   } else {
-    console.log("not pulled in to battle");
-    setTimeout(pollForBattle(), 3000);
+    console.log("pollForBattle()");
+    setTimeout(pollForBattle(), 10000);
   }
 }

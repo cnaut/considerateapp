@@ -74,11 +74,12 @@ def getbattle(request):
         data = json.loads(data)
         id = data['id']
 
-    battle = Battle.objects.filter(users__contains=id).get(checkout_time__isnull=True)	
-    if(battle.get('checkout_time') != null):
-        battle = null
+    battle = Battle.objects.filter(users__contains=id).filter(checkout_time__isnull=True)
 
-    return HttpResponse(battle.id)
+    if (battle.count()==1):
+        return HttpResponse(battle.id)
+    else:
+        return HttpResponse("null")
 
 
 @csrf_exempt

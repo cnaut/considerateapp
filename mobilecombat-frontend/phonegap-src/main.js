@@ -1,4 +1,4 @@
-var battleID;
+﻿var battleID;
 var userID;
 var maxNumPeopleInTable = 15;
 
@@ -61,7 +61,7 @@ function loadUsers(users) {
     console.log("CHECKIN " + users[i].fields.name);
   }
 
-  //pollForBattle();
+  pollForBattle();
 }
 
 /*
@@ -128,14 +128,15 @@ function pollForBattle() {
   xmlhttp.open("POST", baseURL + "getbattle", false);
   xmlhttp.send("userID=" + userID);
 
-  console.log("Jabababab :  " + xmlhttp.responseText);
-  console.log("PFSas :  " + userID);
+  poll = poll + 1;
+  console.log("BattleID:  " + xmlhttp.responseText);
+  console.log("Number:  " + poll + " for " + userID);
 
-  if (xmlhttp.responseText.length > 22 && xmlhttp.responseText.length < 27) {
-    console.log("dfdgg");
+  if (xmlhttp.responseText.length > 20) {
+    console.log("pulled in to battle!");
     window.location = 'battle.html';
   } else {
-    console.log("dfd");
+    console.log("not pulled in to battle");
     setTimeout(pollForBattle(), 3000);
   }
 }

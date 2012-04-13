@@ -7,7 +7,8 @@ var userID;
 function onRequestSuccess(serverResponse) {
     // On success, save the returned unique user ID
     userID = serverResponse;
-    window.location = 'nearby.html';
+    window.location = "nearby.html";
+    window.name = userID;
 	console.log("PROFILE TO CHECKIN");
 }
 

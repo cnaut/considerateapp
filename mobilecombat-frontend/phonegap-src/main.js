@@ -2,17 +2,9 @@ var battleID;
 var userID;
 var maxNumPeopleInTable = 15;
 
+var users_timeout;
+
 var users;
-
-// Read a page's GET URL variables and return them as an associative array.
-function getUrlVars() {
-  var vars, hash;
-  var hashes = window.location.href.slice(window.location.href.indexOf('#') + 1).split('&');
-  console.log(window.location.href);
-  vars = hashes[0].split('=')[1];
-
-  return vars;
-}
 
 /*
 * Parse response from server and load users into table
@@ -61,7 +53,7 @@ function loadUsers(users) {
     console.log("CHECKIN " + users[i].fields.name);
   }
 
-  //pollForBattle();
+  pollForBattle();
 }
 
 /*
@@ -126,14 +118,14 @@ function pollForBattle() {
   xmlhttp.open("POST", baseURL + "getbattle", false);
   xmlhttp.send("userID=" + userID);
 
-  console.log("Jabababab :  " + xmlhttp.responseText);
-  console.log("PFSas :  " + userID);
-
+  console.log("xmlhttp response text :  " + xmlhttp.responseText);
+  
+  clearTimeout(users_timeout);
   if (xmlhttp.responseText.length > 22 && xmlhttp.responseText.length < 27) {
-    console.log("dfdgg");
+    console.log("Let's battle");
     window.location = 'battle.html';
   } else {
-    console.log("dfd");
-    setTimeout(pollForBattle(), 3000);
+    console.log("Poll again");
+    users_timeout = setTimeout("pollForBattle()", 10000);
   }
 }

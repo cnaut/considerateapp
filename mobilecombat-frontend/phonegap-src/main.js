@@ -1,18 +1,10 @@
-var battleID;
+﻿var battleID;
 var userID;
 var maxNumPeopleInTable = 15;
 
+var users_timeout;
+
 var users;
-
-// Read a page's GET URL variables and return them as an associative array.
-function getUrlVars() {
-  var vars, hash;
-  var hashes = window.location.href.slice(window.location.href.indexOf('#') + 1).split('&');
-  console.log(window.location.href);
-  vars = hashes[0].split('=')[1];
-
-  return vars;
-}
 
 /*
 * Parse response from server and load users into table
@@ -61,7 +53,7 @@ function loadUsers(users) {
     console.log("CHECKIN " + users[i].fields.name);
   }
 
-  //pollForBattle();
+  pollForBattle();
 }
 
 /*
@@ -118,6 +110,8 @@ function onDeviceReady() {
 
 document.addEventListener("deviceready", onDeviceReady, false);
 
+var poll = 0;
+
 function pollForBattle() {
   // Create an xmlhttprequest
   var xmlhttp = getXmlhttpRequest();
@@ -126,14 +120,16 @@ function pollForBattle() {
   xmlhttp.open("POST", baseURL + "getbattle", false);
   xmlhttp.send("userID=" + userID);
 
-  console.log("Jabababab :  " + xmlhttp.responseText);
-  console.log("PFSas :  " + userID);
+  poll = poll + 1;
+  console.log("BattleID:  " + xmlhttp.responseText);
+  console.log("Number:  " + poll + " for " + userID);
 
-  if (xmlhttp.responseText.length > 22 && xmlhttp.responseText.length < 27) {
-    console.log("dfdgg");
+  clearTimeout(users_timeout);
+  if (xmlhttp.responseText.length > 20) {
+    console.log("Let's battle!");
     window.location = 'battle.html';
   } else {
-    console.log("dfd");
-    setTimeout(pollForBattle(), 3000);
+    console.log("pollForBattle()");
+    setTimeout(pollForBattle(), 10000);
   }
 }

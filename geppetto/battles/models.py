@@ -22,7 +22,7 @@ class Battle(models.Model):
 	lat = models.DecimalField(max_digits=8, decimal_places=4, null=True)
 	long = models.DecimalField(max_digits=8, decimal_places=4, null=True)
 	checkin_time = models.DateTimeField(auto_now_add=True, null=True)
-	checkout_time = models.DateTimeField(auto_now_add=True, null=True)
+	checkout_time = models.DateTimeField(auto_now_add=False, null=True)
 
 class Training(models.Model):
 	activity = models.TextField()

@@ -13,7 +13,7 @@ from battles.forms import UserForm
 from django.dispatch import receiver
 
 def home(request):
-	return HttpResponse("Moble Combat Home")
+	return HttpResponse("Mobile Combat Home")
 
 @csrf_exempt
 def allusers(request):
@@ -74,7 +74,7 @@ def getbattle(request):
 		data = json.loads(data)
 		id = data['id']	
 		
-	battle = Battle.objects.order_by("checkin_time").get(users=id)[:1]	
+	battle = Battle.objects.filter(users__contains=id).get(checkout_time__isnull=True)	
 	return HttpResponse(battle.id)
 
 

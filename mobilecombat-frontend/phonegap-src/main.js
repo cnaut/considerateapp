@@ -118,6 +118,8 @@ function onDeviceReady() {
 
 document.addEventListener("deviceready", onDeviceReady, false);
 
+var poll = 0;
+
 function pollForBattle() {
 	// Create an xmlhttprequest
 	var xmlhttp = getXmlhttpRequest();

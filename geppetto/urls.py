@@ -21,7 +21,7 @@ urlpatterns = patterns('',
     url(r'^mobilecombat/', include('mobilecombat.foo.urls')),
 
     url(r'^user_photos/(?P<path>.*)$', 'django.views.static.serve', {'document_root': '/home/cnaut/meandmyphone/geppetto/user_photos/'}),
-    
+
     # url(r'^gepetto/', include('gepetto.foo.urls')),
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),

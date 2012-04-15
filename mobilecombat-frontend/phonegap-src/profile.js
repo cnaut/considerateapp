@@ -9,7 +9,6 @@ function onRequestSuccess(serverResponse) {
     userID = serverResponse;
     window.location = "nearby.html";
     window.name = userID;
-	console.log("PROFILE TO CHECKIN");
 }
 
 /*
@@ -38,7 +37,7 @@ function sendUserRequest() {
  */
 function getPhoto() {
     // Retrieve image file location from specified source
-    navigator.camera.getPicture(onPhotoSuccess, onPhotoFail,
+ 	navigator.camera.getPicture(onPhotoSuccess, onPhotoFail,
 				{sourceType : Camera.PictureSourceType.SAVEDPHOTOALBUM});
 }
 
@@ -47,7 +46,6 @@ function getPhoto() {
  * Show photo in background and enable send button.
  */
 function onPhotoSuccess(imageURI) {
-
     var image = document.getElementById('image');
 
     // Unhide image elements
@@ -85,27 +83,21 @@ function getBase64Image(img) {
     // guess the original format, but be aware the using "image/jpg"
     // will re-encode the image.
     var dataURL = canvas.toDataURL("image/png");
-    console.log("PROFILE image data: " + dataURL);
     return dataURL.replace(/^data:image\/(png|jpg);base64,/, "");
 }
 
 // Log that we are in the PROFILE page
 function onDeviceReady() {
-    console.log("PROFILE");
-	document.getElementById("photo_button").addEventListener("click", getPhoto, false);
+    document.getElementById("photo_button").addEventListener("click", getPhoto, false);
 	document.getElementById("save_button").addEventListener("click", sendUserRequest, false);
 }
 
 function onBodyLoad()
 {
-	console.log("HERE")
     //if phonegap, need to toggle these
-    //if (typeof navigator.device == "undefined"){
-    	//document.addEventListener("deviceready", onDeviceReady, false);
-    //} else {
+    if (typeof navigator.device == "undefined"){
+    	document.addEventListener("deviceready", onDeviceReady, false);
+    } else {
     	onDeviceReady();
-    //}
-
+    }
 }
-
-console.log("YO")

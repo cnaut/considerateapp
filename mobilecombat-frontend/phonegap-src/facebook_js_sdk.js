@@ -1682,6 +1682,7 @@ FB.provide('', {
    * @param cb {Function} the callback function to handle the response
    */
   api: function() {
+	console.log("authResponse: " + JSON.stringify(FB.getAuthResponse()));
     if (typeof arguments[0] === 'string') {
       FB.ApiServer.graph.apply(FB.ApiServer, arguments);
     } else {
@@ -6435,6 +6436,8 @@ FB.provide('Auth', {
    * @return             {Function} the wrapped xd handler function
    */
   xdResponseWrapper: function(cb, authResponse, method) {
+	console.log("party! 6439");
+
     return function(params) {
       if (params.access_token) {
         // Whatever this is a response to, it succeeded

@@ -1,11 +1,11 @@
 package com.pinokia.mobilecombat;
 
+import android.app.Activity;
 import android.os.Bundle;
 import org.apache.cordova.*;
 
-public class App extends DroidGap
+public class MobileCombat extends DroidGap
 {
-    /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -13,3 +13,4 @@ public class App extends DroidGap
         super.loadUrl("file:///android_asset/www/index.html");
     }
 }
+

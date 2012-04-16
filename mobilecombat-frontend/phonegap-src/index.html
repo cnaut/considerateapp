@@ -10,7 +10,15 @@
     
     <link rel="stylesheet" href="master.css" type="text/css" media="screen" title="no title" charset="utf-8"/>
     
-    <script type="text/javascript" charset="utf-8" src="cordova-1.5.0.js"></script>
+    <script>
+		if (navigator.userAgent.toLowerCase().match(/android/)) {
+			document.write('<script charset="utf-8" src="android\/cordova-1.5.0.js"><\/script>');
+		} else if (navigator.userAgent.toLowerCase().match(/windows/)) {
+			document.write('<script charset="utf-8" src="wp\/phonegap-1.2.0.js"><\/script>');
+		}
+	</script>
+        <script type="text/javascript" charset="utf-8" src="cdv-plugin-fb-connect.js"></script>
+        <script type="text/javascript" charset="utf-8" src="facebook_js_sdk.js"></script>
 
   </head>
   

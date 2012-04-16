@@ -1,18 +1,10 @@
-var battleID;
+﻿var battleID;
 var userID;
 var maxNumPeopleInTable = 15;
 
+var users_timeout;
+
 var users;
-
-// Read a page's GET URL variables and return them as an associative array.
-function getUrlVars() {
-  var vars, hash;
-  var hashes = window.location.href.slice(window.location.href.indexOf('#') + 1).split('&');
-  console.log(window.location.href);
-  vars = hashes[0].split('=')[1];
-
-  return vars;
-}
 
 /*
 * Parse response from server and load users into table
@@ -25,12 +17,16 @@ function onCombatantsRequestSuccess(serverResponse) {
   }
 }
 
+function onCombatantsRequestFail(serverResponse) {
+
+}
+
 /*
 * Function called when nearby.html is opened.
 */
 function getNearbyUsers() {
   userID = window.name;
-  sendXmlhttpRequest("GET", null, "allusers", onCombatantsRequestSuccess, false, "");
+  sendXmlhttpRequest("GET", null, "allusers", onCombatantsRequestSuccess, onCombatantsRequestFail, false, "");
 }
 
 /*
@@ -61,7 +57,7 @@ function loadUsers(users) {
     console.log("CHECKIN " + users[i].fields.name);
   }
 
-  //pollForBattle();
+  pollForBattle();
 }
 
 /*
@@ -91,6 +87,10 @@ function onBattleRequestSuccess(serverResponse) {
   console.log("CHECKIN TO BATTLE " + battleID);
 }
 
+function onBattleRequestFail(serverResponse) {
+
+}
+
 /*
 * Send combatants to the server
 */
@@ -106,7 +106,7 @@ function sendBattleRequest() {
   var JSONtext = "{\"users\":" + JSON.stringify(selectedUsers, null) + "}";
   console.log("CHECKIN " + JSONtext);
 
-  sendXmlhttpRequest("POST", JSONtext, "startbattle", onBattleRequestSuccess, false, "");
+  sendXmlhttpRequest("POST", JSONtext, "startbattle", onBattleRequestSuccess, onBattleRequestFail, false, "");
 }
 
 // Get nearby users once phone loads
@@ -118,22 +118,30 @@ function onDeviceReady() {
 
 document.addEventListener("deviceready", onDeviceReady, false);
 
-function pollForBattle() {
-  // Create an xmlhttprequest
-  var xmlhttp = getXmlhttpRequest();
+var poll = 0;
 
-  // Open and send the get request
-  xmlhttp.open("POST", baseURL + "getbattle", false);
-  xmlhttp.send("userID=" + userID);
+function onPollRequestSuccess(serverResponse) {
+  poll = poll + 1;
+  console.log("BattleID:  " + serverResponse);
+  console.log("Number:  " + poll + " for " + userID);
 
-  console.log("Jabababab :  " + xmlhttp.responseText);
-  console.log("PFSas :  " + userID);
+  clearTimeout(users_timeout);
 
-  if (xmlhttp.responseText.length > 22 && xmlhttp.responseText.length < 27) {
-    console.log("dfdgg");
+  if (serverResponse != "no battle") {
+    console.log("Let's battle!");
     window.location = 'battle.html';
   } else {
-    console.log("dfd");
-    setTimeout(pollForBattle(), 3000);
+    console.log("pollForBattle()");
+    users_timeout = setTimeout(pollForBattle, 10000);
   }
+}
+
+function onPollRequestFail(serverResponse) {
+	 clearTimeout(users_timeout);
+	 users_timeout = setTimeout(pollForBattle, 10000);
+}
+
+function pollForBattle() {
+  var user = "{\"id\":\"" + userID + "\"}";
+  sendXmlhttpRequest("POST", user, "getbattle", onPollRequestSuccess, onPollRequestFail, false, "");
 }

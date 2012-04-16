@@ -6437,6 +6437,7 @@ FB.provide('Auth', {
    */
   xdResponseWrapper: function(cb, authResponse, method) {
 	console.log("party! 6439");
+
     return function(params) {
       if (params.access_token) {
         // Whatever this is a response to, it succeeded

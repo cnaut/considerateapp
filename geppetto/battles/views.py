@@ -13,7 +13,7 @@ from battles.forms import UserForm
 from django.dispatch import receiver
 
 def home(request):
-    return HttpResponse("Moble Combat Home")
+    return HttpResponse("Mobile Combat Home")
 
 @csrf_exempt
 def allusers(request):
@@ -52,9 +52,9 @@ def userform(request):
         context_instance=RequestContext(request)
     )
 
+@csrf_exempt
 def startbattle(request):
-    data = request.raw_post_data
-    data = json.loads(data)
+    data = json.loads(request.raw_post_data)
 
     users = []
     for user in data['users']:
@@ -66,19 +66,16 @@ def startbattle(request):
 
 @csrf_exempt
 def getbattle(request):
-    id = None
-    if(request.POST.get('id')):
-        id = data.get('id')
-    else:
-        data = request.raw_post_data
-        data = json.loads(data)
-        id = data['id']
+    data = json.loads(request.raw_post_data)
+    user = data['id']
 
-    battle = Battle.objects.order_by("checkin_time").get(users=id)[:1]
-    if(battle.get('checkout_time') != null):
-        battle = null
+    battle = Battle.objects.filter(users__contains=user).filter(checkout_time__isnull=True)
 
-    return HttpResponse(battle.id)
+    response = "no battle"
+    if(battle.count()==1):
+        response = battle[0].id
+
+    return HttpResponse(response)
 
 
 @csrf_exempt

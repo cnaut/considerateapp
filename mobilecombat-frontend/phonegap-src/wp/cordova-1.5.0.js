@@ -32,7 +32,6 @@
  if (typeof(DeviceInfo) !== 'object') {
     var DeviceInfo = {};
 }
-alert("Hey! I exist!")
 
 var Cordova = {
 	    queue: {
@@ -3829,6 +3828,5 @@ Cordova.onCordovaInit.subscribeOnce(function() {
 
 		  
 })(window,document);
-
 
 

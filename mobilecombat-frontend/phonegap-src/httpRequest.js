@@ -32,10 +32,11 @@ function getXmlhttpRequest() {
  * content: what you want to send
  * dest: "adduser" or "startbattle" or etc.
  * successFn: function to call on success (takes in a response from server)
+ * failFn: function to call on fail (takes in a response from server)
  * multipart: (bool) whether we need a multipart request
  * boundary: boundary if we do have a multipart request
  */
-function sendXmlhttpRequest(mode, content, dest, successFn, multipart, boundary) {
+function sendXmlhttpRequest(mode, content, dest, successFn, failFn, multipart, boundary) {
 
     // Create an xmlhttprequest
     var xmlhttp = getXmlhttpRequest();
@@ -45,11 +46,14 @@ function sendXmlhttpRequest(mode, content, dest, successFn, multipart, boundary)
 
     // Declare the callback function for request
     xmlhttp.onreadystatechange = function() {
-		if (xmlhttp.readyState == 4) {
-			if(xmlhttp.status == 200) {
+		if (xmlhttp.readyState === 4) {
+			if(xmlhttp.status === 200) {
 				successFn(xmlhttp.responseText);
-				console.log("HTTPREQUEST server response: " + xmlhttp.responseText);
-			}
+				console.log("HTTPREQUEST " + dest + " server response: " + xmlhttp.responseText);
+			} else {
+				failFn(xmlhttp.responseText);
+				console.log("HTTPREQUEST " + dest + " failed");
+			} 
 		}
     }
 

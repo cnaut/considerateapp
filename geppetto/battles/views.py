@@ -52,9 +52,9 @@ def userform(request):
         context_instance=RequestContext(request)
     )
 
+@csrf_exempt
 def startbattle(request):
-    data = request.raw_post_data
-    data = json.loads(data)
+    data = json.loads(request.raw_post_data)
 
     users = []
     for user in data['users']:
@@ -66,20 +66,16 @@ def startbattle(request):
 
 @csrf_exempt
 def getbattle(request):
-    id = None
-    if(request.POST.get('id')):
-        id = data.get('id')
-    else:
-        data = request.raw_post_data
-        data = json.loads(data)
-        id = data['id']
+    data = json.loads(request.raw_post_data)
+    user = data['id']
 
-    battle = Battle.objects.filter(users__contains=id).filter(checkout_time__isnull=True)
+    battle = Battle.objects.filter(users__contains=user).filter(checkout_time__isnull=True)
 
-    if (battle.count()==1):
-        return HttpResponse(battle.id)
-    else:
-        return HttpResponse("null")
+    response = "no battle"
+    if(battle.count()==1):
+        response = battle[0].id
+
+    return HttpResponse(response)
 
 
 @csrf_exempt

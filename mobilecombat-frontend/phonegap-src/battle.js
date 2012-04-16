@@ -1,5 +1,6 @@
 var userID;
 var battleID;
+var errorRange = 0.1;
 
 //timer variables
 var count_down_time = 0;
@@ -40,13 +41,13 @@ function onSuccess(acceleration) {
         initial = 1;
     } else {
         console.log(accX);
-        if (acceleration.x != accX) {
-          stopCount();
-          stopWatch();
-          document.getElementById("accelerometer").innerHTML = "You Lose!";
-          sendXmlhttpRequest("GET", "userid=" + userID + "&battleid=" + battleID, "getbattle", onGetBattleRequestSuccess, false, "");
-          navigator.notification.alert("You lost the battle. Better luck next time.", endBattleCallback, "Defeat", "OK");
-		    }
+        if ((acceleration.x > accX + errorRange) || (acceleration.x < accX - errorRange) || (acceleration.y > accY + errorRange) || (acceleration.y < accY - errorRange) || (acceleration.z > accZ + errorRange) || (acceleration.z < accZ - errorRange)) {
+			stopCount();
+            stopWatch();
+            document.getElementById("accelerometer").innerHTML = "You Lose!";
+            sendXmlhttpRequest("GET", "userid=" + userID + "&battleid=" + battleID, "getbattle", onGetBattleRequestSuccess, false, "");
+            navigator.notification.alert("You lost the battle. Better luck next time.", endBattleCallback, "Defeat", "OK");
+		}
     }
 }
 

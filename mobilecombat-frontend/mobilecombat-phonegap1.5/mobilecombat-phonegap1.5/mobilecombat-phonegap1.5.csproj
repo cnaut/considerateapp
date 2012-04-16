@@ -66,6 +66,7 @@
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="www\ChildBrowserCommand.cs" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -83,7 +84,9 @@
       <SubType>Designer</SubType>
     </Content>
     <Content Include="www\battle.js" />
+    <Content Include="www\ChildBrowser.js" />
     <Content Include="www\cordova-1.5.0.js" />
+    <Content Include="www\facebook_js_sdk.js" />
     <Content Include="www\httpRequest.js" />
     <Content Include="www\index.html">
       <SubType>Designer</SubType>
@@ -94,6 +97,7 @@
     <Content Include="www\nearby.html">
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="www\pg-plugin-fb-connect.js" />
     <Content Include="www\profile.html">
       <SubType>Designer</SubType>
     </Content>

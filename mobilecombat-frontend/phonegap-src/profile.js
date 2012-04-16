@@ -11,6 +11,9 @@ function onRequestSuccess(serverResponse) {
     window.name = userID;
 }
 
+function onRequestFail(serverResponse) {
+}
+
 /*
  * Send profile information to the server
  */
@@ -29,7 +32,7 @@ function sendUserRequest() {
         "Content-Type: application/octet-stream\r\n" + "\r\n" +
 		getBase64Image(image) + "\r\n" + boundary + "\r\n";
 
-    sendXmlhttpRequest("POST", postContent, "adduser", onRequestSuccess, true, boundaryString);
+    sendXmlhttpRequest("POST", postContent, "adduser", onRequestSuccess, onRequestFail, true, boundaryString);
 }
 
 /*

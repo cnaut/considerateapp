@@ -17,12 +17,16 @@ function onCombatantsRequestSuccess(serverResponse) {
   }
 }
 
+function onCombatantsRequestFail(serverResponse) {
+
+}
+
 /*
 * Function called when nearby.html is opened.
 */
 function getNearbyUsers() {
   userID = window.name;
-  sendXmlhttpRequest("GET", null, "allusers", onCombatantsRequestSuccess, false, "");
+  sendXmlhttpRequest("GET", null, "allusers", onCombatantsRequestSuccess, onCombatantsRequestFail, false, "");
 }
 
 /*
@@ -83,6 +87,10 @@ function onBattleRequestSuccess(serverResponse) {
   console.log("CHECKIN TO BATTLE " + battleID);
 }
 
+function onBattleRequestFail(serverResponse) {
+
+}
+
 /*
 * Send combatants to the server
 */
@@ -98,7 +106,7 @@ function sendBattleRequest() {
   var JSONtext = "{\"users\":" + JSON.stringify(selectedUsers, null) + "}";
   console.log("CHECKIN " + JSONtext);
 
-  sendXmlhttpRequest("POST", JSONtext, "startbattle", onBattleRequestSuccess, false, "");
+  sendXmlhttpRequest("POST", JSONtext, "startbattle", onBattleRequestSuccess, onBattleRequestFail, false, "");
 }
 
 // Get nearby users once phone loads
@@ -112,24 +120,28 @@ document.addEventListener("deviceready", onDeviceReady, false);
 
 var poll = 0;
 
-function pollForBattle() {
-  // Create an xmlhttprequest
-  var xmlhttp = getXmlhttpRequest();
-
-  // Open and send the get request
-  xmlhttp.open("POST", baseURL + "getbattle", false);
-  xmlhttp.send("userID=" + userID);
-
+function onPollRequestSuccess(serverResponse) {
   poll = poll + 1;
-  console.log("BattleID:  " + xmlhttp.responseText);
+  console.log("BattleID:  " + serverResponse);
   console.log("Number:  " + poll + " for " + userID);
 
-  clearTimeout(users_timeout);
-  if (xmlhttp.responseText.length > 20) {
+  clearTimeout(users_timeout);
+
+  if (serverResponse != "no battle") {
     console.log("Let's battle!");
     window.location = 'battle.html';
   } else {
     console.log("pollForBattle()");
-    setTimeout(pollForBattle(), 10000);
+    users_timeout = setTimeout(pollForBattle, 10000);
   }
+}
+
+function onPollRequestFail(serverResponse) {
+	 clearTimeout(users_timeout);
+	 users_timeout = setTimeout(pollForBattle, 10000);
+}
+
+function pollForBattle() {
+  var user = "{\"id\":\"" + userID + "\"}";
+  sendXmlhttpRequest("POST", user, "getbattle", onPollRequestSuccess, onPollRequestFail, false, "");
 }

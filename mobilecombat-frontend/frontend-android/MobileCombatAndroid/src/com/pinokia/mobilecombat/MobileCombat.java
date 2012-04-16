@@ -13,3 +13,4 @@ public class MobileCombat extends DroidGap
         super.loadUrl("file:///android_asset/www/index.html");
     }
 }
+

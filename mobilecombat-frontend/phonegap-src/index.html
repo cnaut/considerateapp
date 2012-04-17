@@ -1,48 +1,43 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
-  
+
   <head>
-    
+
     <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=no;" />
     <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
-    
+
     <title>Mobile Combat</title>
-    
+
     <link rel="stylesheet" href="master.css" type="text/css" media="screen" title="no title" charset="utf-8"/>
-    
-    <script>
-		if (navigator.userAgent.toLowerCase().match(/android/)) {
-			document.write('<script charset="utf-8" src="android\/cordova-1.5.0.js"><\/script>');
-		} else if (navigator.userAgent.toLowerCase().match(/windows/)) {
-			document.write('<script charset="utf-8" src="wp\/phonegap-1.2.0.js"><\/script>');
-		}
-	</script>
-        
-	<script type="text/javascript" charset="utf-8" src="cdv-plugin-fb-connect.js"></script>
-        <script type="text/javascript" charset="utf-8" src="facebook_js_sdk.js"></script>
+    <script type="text/javascript">
+      if (navigator.userAgent.toLowerCase().match(/android/)) {
+        document.write('<script charset="utf-8" src="android\/cordova-1.6.0.js"><\/script>');
+      } else if (navigator.userAgent.toLowerCase().match(/windows/)) {
+        document.write('<script charset="utf-8" src="wp\/cordova-1.6.0.js"><\/script>');
+      }
+     </script>
+     <script type="text/javascript" src="httpRequest.js"></script>
+     <script type="text/javascript" charset="utf-8" src="profile.js"></script>
 
   </head>
-  
-  <body>
-    
-    <h1>Mobile Combat</h1>
 
-    <div id="modes">
-      
-      <div class="modeBtn">
-        <a href="#">War</a>
-      </div>
-      
-      <div class="modeBtn">
-        <a href="profile.html">Battle</a>
-      </div>
-      
-      <div class="modeBtn">
-        <a href="">Training</a>
-      </div>
-      
+  <body onload="onBodyLoad()">
+
+    <h1 id="test">Profile</h1>
+
+    <div>
+
+      Enter your name<br/>
+      <input id="name" type="text"></input><br/>
+
+      <button id="photo_button">Select Photo</button><br/>
+
+      <img id="image" height="200" width="200" style="visibility:hidden" src="" /><br/>
+
+      <button id="save_button" disabled="true">Save</button>
+
     </div>
-    
+
   </body>
-  
+
 </html>

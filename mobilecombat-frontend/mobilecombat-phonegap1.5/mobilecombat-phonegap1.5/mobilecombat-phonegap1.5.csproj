@@ -65,8 +65,10 @@
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="obj\Debug\App.g.i.cs" />
+    <Compile Include="obj\Debug\MainPage.g.i.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="www\ChildBrowserCommand.cs" />
+    <Compile Include="Plugins\ChildBrowserCommand.cs" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -79,30 +81,36 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Bin\Debug\WMAppManifest.xml" />
     <Content Include="CordovaSourceDictionary.xml" />
+    <Content Include="www\android\cdv-plugin-fb-connect.js" />
+    <Content Include="www\android\cordova-1.5.0.js" />
+    <Content Include="www\android\cordova-1.6.0.js" />
+    <Content Include="www\android\facebook_example_android.html" />
     <Content Include="www\battle.html">
       <SubType>Designer</SubType>
     </Content>
     <Content Include="www\battle.js" />
-    <Content Include="www\ChildBrowser.js" />
-    <Content Include="www\cordova-1.5.0.js" />
-    <Content Include="www\facebook-windows-exmaple.html" />
     <Content Include="www\facebook_js_sdk.js" />
     <Content Include="www\httpRequest.js" />
+    <Content Include="www\include.js" />
     <Content Include="www\index.html">
       <SubType>Designer</SubType>
     </Content>
     <Content Include="www\jquery.js" />
-    <Content Include="www\main.js" />
     <Content Include="www\master.css" />
     <Content Include="www\nearby.html">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="www\pg-plugin-fb-connect.js" />
+    <Content Include="www\nearby.js" />
     <Content Include="www\profile.html">
       <SubType>Designer</SubType>
     </Content>
     <Content Include="www\profile.js" />
+    <Content Include="www\wp\ChildBrowser.js" />
+    <Content Include="www\wp\cordova-1.6.0.js" />
+    <Content Include="www\wp\facebook-windows-exmaple.html" />
+    <Content Include="www\wp\pg-plugin-fb-connect.js" />
     <None Include="BuildManifestProcessor.js" />
     <Content Include="GapLib\WP7CordovaClassLib.dll" />
     <None Include="Properties\AppManifest.xml">
@@ -135,9 +143,7 @@
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Plugins\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.$(TargetFrameworkProfile).Overrides.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

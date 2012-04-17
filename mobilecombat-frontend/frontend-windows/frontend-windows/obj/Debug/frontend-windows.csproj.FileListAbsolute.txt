@@ -1,0 +1,14 @@
+C:\Users\Deoksoo(Jason) Song\pinokia\meandmyphone\mobilecombat-frontend\frontend-windows\frontend-windows\Bin\Debug\ApplicationIcon.png
+C:\Users\Deoksoo(Jason) Song\pinokia\meandmyphone\mobilecombat-frontend\frontend-windows\frontend-windows\Bin\Debug\Background.png
+C:\Users\Deoksoo(Jason) Song\pinokia\meandmyphone\mobilecombat-frontend\frontend-windows\frontend-windows\Bin\Debug\frontend-windows.dll
+C:\Users\Deoksoo(Jason) Song\pinokia\meandmyphone\mobilecombat-frontend\frontend-windows\frontend-windows\Bin\Debug\frontend-windows.pdb
+C:\Users\Deoksoo(Jason) Song\pinokia\meandmyphone\mobilecombat-frontend\frontend-windows\frontend-windows\Bin\Debug\AppManifest.xaml
+C:\Users\Deoksoo(Jason) Song\pinokia\meandmyphone\mobilecombat-frontend\frontend-windows\frontend-windows\Bin\Debug\frontend_windows.xap
+C:\Users\Deoksoo(Jason) Song\pinokia\meandmyphone\mobilecombat-frontend\frontend-windows\frontend-windows\Bin\Debug\WP7CordovaClassLib.dll
+C:\Users\Deoksoo(Jason) Song\pinokia\meandmyphone\mobilecombat-frontend\frontend-windows\frontend-windows\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\Deoksoo(Jason) Song\pinokia\meandmyphone\mobilecombat-frontend\frontend-windows\frontend-windows\obj\Debug\App.g.i.cs
+C:\Users\Deoksoo(Jason) Song\pinokia\meandmyphone\mobilecombat-frontend\frontend-windows\frontend-windows\obj\Debug\MainPage.g.i.cs
+C:\Users\Deoksoo(Jason) Song\pinokia\meandmyphone\mobilecombat-frontend\frontend-windows\frontend-windows\obj\Debug\frontend-windows.g.resources
+C:\Users\Deoksoo(Jason) Song\pinokia\meandmyphone\mobilecombat-frontend\frontend-windows\frontend-windows\obj\Debug\frontend-windows.dll
+C:\Users\Deoksoo(Jason) Song\pinokia\meandmyphone\mobilecombat-frontend\frontend-windows\frontend-windows\obj\Debug\frontend-windows.pdb
+C:\Users\Deoksoo(Jason) Song\pinokia\meandmyphone\mobilecombat-frontend\frontend-windows\frontend-windows\obj\Debug\XapCacheFile.xml

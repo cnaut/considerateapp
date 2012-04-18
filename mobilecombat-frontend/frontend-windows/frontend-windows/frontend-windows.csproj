@@ -5,12 +5,12 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{156CC695-FAE1-4170-A406-F83CDF798546}</ProjectGuid>
+    <ProjectGuid>{045965A2-3ABB-42AA-BD58-E7644E823B00}</ProjectGuid>
     <ProjectTypeGuids>{C089C8C0-30E0-4E22-80C0-CE093F111A43};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>mobilecombat_phonegap1._5</RootNamespace>
-    <AssemblyName>mobilecombat-phonegap1.5</AssemblyName>
+    <RootNamespace>frontend_windows</RootNamespace>
+    <AssemblyName>frontend-windows</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <SilverlightVersion>$(TargetFrameworkVersion)</SilverlightVersion>
     <TargetFrameworkProfile>WindowsPhone71</TargetFrameworkProfile>
@@ -20,9 +20,9 @@
     </SupportedCultures>
     <XapOutputs>true</XapOutputs>
     <GenerateSilverlightManifest>true</GenerateSilverlightManifest>
-    <XapFilename>mobilecombat_phonegap1._5.xap</XapFilename>
+    <XapFilename>frontend_windows.xap</XapFilename>
     <SilverlightManifestTemplate>Properties\AppManifest.xml</SilverlightManifestTemplate>
-    <SilverlightAppEntry>mobilecombat_phonegap1._5.App</SilverlightAppEntry>
+    <SilverlightAppEntry>frontend_windows.App</SilverlightAppEntry>
     <ValidateXaml>true</ValidateXaml>
     <ThrowErrorsInValidation>true</ThrowErrorsInValidation>
   </PropertyGroup>
@@ -36,6 +36,8 @@
     <NoConfig>true</NoConfig>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>
+    </DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -48,15 +50,17 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Devices.Sensors" />
     <Reference Include="Microsoft.Phone" />
     <Reference Include="Microsoft.Phone.Interop" />
+    <Reference Include="Microsoft.Xna.Framework" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Windows" />
     <Reference Include="system" />
     <Reference Include="System.Core" />
     <Reference Include="System.Net" />
     <Reference Include="System.Xml" />
-    <Reference Include="WP7CordovaClassLib, Version=1.5.0.0, Culture=neutral, processorArchitecture=MSIL" />
+    <Reference Include="WP7CordovaClassLib, Version=1.6.0.0, Culture=neutral, processorArchitecture=MSIL" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App.xaml.cs">
@@ -65,10 +69,7 @@
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="obj\Debug\App.g.i.cs" />
-    <Compile Include="obj\Debug\MainPage.g.i.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Plugins\ChildBrowserCommand.cs" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -81,36 +82,21 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Bin\Debug\WMAppManifest.xml" />
     <Content Include="CordovaSourceDictionary.xml" />
-    <Content Include="www\android\cdv-plugin-fb-connect.js" />
     <Content Include="www\android\cordova-1.5.0.js" />
     <Content Include="www\android\cordova-1.6.0.js" />
-    <Content Include="www\android\facebook_example_android.html" />
-    <Content Include="www\battle.html">
-      <SubType>Designer</SubType>
-    </Content>
+    <Content Include="www\battle.html" />
     <Content Include="www\battle.js" />
-    <Content Include="www\facebook_js_sdk.js" />
-    <Content Include="www\httpRequest.js" />
-    <Content Include="www\include.js" />
-    <Content Include="www\index.html">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="www\jquery.js" />
-    <Content Include="www\master.css" />
-    <Content Include="www\nearby.html">
-      <SubType>Designer</SubType>
-    </Content>
     <Content Include="www\nearby.js" />
-    <Content Include="www\profile.html">
-      <SubType>Designer</SubType>
-    </Content>
+    <Content Include="www\httpRequest.js" />
+    <Content Include="www\index.html" />
+    <Content Include="www\jquery.js" />
+    <Content Include="www\main.js" />
+    <Content Include="www\master.css" />
+    <Content Include="www\nearby.html" />
+    <Content Include="www\profile.html" />
     <Content Include="www\profile.js" />
-    <Content Include="www\wp\ChildBrowser.js" />
     <Content Include="www\wp\cordova-1.6.0.js" />
-    <Content Include="www\wp\facebook-windows-exmaple.html" />
-    <Content Include="www\wp\pg-plugin-fb-connect.js" />
     <None Include="BuildManifestProcessor.js" />
     <Content Include="GapLib\WP7CordovaClassLib.dll" />
     <None Include="Properties\AppManifest.xml">
@@ -127,14 +113,6 @@
     <Content Include="Background.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="GapLib\www\battle.html" />
-    <Content Include="GapLib\www\cordova-1.5.0.js" />
-    <Content Include="GapLib\www\index.html" />
-    <Content Include="GapLib\www\jquery.js" />
-    <Content Include="GapLib\www\main.js" />
-    <Content Include="GapLib\www\master.css" />
-    <Content Include="GapLib\www\nearby.html" />
-    <Content Include="GapLib\www\profile.html" />
     <Content Include="SplashScreenImage.jpg" />
   </ItemGroup>
   <ItemGroup>
@@ -143,7 +121,9 @@
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Plugins\" />
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.$(TargetFrameworkProfile).Overrides.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

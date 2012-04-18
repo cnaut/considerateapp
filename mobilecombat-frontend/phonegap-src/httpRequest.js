@@ -3,7 +3,8 @@
  *
  */
 
-var baseURL = "http://184.169.136.30:8004/";
+var baseURL = "http://184.169.136.30:8002/";
+var fbURL = "https://graph.facebook.com/";
 
 /*
  * Get xmlhttprequest
@@ -43,6 +44,37 @@ function sendXmlhttpRequest(mode, content, dest, successFn, failFn, multipart, b
 
     // Open port to URL
     xmlhttp.open(mode, baseURL + dest, true);
+
+    // Declare the callback function for request
+    xmlhttp.onreadystatechange = function() {
+		if (xmlhttp.readyState === 4) {
+			if(xmlhttp.status === 200) {
+				successFn(xmlhttp.responseText);
+				console.log("HTTPREQUEST " + dest + " server response: " + xmlhttp.responseText);
+			} else {
+				failFn(xmlhttp.responseText);
+				console.log("HTTPREQUEST " + dest + " failed");
+			} 
+		}
+    }
+
+    // Set Request header to multipart data
+    if (multipart) {
+		xmlhttp.setRequestHeader('Content-Type', 'multipart/form-data; boundary=' + boundary);
+    }
+
+    // Send the request
+    xmlhttp.send(content);
+}
+
+
+function sendFacebookRequest(mode, content, dest, successFn, failFn, multipart, boundary) {
+
+    // Create an xmlhttprequest
+    var xmlhttp = getXmlhttpRequest();
+
+    // Open port to URL
+    xmlhttp.open(mode, fbURL + dest, true);
 
     // Declare the callback function for request
     xmlhttp.onreadystatechange = function() {

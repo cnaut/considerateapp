@@ -3,7 +3,7 @@ package com.pinokia.mobilecombat;
 import android.os.Bundle;
 import org.apache.cordova.*;
 
-public class App extends DroidGap
+public class App extends DroidGap 
 {
     /** Called when the activity is first created. */
     @Override

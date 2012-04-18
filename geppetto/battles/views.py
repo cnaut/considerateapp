@@ -17,8 +17,8 @@ def home(request):
 
 @csrf_exempt
 def allusers(request):
-    users = User.objects.all()
-    users = serializers.serialize("json", users)
+    users = User.objects.values_list('fb_id', flat=True)
+    users = ','.join(users)
 
     response = HttpResponse(users)
     response['Cache-Control'] = 'no-cache'
@@ -27,17 +27,16 @@ def allusers(request):
 @csrf_exempt
 def adduser(request):
     data = None
-    name = None
-    if(request.POST.get('name')):
+    fbid = None
+    if(request.POST.get('fbid')):
         data = request.POST
-        name = data.get('name')
+        fbid = data.get('fbid')
     else:
         data = request.raw_post_data
         data = json.loads(data)
-        name = data['name']
+        fbid = data['fbid']
 
-    user = User(name=name, photo=request.FILES['photo'])
-    print user.photo
+    user = User(fb_id=fbid)
     user.save()
 
     return HttpResponse(user.id)

@@ -36,10 +36,18 @@ def adduser(request):
         data = json.loads(data)
         fbid = data['fbid']
 
-    user = User(fb_id=fbid)
-    user.save()
+    response = "WTF -- added more than once?"
+    user = User.objects.filter(fb_id=fbid)
+    if(user.count() == 1):
+        user[0].active = True
+        user[0].save()
+        response = user[0].id
+    elif(user.count() == 0):
+        user = User(fb_id=fbid)
+        user.save()
+        response = user.id
 
-    return HttpResponse(user.id)
+    return HttpResponse(fbid)
 
 
 @csrf_exempt
@@ -50,6 +58,7 @@ def userform(request):
         {'form': form},
         context_instance=RequestContext(request)
     )
+
 
 @csrf_exempt
 def startbattle(request):
@@ -62,6 +71,7 @@ def startbattle(request):
     print battle
     battle.save()
     return HttpResponse(battle.id)
+
 
 @csrf_exempt
 def getbattle(request):
@@ -85,7 +95,6 @@ def declaredefeat(request):
     battle.save()
     print battle.losers
     return HttpResponse(battle.losers)
-
 
 
 @csrf_exempt

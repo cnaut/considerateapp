@@ -5,6 +5,7 @@ from djangotoolbox.fields import EmbeddedModelField
 class User(models.Model):
     fb_id = models.TextField()
     joined_on = models.DateTimeField(auto_now_add=True, null=True)
+    active = models.BooleanField(default=True)
 
 class Combatant(models.Model):
     user = EmbeddedModelField('User')

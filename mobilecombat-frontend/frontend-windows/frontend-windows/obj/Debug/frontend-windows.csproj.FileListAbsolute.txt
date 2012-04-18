@@ -1,0 +1,14 @@
+C:\Users\Charles\Documents\CS 210\source\meandmyphone\mobilecombat-frontend\frontend-windows\frontend-windows\Bin\Debug\ApplicationIcon.png
+C:\Users\Charles\Documents\CS 210\source\meandmyphone\mobilecombat-frontend\frontend-windows\frontend-windows\Bin\Debug\Background.png
+C:\Users\Charles\Documents\CS 210\source\meandmyphone\mobilecombat-frontend\frontend-windows\frontend-windows\Bin\Debug\frontend-windows.dll
+C:\Users\Charles\Documents\CS 210\source\meandmyphone\mobilecombat-frontend\frontend-windows\frontend-windows\Bin\Debug\frontend-windows.pdb
+C:\Users\Charles\Documents\CS 210\source\meandmyphone\mobilecombat-frontend\frontend-windows\frontend-windows\Bin\Debug\AppManifest.xaml
+C:\Users\Charles\Documents\CS 210\source\meandmyphone\mobilecombat-frontend\frontend-windows\frontend-windows\Bin\Debug\frontend_windows.xap
+C:\Users\Charles\Documents\CS 210\source\meandmyphone\mobilecombat-frontend\frontend-windows\frontend-windows\Bin\Debug\WP7CordovaClassLib.dll
+C:\Users\Charles\Documents\CS 210\source\meandmyphone\mobilecombat-frontend\frontend-windows\frontend-windows\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\Charles\Documents\CS 210\source\meandmyphone\mobilecombat-frontend\frontend-windows\frontend-windows\obj\Debug\App.g.i.cs
+C:\Users\Charles\Documents\CS 210\source\meandmyphone\mobilecombat-frontend\frontend-windows\frontend-windows\obj\Debug\MainPage.g.i.cs
+C:\Users\Charles\Documents\CS 210\source\meandmyphone\mobilecombat-frontend\frontend-windows\frontend-windows\obj\Debug\frontend-windows.g.resources
+C:\Users\Charles\Documents\CS 210\source\meandmyphone\mobilecombat-frontend\frontend-windows\frontend-windows\obj\Debug\frontend-windows.dll
+C:\Users\Charles\Documents\CS 210\source\meandmyphone\mobilecombat-frontend\frontend-windows\frontend-windows\obj\Debug\frontend-windows.pdb
+C:\Users\Charles\Documents\CS 210\source\meandmyphone\mobilecombat-frontend\frontend-windows\frontend-windows\obj\Debug\XapCacheFile.xml

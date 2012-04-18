@@ -12,7 +12,8 @@ var users;
 function onCombatantsRequestSuccess(serverResponse) {
   // Parse json string into a jquery dictionary
   users = jQuery.parseJSON(serverResponse);
-  if (users.length != 0) {
+  console.log(serverResponse);
+  if (users.length !== 0) {
     loadUsers(users);
   }
 }

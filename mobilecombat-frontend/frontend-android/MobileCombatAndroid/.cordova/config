@@ -1,0 +1,5 @@
+VERSION=1.5.0
+PROJECT_PATH=/Users/theotherben/repos/meandmyphone/mobilecombat-frontend/frontend-android/MobileCombatAndroid
+PACKAGE=com.pinokia.mobilecombat
+ACTIVITY=MobileCombat
+TARGET=2

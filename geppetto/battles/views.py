@@ -16,6 +16,14 @@ def home(request):
     return HttpResponse("Mobile Combat Home")
 
 @csrf_exempt
+def breakathon(request):
+    return render_to_response(
+        'breakathon.html',
+        {},
+        context_instance=RequestContext(request)
+    )
+
+@csrf_exempt
 def allusers(request):
     users = User.objects.values_list('fb_id', flat=True)
     users = ','.join(users)

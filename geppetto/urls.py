@@ -9,6 +9,7 @@ urlpatterns = patterns('',
     url(r'^$', 'measure.views.home', name='home'),
     url(r'^battles/location', 'battles.views.location', name='location'),
     url(r'^allusers', 'battles.views.allusers', name='allusers'),
+    url(r'^breakathon', 'battles.views.breakathon', name='breakathon'),
     url(r'^adduser', 'battles.views.adduser', name='adduser'),
     url(r'^signaluser', 'battles.views.signaluser', name='signaluser'),
     url(r'^receiveuser', 'battles.views.receiveuser', name='receiveuser'),
@@ -22,6 +23,7 @@ urlpatterns = patterns('',
 
     url(r'^user_photos/(?P<path>.*)$', 'django.views.static.serve', {'document_root': '/home/cnaut/meandmyphone/geppetto/user_photos/'}),
 
+    url(r'^files/(?P<path>.*)$', 'django.views.static.serve', {'document_root': '/home/cnaut/meandmyphone/geppetto/files/'}),
     # url(r'^gepetto/', include('gepetto.foo.urls')),
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),

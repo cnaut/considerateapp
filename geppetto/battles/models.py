@@ -3,9 +3,9 @@ from djangotoolbox.fields import ListField
 from djangotoolbox.fields import EmbeddedModelField
 
 class User(models.Model):
-    name = models.TextField()
-    photo = models.FileField(upload_to='user_photos')
+    fb_id = models.TextField()
     joined_on = models.DateTimeField(auto_now_add=True, null=True)
+    active = models.BooleanField(default=True)
 
 class Combatant(models.Model):
     user = EmbeddedModelField('User')

@@ -16,9 +16,17 @@ def home(request):
     return HttpResponse("Mobile Combat Home")
 
 @csrf_exempt
+def breakathon(request):
+    return render_to_response(
+        'breakathon.html',
+        {},
+        context_instance=RequestContext(request)
+    )
+
+@csrf_exempt
 def allusers(request):
-    users = User.objects.all()
-    users = serializers.serialize("json", users)
+    users = User.objects.values_list('fb_id', flat=True)
+    users = ','.join(users)
 
     response = HttpResponse(users)
     response['Cache-Control'] = 'no-cache'
@@ -27,20 +35,27 @@ def allusers(request):
 @csrf_exempt
 def adduser(request):
     data = None
-    name = None
-    if(request.POST.get('name')):
+    fbid = None
+    if(request.POST.get('fbid')):
         data = request.POST
-        name = data.get('name')
+        fbid = data.get('fbid')
     else:
         data = request.raw_post_data
         data = json.loads(data)
-        name = data['name']
+        fbid = data['fbid']
 
-    user = User(name=name, photo=request.FILES['photo'])
-    print user.photo
-    user.save()
+    response = "WTF -- added more than once?"
+    user = User.objects.filter(fb_id=fbid)
+    if(user.count() == 1):
+        user[0].active = True
+        user[0].save()
+        response = user[0].id
+    elif(user.count() == 0):
+        user = User(fb_id=fbid)
+        user.save()
+        response = user.id
 
-    return HttpResponse(user.id)
+    return HttpResponse(fbid)
 
 
 @csrf_exempt
@@ -51,6 +66,7 @@ def userform(request):
         {'form': form},
         context_instance=RequestContext(request)
     )
+
 
 @csrf_exempt
 def startbattle(request):
@@ -63,6 +79,7 @@ def startbattle(request):
     print battle
     battle.save()
     return HttpResponse(battle.id)
+
 
 @csrf_exempt
 def getbattle(request):
@@ -86,7 +103,6 @@ def declaredefeat(request):
     battle.save()
     print battle.losers
     return HttpResponse(battle.losers)
-
 
 
 @csrf_exempt

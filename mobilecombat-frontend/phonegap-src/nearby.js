@@ -4,15 +4,15 @@ var maxNumPeopleInTable = 15;
 
 var users_timeout;
 
-var users = new Array();
-var ids;
+var users;
+
 /*
 * Parse response from server and load users into table
 */
 function onCombatantsRequestSuccess(serverResponse) {
   ids = serverResponse;
   if (ids.length != 0) {
-    sendFacebookRequest("GET", null, "?fields=id,name,picture&ids=" + ids, onFacebookSuccess, onFacebookFail, false, "");
+	sendFacebookRequest("GET", null, "?fields=id,name,picture&ids=" + ids, onFacebookSuccess, onFacebookFail, false, "");
   }
 }
 
@@ -28,13 +28,15 @@ function getNearbyUsers() {
   sendXmlhttpRequest("GET", null, "allusers", onCombatantsRequestSuccess, onCombatantsRequestFail, false, "");
 }
 
+/*
+* Load users dynamically onto table
+*/
 function onFacebookSuccess(serverResponse) {
   console.log("FB Success: "+ serverResponse);
   ids = ids.split(",");
 
   users = jQuery.parseJSON(serverResponse);
   var usersTable = document.getElementById('com_table');
-  
   var numToDisplay = ids.length;
   if (numToDisplay > maxNumPeopleInTable) {
     numToDisplay = maxNumPeopleInTable;
@@ -42,28 +44,27 @@ function onFacebookSuccess(serverResponse) {
 
   console.log("length: " +numToDisplay);
   for (var i = 0; i < numToDisplay; i++) {
-    var row = usersTable.insertRow(i);
-    row.onclick = changeSelect;
+ 	  var row = usersTable.insertRow(i);
+ 	  row.onclick = changeSelect;
+ 	 
+ 	 var photoCell = row.insertCell(0);
+ 	 var photo = document.createElement("IMG");
+ 	 
+ 	 photo.setAttribute("src", users[ids[i]].picture);
+ 	 photo.setAttribute("width", "50");
+ 	 photo.setAttribute("height", "50");
+	 photoCell.appendChild(photo);
 
-    var photoCell = row.insertCell(0);
-    var photo = document.createElement("IMG");
-
-    photo.setAttribute("src", users[ids[i]].picture);
-    photo.setAttribute("width", "50");
-    photo.setAttribute("height", "50");
-    photoCell.appendChild(photo);
-
-    var nameCell = row.insertCell(1);
-    nameCell.className = "deselected";
-    nameCell.innerHTML = users[ids[i]].name;
-    console.log("CHECKIN " + users[ids[i]].name);
-  }
-
-  //pollForBattle();
+     var nameCell = row.insertCell(1);
+     nameCell.className = "deselected";
+     nameCell.innerHTML = users[ids[i]].name;
+	 console.log("CHECKIN " + users[ids[i]].name); 	
+	 }
+ 	//pollForBattle();
 }
 
 function onFacebookFail(serverResponse) {
-	console.log("FB Fail: " +serverResponse);
+  console.log("FB Fail: " +serverResponse);
 }
 
 /*
@@ -105,7 +106,7 @@ function sendBattleRequest() {
   var selectedUsers = new Array();
   for (var i = 0; i < usersTable.length; i++) {
     cell = usersTable[i].cells[1];
-    if (cell.className === "selected") {
+    if (cell.className === "selected") {		
       selectedUsers.push(ids[i]);
     }
   }
@@ -143,8 +144,8 @@ function onPollRequestSuccess(serverResponse) {
 }
 
 function onPollRequestFail(serverResponse) {
-	 clearTimeout(users_timeout);
-	 users_timeout = setTimeout(pollForBattle, 10000);
+  clearTimeout(users_timeout);
+  users_timeout = setTimeout(pollForBattle, 10000);
 }
 
 function pollForBattle() {

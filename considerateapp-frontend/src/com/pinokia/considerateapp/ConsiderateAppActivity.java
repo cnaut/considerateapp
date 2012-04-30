@@ -3,19 +3,27 @@ package com.pinokia.considerateapp;
 import java.util.List;
 
 import android.app.Activity;
+import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.media.AudioManager;
 import android.os.Bundle;
-import android.widget.EditText;
 import android.widget.TextView;
 
 public class ConsiderateAppActivity extends Activity implements SensorEventListener{
     private SensorManager sensorManager;
     private Sensor accelerometerSensor;
+    private AudioManager am;
+    private PrevState pv;
     TextView flippedText;
     boolean accelerometerPresent;
+    
+    //State to recover
+    private class PrevState {
+      int audioState;
+    }
     
     /** Called when the activity is first created. */
     @Override
@@ -39,6 +47,9 @@ public class ConsiderateAppActivity extends Activity implements SensorEventListe
          accelerometerPresent = false;  
          flippedText.setText("No accelerometer present!");
         }
+        am = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
+        pv = new PrevState();
+        pv.audioState = am.getRingerMode();
     }
 
 	@Override
@@ -46,15 +57,21 @@ public class ConsiderateAppActivity extends Activity implements SensorEventListe
 		// TODO Auto-generated method stub
 		
 	}
-
-	@Override
+	
+  @Override
 	public void onSensorChanged(SensorEvent event) {
+    
 		float z_value = event.values[2];
 		if (z_value >= 0){
+		  am.setRingerMode(pv.audioState);
 			flippedText.setText("Face UP");
 		}
 		else{
+		  //Turn phone to Silent mode
+		  am.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+		  
 			flippedText.setText("Face down");
 		}
 	}
+	
 }

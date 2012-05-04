@@ -22,5 +22,7 @@ public class ConsiderateAppActivity extends Activity {
 	    setContentView(R.layout.main);
 	    Intent flipIntent = new Intent(getApplicationContext(), FlipIntentService.class);
         startService(flipIntent);
+        Intent sleepMonitorIntent = new Intent(getApplicationContext(), SleepMonitorService.class);
+        startService(sleepMonitorIntent);
     }
 }

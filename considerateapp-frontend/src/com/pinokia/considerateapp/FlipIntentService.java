@@ -65,7 +65,7 @@ public class FlipIntentService extends IntentService implements SensorEventListe
 	    }
 	    else{
 	     accelerometerPresent = false;  
-	     flippedText.setText("No accelerometer present!");
+	     // flippedText.setText("No accelerometer present!");
 	    }
 	    am = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
 	    pv = new PrevState();

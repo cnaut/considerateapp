@@ -1,6 +1,7 @@
 package com.pinokia.considerateapp;
 
 import java.util.List;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;

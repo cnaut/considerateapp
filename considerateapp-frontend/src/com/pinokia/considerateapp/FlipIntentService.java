@@ -34,14 +34,12 @@ public class FlipIntentService extends IntentService implements SensorEventListe
     
     
 
-	@Override
 	public void onAccuracyChanged(Sensor sensor, int accuracy) {
 		// TODO Auto-generated method stub
 		
 	}
 	
-  @Override
-	public void onSensorChanged(SensorEvent event) {
+  public void onSensorChanged(SensorEvent event) {
 		float z_value = event.values[2];
 		if (z_value >= 0){
 		  am.setRingerMode(pv.audioState);

@@ -8,6 +8,7 @@ import android.content.IntentFilter;
 import android.os.IBinder;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
+import android.provider.Settings.SettingNotFoundException;
 import android.util.Log;
 
 public class SleepMonitorService extends Service {
@@ -71,7 +72,7 @@ public class SleepMonitorService extends Service {
 
 	BroadcastReceiver screenOff = new BroadcastReceiver() {
 		public static final String TAG="screenOff";
-		public static final String OffIntent="android.intent.active.SCREEN_OFF";
+		public static final String OffIntent="android.intent.action.SCREEN_OFF";
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
@@ -79,6 +80,9 @@ public class SleepMonitorService extends Service {
 
 			Log.v(TAG, "Screen turned off!");
 			awake=false;
+
+			serviceHandler.postDelayed(homescreenTask, 500L);
+
 			return;
 		}
 

@@ -16,5 +16,6 @@
             </intent-filter>
         </activity>
 		<service android:name=".FlipIntentService" />
+		<service android:name=".SleepMonitorService" />
     </application>
 </manifest>

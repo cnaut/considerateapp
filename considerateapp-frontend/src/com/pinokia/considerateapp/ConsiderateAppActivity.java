@@ -57,7 +57,6 @@ public class ConsiderateAppActivity extends Activity {
 	    }
 	};
 
-
 	class timerClearTask extends TimerTask {
 		 public void run() {
 			 

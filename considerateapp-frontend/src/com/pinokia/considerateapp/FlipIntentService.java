@@ -34,13 +34,13 @@ public class FlipIntentService extends IntentService implements SensorEventListe
     
     
 
-	@Override
+	//@Override
 	public void onAccuracyChanged(Sensor sensor, int accuracy) {
 		// TODO Auto-generated method stub
 		
 	}
 	
-  @Override
+  //@Override
 	public void onSensorChanged(SensorEvent event) {
 		float z_value = event.values[2];
 		if (z_value >= 0){

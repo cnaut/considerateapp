@@ -24,18 +24,38 @@ public class ConsiderateAppActivity extends Activity {
 	//global variables
 	WebView wv;
 	public static int numLocks = 0;
+	public static int numPowerChecks = 0;
 	Timer dailyTimer = new Timer();
 	//long delay = 86400 * 1000; //number of millisec in 24 hours
-	long delay = 60 * 1000; //number of millisec in 24 hours
-	StopWatch stopwatch = new StopWatch();
+	long delay = 60 * 1000; //number of millisec in 1 minute
+	//StopWatch stopwatch = new StopWatch();
 
-	String graphString = "<img src='http://chart.apis.google.com/chart?chtt=Number+of+Unlocks&amp;chts=ffffff,12&amp;chs=300x150&amp;chf=bg,s,000000|c,s,000000&amp;chxt=x,y&amp;chxl=0:|T-5|T-4|T-3|T-2|T-1|1:|00.00|25.00|50.00&amp;cht=lxy&amp;chd=t:0.00,25.00,50.00,75.00,100.00|0,0,0,0,0&amp;chco=ffff00&amp;chm=o,ffff00,0,0.0,10|o,ffff00,0,1.0,10|o,ffff00,0,2.0,10|o,ffff00,0,3.0,10|o,ffff00,0,4.0,10' alt='Google Chart'/>";
+	String graphString = "<img src='http://chart.apis.google.com/chart?" +
+		 		"chf=bg,s,000000|c,s,000000&chxl=0:|T-5|T-4|T-3|T-2|T-1" +
+		 		"&chxr=0,1,5|1,0,1" + //maX!
+		 		"&chxs=0,FFFFFF,11.5,0,lt,FFFFFF|1,FFFFFF,11.5,0,l,FFFFFF" +
+		 		"&chxt=x,y&chs=300x150" +
+		 		"&cht=lxy&chco=224499,FFF700" +
+		 		"&chd=t:-1|0,0,0,0,0|-1|0,0,0,0,0" +
+		 		"&chdl=Power|Unlocks&chls=3|3" +
+		 		"&chm=o,0000FF,0,-1,7|o,FFFF00,1,-1,7|B,0000FF34,0,0,0|B,FFFF0065,1,0,0" +
+		 		"&chtt=Number+of+phone+unlocks+%26+power+presses&chts=FFFFFF,11.5' " +
+		 		"width='300' height='150' " +
+		 		"alt='Number of phone unlocks & power presses' />";
+	
 	double max = 1;
-	double tMinus5 = 0;
-	double tMinus4 = 0;
-	double tMinus3 = 0;
-	double tMinus2 = 0;
-	double tMinus1 = 0;
+	//Power Check
+	double tMinus5_pc = 0;
+	double tMinus4_pc = 0;
+	double tMinus3_pc = 0;
+	double tMinus2_pc = 0;
+	double tMinus1_pc = 0;
+	//Num Unlock
+	double tMinus5_nu = 0;
+	double tMinus4_nu = 0;
+	double tMinus3_nu = 0;
+	double tMinus2_nu = 0;
+	double tMinus1_nu = 0;
 
 	private final BroadcastReceiver receiver = new BroadcastReceiver() {
 
@@ -43,17 +63,21 @@ public class ConsiderateAppActivity extends Activity {
 	    public void onReceive(Context context, Intent intent) {
 	    	if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {	    		
 	    		//WHAT TO DO WHEN SCREEN IS OFF
-	    		stopwatch.stop();
+	    		//stopwatch.stop();
 
-	    	} else if (intent.getAction().equals(Intent.ACTION_USER_PRESENT)) { //VS ACTION_SCREEN_ON
-	    		//WHAT TO DO WHEN SCREEN IS ON
+	    	} else if (intent.getAction().equals(Intent.ACTION_USER_PRESENT)) {
+	    		//WHAT TO DO WHEN SCREEN IS UNLOCKED
 	    		numLocks ++;
-	        	stopwatch.start();
+	        	//stopwatch.start();
 
-	    		String phoneUnlockText = "<body bgcolor = 'black'><font color= 'white' size = 5><center>You have unlocked your phone " + numLocks + " times today</center></font></body> <br /> <br />";
-	            String data = phoneUnlockText + graphString;
+	        	String phoneUnlockText = "<body bgcolor = 'black'><font color= 'white' size = 5><center>You have checked <br />your phone " + numPowerChecks + " times <br /> and unlocked your phone " + numLocks + " times today</center></font></body> <br /> <br />";
+	        	String data = phoneUnlockText + graphString;
 	            wv.loadData(data, "text/html", "UTF-8");
-	    	}
+	            
+	    	} else if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) { 
+	    		//WHAT TO DO WHEN SCREEN IS ON
+	    		numPowerChecks ++;
+	    	} 
 	    }
 	};
 
@@ -61,23 +85,48 @@ public class ConsiderateAppActivity extends Activity {
 		 public void run() {
 
 			 /* Set up the graph*/
-			 if (numLocks > max) max = numLocks;
-			 tMinus5 = tMinus4;
-			 tMinus4 = tMinus3;
-			 tMinus3 = tMinus2;
-			 tMinus2 = tMinus1;
-			 tMinus1 = numLocks;
+			 if (numPowerChecks > max) max = numPowerChecks;
+			 
+			 //Power Checks
+			 tMinus5_pc = tMinus4_pc;
+			 tMinus4_pc = tMinus3_pc;
+			 tMinus3_pc = tMinus2_pc;
+			 tMinus2_pc = tMinus1_pc;
+			 tMinus1_pc = numPowerChecks;
+			 numPowerChecks = 0;
+			 
+			 //Num Unlocks
+			 tMinus5_nu = tMinus4_nu;
+			 tMinus4_nu = tMinus3_nu;
+			 tMinus3_nu = tMinus2_nu;
+			 tMinus2_nu = tMinus1_nu;
+			 tMinus1_nu = numLocks;
 			 numLocks = 0;
 
-			 String plotPoints = "" + Double.toString(((tMinus5/max)*100.00)) + "," + Double.toString(((tMinus4/max)*100.00)) + "," + Double.toString(((tMinus3/max)*100.00)) + "," + Double.toString(((tMinus2/max)*100.00)) + "," + Double.toString(((tMinus1/max)*100.00));
-			 graphString = "<img src='http://chart.apis.google.com/chart?chtt=Number+of+Unlocks&amp;chts=ffffff,12&amp;chs=300x150&amp;chf=bg,s,000000|c,s,000000&amp;chxt=x,y&amp;chxl=0:|T-5|T-4|T-3|T-2|T-1|1:|0|" + (double)((double)max/2.0) + "|" + max + "&amp;cht=lxy&amp;chd=t:0.00,25.00,50.00,75.00,100.00|" + plotPoints + "&amp;chco=ffff00&amp;chm=o,ffff00,0,0.0,10|o,ffff00,0,1.0,10|o,ffff00,0,2.0,10|o,ffff00,0,3.0,10|o,ffff00,0,4.0,10' alt='Google Chart'/>";
+			 String plotPointsPowerCheck = "" + Double.toString(((tMinus5_pc/max)*100.00)) + "," + Double.toString(((tMinus4_pc/max)*100.00)) + "," + Double.toString(((tMinus3_pc/max)*100.00)) + "," + Double.toString(((tMinus2_pc/max)*100.00)) + "," + Double.toString(((tMinus1_pc/max)*100.00));
+			 String plotPointsNumLocks = "" + Double.toString(((tMinus5_nu/max)*100.00)) + "," + Double.toString(((tMinus4_nu/max)*100.00)) + "," + Double.toString(((tMinus3_nu/max)*100.00)) + "," + Double.toString(((tMinus2_nu/max)*100.00)) + "," + Double.toString(((tMinus1_nu/max)*100.00));
+			 
+			 //graphString = "<img src='http://chart.apis.google.com/chart?chtt=Number+of+Unlocks&amp;chts=ffffff,12&amp;chs=300x150&amp;chf=bg,s,000000|c,s,000000&amp;chxt=x,y&amp;chxl=0:|T-5|T-4|T-3|T-2|T-1|1:|0|" + (double)((double)max/2.0) + "|" + max + "&amp;cht=lxy&amp;chd=t:0.00,25.00,50.00,75.00,100.00|" + plotPoints + "&amp;chco=ffff00&amp;chm=o,ffff00,0,0.0,10|o,ffff00,0,1.0,10|o,ffff00,0,2.0,10|o,ffff00,0,3.0,10|o,ffff00,0,4.0,10' alt='Google Chart'/>";
+			 graphString = "<img src='http://chart.apis.google.com/chart?" +
+			 		"chf=bg,s,000000|c,s,000000&chxl=0:|T-5|T-4|T-3|T-2|T-1" +
+			 		"&chxr=0,1,5|1,0," + max +
+			 		"&chxs=0,FFFFFF,11.5,0,lt,FFFFFF|1,FFFFFF,11.5,0,l,FFFFFF" +
+			 		"&chxt=x,y&chs=300x150" +
+			 		"&cht=lxy&chco=224499,FFF700" +
+			 		"&chd=t:-1|" + plotPointsPowerCheck + "|-1|" + plotPointsNumLocks +
+			 		"&chdl=Power|Unlocks&chls=3|3" +
+			 		"&chm=o,0000FF,0,-1,7|o,FFFF00,1,-1,7|B,0000FF34,0,0,0|B,FFFF0065,1,0,0" +
+			 		"&chtt=Number+of+phone+unlocks+%26+power+presses&chts=FFFFFF,11.5' " +
+			 		"width='300' height='150' " +
+			 		"alt='Number of phone unlocks & power presses' />";
 
-			 String phoneUnlockText = "<body bgcolor = 'black'><font color= 'white' size = 5><center>You have unlocked your phone " + numLocks + " times today</center></font></body> <br /> <br />";
-             String data = phoneUnlockText + graphString;
+		     String phoneUnlockText = "<body bgcolor = 'black'><font color= 'white' size = 5><center>You have checked <br />your phone " + numPowerChecks + " times <br /> and unlocked your phone " + numLocks + " times today</center></font></body> <br /> <br />";
+			 String data = phoneUnlockText + graphString;
              wv.loadData(data, "text/html", "UTF-8");
 		 }
 	 }
 
+	/*
  	public class StopWatch { 
 		 private long startTime = 0;
 		 private long stopTime = 0;
@@ -118,6 +167,7 @@ public class ConsiderateAppActivity extends Activity {
 		 }
 
 	 }
+	 */
 
     /** Called when the activity is first created. */
     @Override
@@ -125,18 +175,18 @@ public class ConsiderateAppActivity extends Activity {
     	super.onCreate(savedInstanceState);
     	wv = new WebView(this);
          
-        String phoneUnlockText = "<body bgcolor = 'black'><font color= 'white' size = 5><center>You have unlocked your phone " + numLocks + " times today</center></font></body> <br /> <br />";
-        String data = phoneUnlockText + graphString;
+    	String phoneUnlockText = "<body bgcolor = 'black'><font color= 'white' size = 5><center>You have checked <br />your phone " + numPowerChecks + " times <br /> and unlocked your phone " + numLocks + " times today</center></font></body> <br /> <br />";
+    	String data = phoneUnlockText + graphString;
         wv.loadData(data, "text/html", "UTF-8");
         setContentView(wv);  
         dailyTimer.schedule(new timerClearTask(), 0, delay);
 
-	    //setContentView(R.layout.main);
 	    Intent flipIntent = new Intent(getApplicationContext(), FlipIntentService.class);
         startService(flipIntent);
 
-        IntentFilter filter = new IntentFilter(Intent.ACTION_USER_PRESENT); //vs ACTION_SCREEN_ON
+        IntentFilter filter = new IntentFilter(Intent.ACTION_USER_PRESENT); 
         filter.addAction(Intent.ACTION_SCREEN_OFF);
+        filter.addAction(Intent.ACTION_SCREEN_ON);
         registerReceiver(receiver, filter);
     }
 

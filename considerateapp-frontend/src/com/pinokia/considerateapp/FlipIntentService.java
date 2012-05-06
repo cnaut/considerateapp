@@ -54,6 +54,7 @@ public class FlipIntentService extends IntentService implements SensorEventListe
 			// Handle proximity sensor change
 		} else if (event.sensor.getType() == Sensor.TYPE_PROXIMITY) {
 			float distance = event.values[0];
+			Log.v(tag, "DISTANCE:" + distance);
 			if (distance < 1.0) {
 				closeToObject = true;
 			} else {
@@ -61,9 +62,11 @@ public class FlipIntentService extends IntentService implements SensorEventListe
 			}
 		}
 		if (faceDown && closeToObject) {
+			Log.i(tag, "silent");
 			// Change phone to Silent mode
 			am.setRingerMode(AudioManager.RINGER_MODE_SILENT);
 		} else {
+			Log.i(tag, "not silent");
 			// Change phone back to previous state
 			am.setRingerMode(pv.audioState);
 		}

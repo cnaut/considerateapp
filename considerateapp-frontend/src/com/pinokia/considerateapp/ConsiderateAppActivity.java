@@ -191,13 +191,14 @@ public class ConsiderateAppActivity extends Activity {
     }
 
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
 
-    @Override
-    protected void onResume() {
+	@Override
+	protected void onPause() {
+		super.onPause();
+	}
+
+	@Override
+	protected void onResume() {
 		super.onResume();
-    }
+	}
 }

@@ -19,7 +19,13 @@ public class SleepMonitorService extends Service {
 	Handler serviceHandler;
 	Runnable homescreenTask = new Runnable(){
 		public void run() {
-			//Launch our Lockscreen from here.
+			Log.v("homescreenTask","pre launching ze missiles!");
+			ManageKeyguard.disableKeyguard(getApplicationContext());
+	        Class w = Lockscreen.class;
+			Intent lockscreen = new Intent(getApplicationContext(), w);
+			lockscreen.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_USER_ACTION);
+			getApplicationContext().startActivity(lockscreen);
+			
 			Log.v("homescreenTask","launching ze missiles!");
 		}
 	};

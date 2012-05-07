@@ -9,6 +9,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -23,7 +24,7 @@ public class ConsiderateAppActivity extends Activity {
 
 	//global variables
 	WebView wv;
-	public static int numLocks = 0;
+	public static int numLocks;
 	public static int numPowerChecks = 0;
 	Timer dailyTimer = new Timer();
 	//long delay = 86400 * 1000; //number of millisec in 24 hours
@@ -101,7 +102,6 @@ public class ConsiderateAppActivity extends Activity {
 			 tMinus3_nu = tMinus2_nu;
 			 tMinus2_nu = tMinus1_nu;
 			 tMinus1_nu = numLocks;
-			 numLocks = 0;
 
 			 String plotPointsPowerCheck = "" + Double.toString(((tMinus5_pc/max)*100.00)) + "," + Double.toString(((tMinus4_pc/max)*100.00)) + "," + Double.toString(((tMinus3_pc/max)*100.00)) + "," + Double.toString(((tMinus2_pc/max)*100.00)) + "," + Double.toString(((tMinus1_pc/max)*100.00));
 			 String plotPointsNumLocks = "" + Double.toString(((tMinus5_nu/max)*100.00)) + "," + Double.toString(((tMinus4_nu/max)*100.00)) + "," + Double.toString(((tMinus3_nu/max)*100.00)) + "," + Double.toString(((tMinus2_nu/max)*100.00)) + "," + Double.toString(((tMinus1_nu/max)*100.00));
@@ -175,6 +175,9 @@ public class ConsiderateAppActivity extends Activity {
     	super.onCreate(savedInstanceState);
     	wv = new WebView(this);
          
+    	SharedPreferences savedData = getSharedPreferences("considerateapp", 0);
+    	numLocks = savedData.getInt("numLocks", 0);
+    	
     	String phoneUnlockText = "<body bgcolor = 'black'><font color= 'white' size = 5><center>You have checked <br />your phone " + numPowerChecks + " times <br /> and unlocked your phone " + numLocks + " times today</center></font></body> <br /> <br />";
     	String data = phoneUnlockText + graphString;
         wv.loadData(data, "text/html", "UTF-8");
@@ -190,7 +193,14 @@ public class ConsiderateAppActivity extends Activity {
         registerReceiver(receiver, filter);
     }
 
-
+	@Override
+	protected void onStop() {
+		super.onStop();
+	    SharedPreferences savedData = getSharedPreferences("considerateapp", 0);
+	    SharedPreferences.Editor editor = savedData.edit();
+	    editor.putInt("numLocks", numLocks);
+	    editor.commit();
+	}
 
 	@Override
 	protected void onPause() {

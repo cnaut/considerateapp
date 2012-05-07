@@ -9,12 +9,20 @@ import android.os.IBinder;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.provider.Settings.SettingNotFoundException;
+import android.os.Handler;
 import android.util.Log;
 
 public class SleepMonitorService extends Service {
 	public boolean initialized = false;
 	public boolean active = false;
 	private boolean awake = false;
+	Handler serviceHandler;
+	Runnable homescreenTask = new Runnable(){
+		public void run() {
+			//Launch our Lockscreen from here.
+			Log.v("homescreenTask","launching ze missiles!");
+		}
+	};
 
 	@Override
 	public IBinder onBind(Intent arg0) {
@@ -38,6 +46,7 @@ public class SleepMonitorService extends Service {
 		}
 		Log.v("onStartCommand", "SleepMonitorService started!");
 
+		serviceHandler = new Handler();
 		startReceivers();
 		initialized=true;
 		return 1;

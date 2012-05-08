@@ -29,6 +29,7 @@ public class Lockscreen extends Activity {
 	protected void onCreate(Bundle icicle) {
 		super.onCreate(icicle);
 		
+        Log.v("Lockscreen", "starting to create!");
 		requestWindowFeature(android.view.Window.FEATURE_NO_TITLE);
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
 
@@ -40,7 +41,17 @@ public class Lockscreen extends Activity {
     	String data = phoneUnlockText;
         wv.loadData(data, "text/html", "UTF-8");
         setContentView(wv);  
+        Log.v("Lockscreen", "done creating!");
 	}
+
+    protected void onPause() {
+        super.onPause();
+        Log.v("Lockscreen","pausing!");
+    }
+    protected void onResume() {
+        super.onResume();
+        Log.v("Lockscreen","resuming!");
+    }
 	
     @Override
     public void onBackPressed() {
@@ -72,7 +83,7 @@ public class Lockscreen extends Activity {
 	    }
     };
 	
-    public void wakeup() {
+    public void wakeUp() {
     	setBright((float) 0.1);//tell screen to go on with 10% brightness
     	PowerManager myPM = (PowerManager) getApplicationContext().getSystemService(Context.POWER_SERVICE);
   	  	myPM.userActivity(SystemClock.uptimeMillis(), false);
@@ -124,7 +135,7 @@ public class Lockscreen extends Activity {
         		if (up && !screenwake) {
         			waking = true;
                   	Log.v("key event","wake key");
-                  	wakeup();
+                  	wakeUp();
         		}
         		return true;
        

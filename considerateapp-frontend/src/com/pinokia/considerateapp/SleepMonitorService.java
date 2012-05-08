@@ -13,16 +13,20 @@ import android.os.Handler;
 import android.util.Log;
 
 public class SleepMonitorService extends Service {
-	public boolean initialized = false;
-	public boolean active = false;
+	//This is a bit of a hacky way to see if the service is running, but from sources, it looks like it's the best way to do it.
+	protected static boolean running = false;
+	//This makes the running variable read-only.
+	public static boolean isRunning() {return running;}
+
+	private boolean initialized = false;
+	private boolean active = false;
 	private boolean awake = false;
 	Handler serviceHandler;
 	Runnable homescreenTask = new Runnable(){
 		public void run() {
 			Log.v("homescreenTask","pre launching ze missiles!");
 			ManageKeyguard.disableKeyguard(getApplicationContext());
-	        Class w = Lockscreen.class;
-			Intent lockscreen = new Intent(getApplicationContext(), w);
+			Intent lockscreen = new Intent(getApplicationContext(), Lockscreen.class);
 			lockscreen.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_USER_ACTION);
 			getApplicationContext().startActivity(lockscreen);
 			
@@ -39,6 +43,14 @@ public class SleepMonitorService extends Service {
 	@Override
 	public void onCreate() {
 		super.onCreate();
+		running = true;
+		Log.d(getClass().getSimpleName(),"onCreate()");
+	}
+
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		running = false;
 		Log.d(getClass().getSimpleName(),"onCreate()");
 	}
 

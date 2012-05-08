@@ -17,8 +17,12 @@ import android.hardware.SensorManager;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.webkit.WebView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class ConsiderateAppActivity extends Activity {
 
@@ -186,8 +190,7 @@ public class ConsiderateAppActivity extends Activity {
 
 	    Intent flipIntent = new Intent(getApplicationContext(), FlipIntentService.class);
         startService(flipIntent);
-        Intent sleepMonitorIntent = new Intent(getApplicationContext(), SleepMonitorService.class);
-        startService(sleepMonitorIntent);
+        startSleepMonitor();
         IntentFilter filter = new IntentFilter(Intent.ACTION_USER_PRESENT); //vs ACTION_SCREEN_ON
         filter.addAction(Intent.ACTION_SCREEN_OFF);
         filter.addAction(Intent.ACTION_SCREEN_ON);
@@ -211,5 +214,46 @@ public class ConsiderateAppActivity extends Activity {
 	@Override
 	protected void onResume() {
 		super.onResume();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+    	MenuInflater inflater = getMenuInflater();
+    	inflater.inflate(R.menu.settings_menu, menu);
+    	return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+    	switch(item.getItemId()) {
+    		case R.id.toggle_lockscreen:
+    			toggleSleepMonitor();
+	    		return true;
+    		default:
+    			return super.onOptionsItemSelected(item);
+    	}
+    }
+
+    protected void toggleSleepMonitor(){
+    	if (SleepMonitorService.isRunning())
+    		stopSleepMonitor();
+    	else
+    		startSleepMonitor();
+    }
+
+    protected void startSleepMonitor() {
+        Intent sleepMonitorIntent = 
+        	new Intent(getApplicationContext(), SleepMonitorService.class);
+        startService(sleepMonitorIntent);
+        Toast.makeText(getApplicationContext(),
+        	"Lockscreen is currently being replaced.", Toast.LENGTH_SHORT).show();
+    }
+
+    protected void stopSleepMonitor() {
+        Intent sleepMonitorIntent = 
+        	new Intent(getApplicationContext(), SleepMonitorService.class);
+        stopService(sleepMonitorIntent);
+        Toast.makeText(getApplicationContext(),
+        	"Lockscreen is no longer being replaced.", Toast.LENGTH_SHORT).show();
     }
 }

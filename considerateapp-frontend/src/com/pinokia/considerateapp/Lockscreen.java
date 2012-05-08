@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.os.SystemClock;
@@ -33,8 +34,9 @@ public class Lockscreen extends Activity {
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
 
     	WebView wv = new WebView(this);
-        int numPowerChecks = 0;
-        int numLocks = 0;     
+        SharedPreferences savedData = getSharedPreferences("considerateapp", 0);
+    	int numLocks = savedData.getInt("numLocks", 0);
+    	int numPowerChecks = savedData.getInt("numPowerChecks", 0);
         
     	String phoneUnlockText = "<body bgcolor = 'black'><font color= 'white' size = 5><center>You have checked <br />your phone " + numPowerChecks + " times <br /> and unlocked your phone " + numLocks + " times today</center></font></body> <br /> <br />";
     	String data = phoneUnlockText;

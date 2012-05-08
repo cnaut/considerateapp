@@ -25,7 +25,7 @@ public class ConsiderateAppActivity extends Activity {
 	//global variables
 	WebView wv;
 	public static int numLocks;
-	public static int numPowerChecks = 0;
+	public static int numPowerChecks;
 	Timer dailyTimer = new Timer();
 	//long delay = 86400 * 1000; //number of millisec in 24 hours
 	long delay = 60 * 1000; //number of millisec in 1 minute
@@ -94,7 +94,6 @@ public class ConsiderateAppActivity extends Activity {
 			 tMinus3_pc = tMinus2_pc;
 			 tMinus2_pc = tMinus1_pc;
 			 tMinus1_pc = numPowerChecks;
-			 numPowerChecks = 0;
 			 
 			 //Num Unlocks
 			 tMinus5_nu = tMinus4_nu;
@@ -177,6 +176,7 @@ public class ConsiderateAppActivity extends Activity {
          
     	SharedPreferences savedData = getSharedPreferences("considerateapp", 0);
     	numLocks = savedData.getInt("numLocks", 0);
+    	numPowerChecks = savedData.getInt("numPowerChecks", 0);
     	
     	String phoneUnlockText = "<body bgcolor = 'black'><font color= 'white' size = 5><center>You have checked <br />your phone " + numPowerChecks + " times <br /> and unlocked your phone " + numLocks + " times today</center></font></body> <br /> <br />";
     	String data = phoneUnlockText + graphString;
@@ -200,6 +200,7 @@ public class ConsiderateAppActivity extends Activity {
 	    SharedPreferences savedData = getSharedPreferences("considerateapp", 0);
 	    SharedPreferences.Editor editor = savedData.edit();
 	    editor.putInt("numLocks", numLocks);
+	    editor.putInt("numPowerChecks", numPowerChecks);
 	    editor.commit();
 	}
 

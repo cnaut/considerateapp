@@ -16,7 +16,7 @@ import android.webkit.WebView;
 
 public class Lockscreen extends Activity {
 	public int timeleft = 0;
-	
+	public SharedPreferences savedData;
     public boolean starting = true;//flag off after we successfully gain focus. flag on when we send task to back
     public boolean waking = false;//any time quiet or active wake are up
     public boolean finishing = false;//flag on when an event causes unlock, back off when onStart comes in again (relocked)
@@ -27,16 +27,28 @@ public class Lockscreen extends Activity {
    
     public boolean screenwake = false;//set true when a wakeup key or external event turns screen on
     
+    public WebView wv;
+    
+    public int numLocks;
+    public int numPowerChecks;
+    
+    
 	protected void onCreate(Bundle icicle) {
 		super.onCreate(icicle);
 		
 		requestWindowFeature(android.view.Window.FEATURE_NO_TITLE);
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
 
-    	WebView wv = new WebView(this);
-        SharedPreferences savedData = getSharedPreferences("considerateapp", 0);
-    	int numLocks = savedData.getInt("numLocks", 0);
-    	int numPowerChecks = savedData.getInt("numPowerChecks", 0);
+    	wv = new WebView(this);
+        savedData = getSharedPreferences("considerateapp", 0);
+   
+
+	}
+	
+	protected void onStart() {
+		super.onStart();
+	 	numLocks = savedData.getInt("numLocks", 0);
+    	numPowerChecks = savedData.getInt("numPowerChecks", 0);
         
     	String phoneUnlockText = "<body bgcolor = 'black'><font color= 'white' size = 5><center>You have checked <br />your phone " + numPowerChecks + " times <br /> and unlocked your phone " + numLocks + " times today</center></font></body> <br /> <br />";
     	String data = phoneUnlockText;

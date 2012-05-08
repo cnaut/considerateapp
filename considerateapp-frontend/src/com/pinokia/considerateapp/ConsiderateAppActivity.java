@@ -23,7 +23,9 @@ import android.widget.TextView;
 public class ConsiderateAppActivity extends Activity {
 
 	//global variables
-	WebView wv;
+	public SharedPreferences savedData;
+	public SharedPreferences.Editor editor;
+	public WebView wv;
 	public static int numLocks;
 	public static int numPowerChecks;
 	Timer dailyTimer = new Timer();
@@ -78,7 +80,9 @@ public class ConsiderateAppActivity extends Activity {
 	    	} else if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) { 
 	    		//WHAT TO DO WHEN SCREEN IS ON
 	    		numPowerChecks ++;
-	    	} 
+	    	}
+	    	
+	    	saveData();
 	    }
 	};
 
@@ -174,7 +178,9 @@ public class ConsiderateAppActivity extends Activity {
     	super.onCreate(savedInstanceState);
     	wv = new WebView(this);
          
-    	SharedPreferences savedData = getSharedPreferences("considerateapp", 0);
+    	savedData = getSharedPreferences("considerateapp", 0);
+    	editor = savedData.edit();
+    	
     	numLocks = savedData.getInt("numLocks", 0);
     	numPowerChecks = savedData.getInt("numPowerChecks", 0);
     	
@@ -197,11 +203,6 @@ public class ConsiderateAppActivity extends Activity {
 	@Override
 	protected void onStop() {
 		super.onStop();
-	    SharedPreferences savedData = getSharedPreferences("considerateapp", 0);
-	    SharedPreferences.Editor editor = savedData.edit();
-	    editor.putInt("numLocks", numLocks);
-	    editor.putInt("numPowerChecks", numPowerChecks);
-	    editor.commit();
 	}
 
 	@Override
@@ -213,4 +214,10 @@ public class ConsiderateAppActivity extends Activity {
 	protected void onResume() {
 		super.onResume();
     }
+	
+	public void saveData() {
+	    editor.putInt("numLocks", numLocks);
+	    editor.putInt("numPowerChecks", numPowerChecks);
+	    editor.commit();
+	}
 }

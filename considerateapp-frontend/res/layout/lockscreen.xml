@@ -55,9 +55,9 @@
 
     <HorizontalScrollView
         android:id="@+id/lock"
-        android:layout_alignParentBottom="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
         android:layout_marginBottom="50dp"
         android:fadingEdgeLength="0dp"
         android:scrollbars="none" >
@@ -79,8 +79,6 @@
                 android:layout_height="fill_parent"
                 android:layout_marginLeft="50dp"
                 android:background="@drawable/lockslider" />
-            
-            
         </LinearLayout>
     </HorizontalScrollView>
 

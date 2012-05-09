@@ -3,10 +3,12 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:shape="rectangle" >
-	<gradient
-        android:startColor="#ee574E52"
+
+    <gradient
+        android:angle="90"
         android:endColor="#bb574E52"
-        android:angle="90" />
+        android:startColor="#ee574E52" />
+
     <corners android:radius="40dp" />
 
 </shape>

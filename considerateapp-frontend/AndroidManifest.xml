@@ -9,6 +9,8 @@
     <uses-feature android:name="android.hardware.sensor.accelerometer" />
     <uses-feature android:name="android.hardware.sensor.proximity" />
     <uses-feature android:name="android.hardware.audio" />
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
 
     <application
         android:icon="@drawable/icon"
@@ -23,12 +25,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".ConsiderateAppActivity"
-            android:label="@string/app_name" >
-        </activity>
-
-        <service android:name=".FlipIntentService" />
+        <activity android:name="Lockscreen"
+                android:excludeFromRecents="true"
+                android:launchMode="singleInstance"
+                android:taskAffinity=""
+                android:screenOrientation="nosensor"
+                android:configChanges="orientation|keyboardHidden|keyboard|navigation"/>
+		<service android:name=".FlipService" />
+		<service android:name=".SleepMonitorService" />
     </application>
-
 </manifest>

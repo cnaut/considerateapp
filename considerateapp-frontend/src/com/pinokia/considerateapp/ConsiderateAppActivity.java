@@ -184,8 +184,8 @@ public class ConsiderateAppActivity extends Activity {
         setContentView(wv);  
         dailyTimer.schedule(new timerClearTask(), 0, delay);
 
-	    Intent flipIntent = new Intent(getApplicationContext(), FlipIntentService.class);
-        startService(flipIntent);
+	    Intent flipService= new Intent(getApplicationContext(), FlipService.class);
+        startService(flipService);
 
         IntentFilter filter = new IntentFilter(Intent.ACTION_USER_PRESENT); 
         filter.addAction(Intent.ACTION_SCREEN_OFF);

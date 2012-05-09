@@ -1,8 +1,7 @@
-
 package com.pinokia.considerateapp;
+
 import java.util.List;
 
-import android.app.IntentService;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -15,7 +14,7 @@ import android.os.IBinder;
 import android.util.Log;
 import android.widget.TextView;
 
-public class FlipIntentService extends IntentService implements SensorEventListener  {
+public class FlipService extends Service implements SensorEventListener  {
 
 	String tag = "CONSIDERATE_APP";
 	private SensorManager sensorManager;
@@ -24,11 +23,11 @@ public class FlipIntentService extends IntentService implements SensorEventListe
 	private AudioManager am;
 	TextView flippedText;
 
-	boolean silentModeEngaged;
+	private boolean faceDown = false;
+	private boolean closeToObject = false;
 	private PrevState pv;
 
-	public FlipIntentService() {
-		super("FlipIntentService");
+	public FlipService() {
 	}
 
 	//State to recover
@@ -42,42 +41,50 @@ public class FlipIntentService extends IntentService implements SensorEventListe
 	}
 
 	public void onSensorChanged(SensorEvent event) {
-		boolean faceDown = false;
-		boolean closeToObject = false;
+		boolean newFaceDown = faceDown;
+		boolean newCloseToObject = closeToObject;
+
 		// Handle accelerometer change
 		if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
 			float z_value = event.values[2];
 			Log.v(tag, "ACCELEROMETER:" + z_value);
 			if (z_value >= -9) {
-				faceDown = false;
+				newFaceDown = false;
 			} else {
-				faceDown = true;
+				newFaceDown = true;
 			}
 			// Handle proximity sensor change
 		} else if (event.sensor.getType() == Sensor.TYPE_PROXIMITY) {
 			float distance = event.values[0];
 			Log.v(tag, "DISTANCE:" + distance);
 			if (distance < 1.0) {
-				closeToObject = true;
+				newCloseToObject = true;
 			} else {
-				closeToObject = false;
+				newCloseToObject = false;
 			}
 		}
-		boolean newSilentModeState = faceDown && closeToObject;
-		if (newSilentModeState && !silentModeEngaged) {
-			Log.i(tag, "going silent");
+
+		boolean isAlreadyOn = faceDown && closeToObject;
+		boolean shouldBeOn = newFaceDown && newCloseToObject;
+
+		if (!isAlreadyOn && shouldBeOn) {
 			// Change phone to Silent mode
 			pv.audioState = am.getRingerMode();
+			Log.i(tag, "going silent");
 			am.setRingerMode(AudioManager.RINGER_MODE_SILENT);
-		} else if (!newSilentModeState && silentModeEngaged) {
+		} else if (isAlreadyOn && !shouldBeOn) {
 			Log.i(tag, "ungoing silent");
 			// Change phone back to previous state
 			am.setRingerMode(pv.audioState);
 		}
+
+		faceDown = newFaceDown;
+		closeToObject = newCloseToObject;
 	}
 
-	protected void onHandleIntent(Intent intent) {
-
+	@Override
+	public void onCreate() {
+		super.onCreate();
 		sensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
 
 		// Configure accelerometer
@@ -101,6 +108,12 @@ public class FlipIntentService extends IntentService implements SensorEventListe
 		pv = new PrevState();
 		pv.audioState = am.getRingerMode();
 
+	}
+
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		sensorManager.unregisterListener(this);
 	}
 
 	@Override

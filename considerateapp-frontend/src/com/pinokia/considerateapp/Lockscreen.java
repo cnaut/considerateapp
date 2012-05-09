@@ -11,6 +11,7 @@ import android.os.SystemClock;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View.OnClickListener;
+import android.view.View.OnFocusChangeListener;
 import android.view.View.OnTouchListener;
 import android.view.MotionEvent;
 import android.view.View;
@@ -34,8 +35,10 @@ public class Lockscreen extends Activity implements OnClickListener, OnTouchList
 	public boolean shouldFinish = false;
 
 	public boolean screenwake = false;// set true when a wakeup key or external
-										// event turns screen on
+	// event turns screen on
 
+	public TextView phoneScore;
+	
 	String tag = "LOCK SCREEN";
 	HorizontalScrollView lock;
 
@@ -48,9 +51,9 @@ public class Lockscreen extends Activity implements OnClickListener, OnTouchList
 
 		setContentView(R.layout.lockscreen);
 
-		TextView phoneScore = (TextView) findViewById(R.id.phoneScore);
+		phoneScore = (TextView) findViewById(R.id.phoneScore);
 		phoneScore.setOnClickListener(this);
-
+		
 		lock = (HorizontalScrollView) findViewById(R.id.lock);
 		lock.postDelayed(new Runnable() {
 			public void run() {
@@ -58,7 +61,6 @@ public class Lockscreen extends Activity implements OnClickListener, OnTouchList
 			}
 		}, 250);
 		lock.setOnTouchListener(this);
-
 	}
 	// Implement the OnClickListener callback
 		public void onClick(View v) {
@@ -100,9 +102,13 @@ public class Lockscreen extends Activity implements OnClickListener, OnTouchList
 		Log.v("Lockscreen", "pausing!");
 	}
 
-	protected void onResume() {
+	@Override
+	public void onResume() {
 		super.onResume();
 		Log.v("Lockscreen", "resuming!");
+		SharedPreferences savedData = getSharedPreferences("considerateapp", 0);
+		int score = 100 - savedData.getInt("numLocks", 0);
+		phoneScore.setText(Integer.toString(score));
 	}
 
 	@Override

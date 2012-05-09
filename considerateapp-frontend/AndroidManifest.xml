@@ -30,7 +30,8 @@
                 android:taskAffinity=""
                 android:screenOrientation="nosensor"
                 android:configChanges="orientation|keyboardHidden|keyboard|navigation"/>
-		<service android:name=".FlipService" />
+        <service android:name=".FlipService" />
+		<service android:name=".StatsService" />
 		<service android:name=".SleepMonitorService" />
     </application>
 </manifest>

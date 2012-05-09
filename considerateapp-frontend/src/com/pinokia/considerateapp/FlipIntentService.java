@@ -15,7 +15,8 @@ import android.os.IBinder;
 import android.util.Log;
 import android.widget.TextView;
 
-public class FlipIntentService extends IntentService implements SensorEventListener  {
+public class FlipIntentService extends IntentService implements
+		SensorEventListener {
 
 	String tag = "CONSIDERATE_APP";
 	private SensorManager sensorManager;
@@ -31,14 +32,13 @@ public class FlipIntentService extends IntentService implements SensorEventListe
 		super("FlipIntentService");
 	}
 
-	//State to recover
+	// State to recover
 	private class PrevState {
 		int audioState;
 	}
 
-
 	public void onAccuracyChanged(Sensor sensor, int accuracy) {
-		// TODO Auto-generated method stub	
+		// TODO Auto-generated method stub
 	}
 
 	public void onSensorChanged(SensorEvent event) {
@@ -51,7 +51,7 @@ public class FlipIntentService extends IntentService implements SensorEventListe
 			} else {
 				faceDown = true;
 			}
-			// Handle proximity sensor change
+		// Handle proximity sensor change
 		} else if (event.sensor.getType() == Sensor.TYPE_PROXIMITY) {
 			float distance = event.values[0];
 			Log.v(tag, "DISTANCE:" + distance);
@@ -74,26 +74,30 @@ public class FlipIntentService extends IntentService implements SensorEventListe
 
 	protected void onHandleIntent(Intent intent) {
 
-		sensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
+		sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
 
 		// Configure accelerometer
-		accelerometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-		sensorManager.registerListener(this, accelerometerSensor, SensorManager.SENSOR_DELAY_NORMAL);
+		accelerometerSensor = sensorManager
+				.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+		sensorManager.registerListener(this, accelerometerSensor,
+				SensorManager.SENSOR_DELAY_NORMAL);
 
-		List<Sensor> sensorList = sensorManager.getSensorList(Sensor.TYPE_ACCELEROMETER);
-		if(sensorList.size() > 0) {
-			accelerometerSensor = sensorList.get(0);  
+		List<Sensor> sensorList = sensorManager
+				.getSensorList(Sensor.TYPE_ACCELEROMETER);
+		if (sensorList.size() > 0) {
+			accelerometerSensor = sensorList.get(0);
 		} else {
 			Log.e(tag, "No accelerometer present!");
 		}
 
 		// Configure proximity sensor
 		proximitySensor = sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
-		sensorManager.registerListener(this, proximitySensor, SensorManager.SENSOR_DELAY_NORMAL);
+		sensorManager.registerListener(this, proximitySensor,
+				SensorManager.SENSOR_DELAY_NORMAL);
 		if (proximitySensor == null) {
 			Log.e(tag, "No proximity sensor present!");
 		}
-		am = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
+		am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 		pv = new PrevState();
 		pv.audioState = am.getRingerMode();
 

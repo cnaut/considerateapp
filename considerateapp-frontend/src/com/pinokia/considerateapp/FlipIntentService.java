@@ -1,5 +1,5 @@
-package com.pinokia.considerateapp;
 
+package com.pinokia.considerateapp;
 import java.util.List;
 
 import android.app.IntentService;
@@ -20,11 +20,11 @@ public class FlipIntentService extends IntentService implements SensorEventListe
 	String tag = "CONSIDERATE_APP";
 	private SensorManager sensorManager;
 	private Sensor accelerometerSensor;
-	boolean faceDown;
 	private Sensor proximitySensor;
-	boolean closeToObject;
 	private AudioManager am;
 	TextView flippedText;
+
+	boolean silentModeEngaged;
 	private PrevState pv;
 
 	public FlipIntentService() {
@@ -42,6 +42,8 @@ public class FlipIntentService extends IntentService implements SensorEventListe
 	}
 
 	public void onSensorChanged(SensorEvent event) {
+		boolean faceDown = false;
+		boolean closeToObject = false;
 		// Handle accelerometer change
 		if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
 			float z_value = event.values[2];
@@ -61,12 +63,14 @@ public class FlipIntentService extends IntentService implements SensorEventListe
 				closeToObject = false;
 			}
 		}
-		if (faceDown && closeToObject) {
-			Log.i(tag, "silent");
+		boolean newSilentModeState = faceDown && closeToObject;
+		if (newSilentModeState && !silentModeEngaged) {
+			Log.i(tag, "going silent");
 			// Change phone to Silent mode
+			pv.audioState = am.getRingerMode();
 			am.setRingerMode(AudioManager.RINGER_MODE_SILENT);
-		} else {
-			Log.i(tag, "not silent");
+		} else if (!newSilentModeState && silentModeEngaged) {
+			Log.i(tag, "ungoing silent");
 			// Change phone back to previous state
 			am.setRingerMode(pv.audioState);
 		}

@@ -24,7 +24,6 @@ public class FlipService extends Service implements SensorEventListener  {
 	TextView flippedText;
 
 	private boolean faceDown = false;
-	private boolean closeToObject = false;
 	private PrevState pv;
 
 	public FlipService() {
@@ -42,7 +41,6 @@ public class FlipService extends Service implements SensorEventListener  {
 
 	public void onSensorChanged(SensorEvent event) {
 		boolean newFaceDown = faceDown;
-		boolean newCloseToObject = closeToObject;
 
 		// Handle accelerometer change
 		if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
@@ -53,8 +51,9 @@ public class FlipService extends Service implements SensorEventListener  {
 			} else {
 				newFaceDown = true;
 			}
-			// Handle proximity sensor change
-		} else if (event.sensor.getType() == Sensor.TYPE_PROXIMITY) {
+		}	
+		// Handle proximity sensor change
+		 /*else if (event.sensor.getType() == Sensor.TYPE_PROXIMITY) {
 			float distance = event.values[0];
 			Log.v(tag, "DISTANCE:" + distance);
 			if (distance < 1.0) {
@@ -62,24 +61,20 @@ public class FlipService extends Service implements SensorEventListener  {
 			} else {
 				newCloseToObject = false;
 			}
-		}
+		}*/
 
-		boolean isAlreadyOn = faceDown && closeToObject;
-		boolean shouldBeOn = newFaceDown && newCloseToObject;
-
-		if (!isAlreadyOn && shouldBeOn) {
+		if (!faceDown && newFaceDown) {
 			// Change phone to Silent mode
 			pv.audioState = am.getRingerMode();
 			Log.i(tag, "going silent");
 			am.setRingerMode(AudioManager.RINGER_MODE_SILENT);
-		} else if (isAlreadyOn && !shouldBeOn) {
+		} else if (faceDown && !newFaceDown) {
 			Log.i(tag, "ungoing silent");
 			// Change phone back to previous state
 			am.setRingerMode(pv.audioState);
 		}
 
 		faceDown = newFaceDown;
-		closeToObject = newCloseToObject;
 	}
 
 	@Override

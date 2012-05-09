@@ -17,15 +17,21 @@ import android.hardware.SensorManager;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.webkit.WebView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class ConsiderateAppActivity extends Activity {
 
 	//global variables
-	WebView wv;
+	public SharedPreferences savedData;
+	public SharedPreferences.Editor editor;
+	public WebView wv;
 	public static int numLocks;
-	public static int numPowerChecks = 0;
+	public static int numPowerChecks;
 	Timer dailyTimer = new Timer();
 	//long delay = 86400 * 1000; //number of millisec in 24 hours
 	long delay = 60 * 1000; //number of millisec in 1 minute
@@ -78,7 +84,9 @@ public class ConsiderateAppActivity extends Activity {
 	    	} else if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) { 
 	    		//WHAT TO DO WHEN SCREEN IS ON
 	    		numPowerChecks ++;
-	    	} 
+	    	}
+	    	
+	    	saveData();
 	    }
 	};
 
@@ -94,7 +102,6 @@ public class ConsiderateAppActivity extends Activity {
 			 tMinus3_pc = tMinus2_pc;
 			 tMinus2_pc = tMinus1_pc;
 			 tMinus1_pc = numPowerChecks;
-			 numPowerChecks = 0;
 			 
 			 //Num Unlocks
 			 tMinus5_nu = tMinus4_nu;
@@ -175,8 +182,11 @@ public class ConsiderateAppActivity extends Activity {
     	super.onCreate(savedInstanceState);
     	wv = new WebView(this);
          
-    	SharedPreferences savedData = getSharedPreferences("considerateapp", 0);
+    	savedData = getSharedPreferences("considerateapp", 0);
+    	editor = savedData.edit();
+    	
     	numLocks = savedData.getInt("numLocks", 0);
+    	numPowerChecks = savedData.getInt("numPowerChecks", 0);
     	
     	String phoneUnlockText = "<body bgcolor = 'black'><font color= 'white' size = 5><center>You have checked <br />your phone " + numPowerChecks + " times <br /> and unlocked your phone " + numLocks + " times today</center></font></body> <br /> <br />";
     	String data = phoneUnlockText + graphString;
@@ -184,8 +194,10 @@ public class ConsiderateAppActivity extends Activity {
         setContentView(wv);  
         dailyTimer.schedule(new timerClearTask(), 0, delay);
 
-	    Intent flipIntent = new Intent(getApplicationContext(), FlipIntentService.class);
-        startService(flipIntent);
+	    Intent flipService= new Intent(getApplicationContext(), FlipService.class);
+        startService(flipService);
+
+        startSleepMonitor();
 
         IntentFilter filter = new IntentFilter(Intent.ACTION_USER_PRESENT); 
         filter.addAction(Intent.ACTION_SCREEN_OFF);
@@ -196,10 +208,6 @@ public class ConsiderateAppActivity extends Activity {
 	@Override
 	protected void onStop() {
 		super.onStop();
-	    SharedPreferences savedData = getSharedPreferences("considerateapp", 0);
-	    SharedPreferences.Editor editor = savedData.edit();
-	    editor.putInt("numLocks", numLocks);
-	    editor.commit();
 	}
 
 	@Override
@@ -210,5 +218,52 @@ public class ConsiderateAppActivity extends Activity {
 	@Override
 	protected void onResume() {
 		super.onResume();
+    }
+	
+	public void saveData() {
+	    editor.putInt("numLocks", numLocks);
+	    editor.putInt("numPowerChecks", numPowerChecks);
+	    editor.commit();
 	}
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+    	MenuInflater inflater = getMenuInflater();
+    	inflater.inflate(R.menu.settings_menu, menu);
+    	return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+    	switch(item.getItemId()) {
+    		case R.id.toggle_lockscreen:
+    			toggleSleepMonitor();
+	    		return true;
+    		default:
+    			return super.onOptionsItemSelected(item);
+    	}
+    }
+
+    protected void toggleSleepMonitor(){
+    	if (SleepMonitorService.isRunning())
+    		stopSleepMonitor();
+    	else
+    		startSleepMonitor();
+    }
+
+    protected void startSleepMonitor() {
+        Intent sleepMonitorIntent = 
+        	new Intent(getApplicationContext(), SleepMonitorService.class);
+        startService(sleepMonitorIntent);
+        Toast.makeText(getApplicationContext(),
+        	"Lockscreen is currently being replaced.", Toast.LENGTH_SHORT).show();
+    }
+
+    protected void stopSleepMonitor() {
+        Intent sleepMonitorIntent = 
+        	new Intent(getApplicationContext(), SleepMonitorService.class);
+        stopService(sleepMonitorIntent);
+        Toast.makeText(getApplicationContext(),
+        	"Lockscreen is no longer being replaced.", Toast.LENGTH_SHORT).show();
+    }
 }

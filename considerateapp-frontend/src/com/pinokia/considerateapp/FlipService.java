@@ -16,6 +16,11 @@ import android.widget.TextView;
 
 public class FlipService extends Service implements SensorEventListener  {
 
+	//This is a bit of a hacky way to see if the service is running, but from sources, it looks like it's the best way to do it.
+	protected static boolean running = false;
+	//This makes the running variable read-only.
+	public static boolean isRunning() {return running;}
+
 	String tag = "CONSIDERATE_APP";
 	private SensorManager sensorManager;
 	private Sensor accelerometerSensor;
@@ -34,6 +39,42 @@ public class FlipService extends Service implements SensorEventListener  {
 		int audioState;
 	}
 
+	//Code to toggle the service
+	public static boolean toggleService(Context context) {
+		if (isRunning())
+		{
+			stop(context);
+			return false;
+		} else
+		{
+			start(context);
+			return true;
+		}
+	}
+
+	public static void start(Context context) {
+	    Intent serviceIntent = new Intent(context, FlipService.class);
+		if(!isRunning())
+			context.startService(serviceIntent);
+	}
+	public static void stop(Context context) {
+	    Intent serviceIntent = new Intent(context, FlipService.class);
+		if(isRunning())
+			context.stopService(serviceIntent);
+	}
+
+	@Override
+	public void onCreate() {
+		super.onCreate();
+		running = true;
+	}
+
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		running = false;
+		sensorManager.unregisterListener(this);
+	}
 
 	public void onAccuracyChanged(Sensor sensor, int accuracy) {
 		// TODO Auto-generated method stub	
@@ -77,9 +118,11 @@ public class FlipService extends Service implements SensorEventListener  {
 		faceDown = newFaceDown;
 	}
 
+
 	@Override
-	public void onCreate() {
-		super.onCreate();
+	public int onStartCommand(Intent intent, int flags, int startId) {
+		super.onStartCommand(intent, flags, startId);	
+		
 		sensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
 
 		// Configure accelerometer
@@ -94,21 +137,15 @@ public class FlipService extends Service implements SensorEventListener  {
 		}
 
 		// Configure proximity sensor
-		proximitySensor = sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
-		sensorManager.registerListener(this, proximitySensor, SensorManager.SENSOR_DELAY_NORMAL);
-		if (proximitySensor == null) {
-			Log.e(tag, "No proximity sensor present!");
-		}
+		// proximitySensor = sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
+		// sensorManager.registerListener(this, proximitySensor, SensorManager.SENSOR_DELAY_NORMAL);
+		// if (proximitySensor == null) {
+		// 	Log.e(tag, "No proximity sensor present!");
+		// }
 		am = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
 		pv = new PrevState();
 		pv.audioState = am.getRingerMode();
-
-	}
-
-	@Override
-	public void onDestroy() {
-		super.onDestroy();
-		sensorManager.unregisterListener(this);
+		return 1;
 	}
 
 	@Override

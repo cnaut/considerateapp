@@ -91,7 +91,7 @@
                 android:layout_marginLeft="50dp"
                 android:layout_toRightOf="@id/unlockSlider"
                 android:background="@drawable/lockslider" />
-            
+
             <ImageView
                 android:layout_width="60dp"
                 android:layout_height="60dp"
@@ -101,7 +101,6 @@
                 android:background="@drawable/circle"
                 android:scaleType="centerInside"
                 android:src="@drawable/silent" />
-            
         </RelativeLayout>
     </HorizontalScrollView>
 

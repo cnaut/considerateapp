@@ -27,15 +27,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="Lockscreen"
-                android:excludeFromRecents="true"
-                android:launchMode="singleInstance"
-                android:taskAffinity=""
-                android:screenOrientation="portrait"
-                android:configChanges="orientation|keyboardHidden|keyboard|navigation"/>
+        <activity
+            android:name="Lockscreen"
+            android:configChanges="orientation|keyboardHidden|keyboard|navigation"
+            android:excludeFromRecents="true"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait"
+            android:taskAffinity="" />
+
         <service android:name=".FlipService" />
-		<service android:name=".StatsService" />
-		<service android:name=".SleepMonitorService" />
+        <service android:name=".StatsService" />
+        <service android:name=".SleepMonitorService" />
     </application>
 
 </manifest>

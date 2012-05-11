@@ -14,7 +14,8 @@ import android.util.Log;
 
 public class SleepMonitorService extends Service {
 
-	//This is a bit of a hacky way to see if the service is running, but from sources, it looks like it's the best way to do it.
+	// This is a bit of a hacky way to see if the service is running, but from
+	// sources, it looks like it's the best way to do it.
 	protected static boolean running = false;
 
 	// This makes the running variable read-only.
@@ -46,7 +47,7 @@ public class SleepMonitorService extends Service {
 		return null;// we don't bind
 	}
 
-	@Override 
+	@Override
 	public void onCreate() {
 		super.onCreate();
 		running = true;
@@ -55,7 +56,7 @@ public class SleepMonitorService extends Service {
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		initialized=false;
+		initialized = false;
 		running = true;
 		stopReceivers();
 	}
@@ -75,31 +76,30 @@ public class SleepMonitorService extends Service {
 		return 1;
 	}
 
-	//Code to toggle the service.
+	// Code to toggle the service.
 	public static boolean toggleService(Context context) {
-		if (isRunning())
-		{
+		if (isRunning()) {
 			stop(context);
 			return false;
-		} else
-		{
+		} else {
 			start(context);
 			return true;
 		}
 	}
 
 	public static void start(Context context) {
-	    Intent serviceIntent = new Intent(context, SleepMonitorService.class);
-		if(!isRunning())
+		Intent serviceIntent = new Intent(context, SleepMonitorService.class);
+		if (!isRunning())
 			context.startService(serviceIntent);
 	}
+
 	public static void stop(Context context) {
-	    Intent serviceIntent = new Intent(context, SleepMonitorService.class);
-		if(isRunning())
+		Intent serviceIntent = new Intent(context, SleepMonitorService.class);
+		if (isRunning())
 			context.stopService(serviceIntent);
 	}
 
-	//Start and stop receivers
+	// Start and stop receivers
 	void startReceivers() {
 		if (active)
 			return;
@@ -116,7 +116,8 @@ public class SleepMonitorService extends Service {
 	}
 
 	void stopReceivers() {
-		if(!active) return;
+		if (!active)
+			return;
 
 		unregisterReceiver(screenOn);
 		unregisterReceiver(screenOff);

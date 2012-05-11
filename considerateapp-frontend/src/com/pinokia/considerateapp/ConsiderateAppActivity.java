@@ -1,4 +1,4 @@
-package com.pinokia.considerateapp;
+	package com.pinokia.considerateapp;
 
 import java.util.List;
 import java.util.Timer;
@@ -9,7 +9,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -17,15 +16,17 @@ import android.hardware.SensorManager;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.webkit.WebView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class ConsiderateAppActivity extends Activity {
 
 	//global variables
-	WebView wv;
-	public static int numLocks;
-	public static int numPowerChecks = 0;
+	public WebView wv;
 	Timer dailyTimer = new Timer();
 	//long delay = 86400 * 1000; //number of millisec in 24 hours
 	long delay = 60 * 1000; //number of millisec in 1 minute
@@ -58,50 +59,25 @@ public class ConsiderateAppActivity extends Activity {
 	double tMinus2_nu = 0;
 	double tMinus1_nu = 0;
 
-	private final BroadcastReceiver receiver = new BroadcastReceiver() {
-
-		@Override
-	    public void onReceive(Context context, Intent intent) {
-	    	if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {	    		
-	    		//WHAT TO DO WHEN SCREEN IS OFF
-	    		//stopwatch.stop();
-
-	    	} else if (intent.getAction().equals(Intent.ACTION_USER_PRESENT)) {
-	    		//WHAT TO DO WHEN SCREEN IS UNLOCKED
-	    		numLocks ++;
-	        	//stopwatch.start();
-
-	        	String phoneUnlockText = "<body bgcolor = 'black'><font color= 'white' size = 5><center>You have checked <br />your phone " + numPowerChecks + " times <br /> and unlocked your phone " + numLocks + " times today</center></font></body> <br /> <br />";
-	        	String data = phoneUnlockText + graphString;
-	            wv.loadData(data, "text/html", "UTF-8");
-	            
-	    	} else if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) { 
-	    		//WHAT TO DO WHEN SCREEN IS ON
-	    		numPowerChecks ++;
-	    	} 
-	    }
-	};
-
 	class timerClearTask extends TimerTask {
 		 public void run() {
 
 			 /* Set up the graph*/
-			 if (numPowerChecks > max) max = numPowerChecks;
+			 if (StatsService.getNumPowerChecks() > max) max = StatsService.getNumPowerChecks();
 			 
 			 //Power Checks
 			 tMinus5_pc = tMinus4_pc;
 			 tMinus4_pc = tMinus3_pc;
 			 tMinus3_pc = tMinus2_pc;
 			 tMinus2_pc = tMinus1_pc;
-			 tMinus1_pc = numPowerChecks;
-			 numPowerChecks = 0;
+			 tMinus1_pc = StatsService.getNumPowerChecks();
 			 
 			 //Num Unlocks
 			 tMinus5_nu = tMinus4_nu;
 			 tMinus4_nu = tMinus3_nu;
 			 tMinus3_nu = tMinus2_nu;
 			 tMinus2_nu = tMinus1_nu;
-			 tMinus1_nu = numLocks;
+			 tMinus1_nu = StatsService.getNumLocks();
 
 			 String plotPointsPowerCheck = "" + Double.toString(((tMinus5_pc/max)*100.00)) + "," + Double.toString(((tMinus4_pc/max)*100.00)) + "," + Double.toString(((tMinus3_pc/max)*100.00)) + "," + Double.toString(((tMinus2_pc/max)*100.00)) + "," + Double.toString(((tMinus1_pc/max)*100.00));
 			 String plotPointsNumLocks = "" + Double.toString(((tMinus5_nu/max)*100.00)) + "," + Double.toString(((tMinus4_nu/max)*100.00)) + "," + Double.toString(((tMinus3_nu/max)*100.00)) + "," + Double.toString(((tMinus2_nu/max)*100.00)) + "," + Double.toString(((tMinus1_nu/max)*100.00));
@@ -120,7 +96,7 @@ public class ConsiderateAppActivity extends Activity {
 			 		"width='300' height='150' " +
 			 		"alt='Number of phone unlocks & power presses' />";
 
-		     String phoneUnlockText = "<body bgcolor = 'black'><font color= 'white' size = 5><center>You have checked <br />your phone " + numPowerChecks + " times <br /> and unlocked your phone " + numLocks + " times today</center></font></body> <br /> <br />";
+		     String phoneUnlockText = "<body bgcolor = 'black'><font color= 'white' size = 5><center>You have checked <br />your phone " + StatsService.getNumPowerChecks() + " times <br /> and unlocked your phone " + StatsService.getNumLocks() + " times today</center></font></body> <br /> <br />";
 			 String data = phoneUnlockText + graphString;
              wv.loadData(data, "text/html", "UTF-8");
 		 }
@@ -174,32 +150,22 @@ public class ConsiderateAppActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
     	super.onCreate(savedInstanceState);
     	wv = new WebView(this);
-         
-    	SharedPreferences savedData = getSharedPreferences("considerateapp", 0);
-    	numLocks = savedData.getInt("numLocks", 0);
     	
-    	String phoneUnlockText = "<body bgcolor = 'black'><font color= 'white' size = 5><center>You have checked <br />your phone " + numPowerChecks + " times <br /> and unlocked your phone " + numLocks + " times today</center></font></body> <br /> <br />";
+        StatsService.initContext(getApplicationContext());
+        FlipService.start(getApplicationContext());
+        StatsService.start(getApplicationContext());
+         
+    	String phoneUnlockText = "<body bgcolor = 'black'><font color= 'white' size = 5><center>You have checked <br />your phone " + StatsService.getNumPowerChecks() + " times <br /> and unlocked your phone " + StatsService.getNumLocks() + " times today</center></font></body> <br /> <br />";
     	String data = phoneUnlockText + graphString;
         wv.loadData(data, "text/html", "UTF-8");
         setContentView(wv);  
         dailyTimer.schedule(new timerClearTask(), 0, delay);
 
-	    Intent flipIntent = new Intent(getApplicationContext(), FlipIntentService.class);
-        startService(flipIntent);
-
-        IntentFilter filter = new IntentFilter(Intent.ACTION_USER_PRESENT); 
-        filter.addAction(Intent.ACTION_SCREEN_OFF);
-        filter.addAction(Intent.ACTION_SCREEN_ON);
-        registerReceiver(receiver, filter);
     }
 
 	@Override
 	protected void onStop() {
 		super.onStop();
-	    SharedPreferences savedData = getSharedPreferences("considerateapp", 0);
-	    SharedPreferences.Editor editor = savedData.edit();
-	    editor.putInt("numLocks", numLocks);
-	    editor.commit();
 	}
 
 	@Override
@@ -210,5 +176,36 @@ public class ConsiderateAppActivity extends Activity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-	}
+    }
+	
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+    	MenuInflater inflater = getMenuInflater();
+    	inflater.inflate(R.menu.settings_menu, menu);
+    	return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+    	switch(item.getItemId()) {
+    		case R.id.toggle_lockscreen:
+    			toggleSleepMonitor();
+	    		return true;
+    		default:
+    			return super.onOptionsItemSelected(item);
+    	}
+    }
+
+    protected void toggleSleepMonitor(){
+    	if (SleepMonitorService.toggleService(getApplicationContext()))
+    	{
+	        Toast.makeText(getApplicationContext(),
+	        	"Lockscreen is currently being replaced.", Toast.LENGTH_SHORT).show();
+
+    	} else {
+	        Toast.makeText(getApplicationContext(),
+	        	"Lockscreen is no longer being replaced.", Toast.LENGTH_SHORT).show();
+    	}
+    }
 }

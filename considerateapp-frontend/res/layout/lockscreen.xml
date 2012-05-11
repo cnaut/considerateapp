@@ -62,7 +62,7 @@
         android:fadingEdgeLength="0dp"
         android:scrollbars="none" >
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="80dp"
             android:orientation="horizontal" >
@@ -74,12 +74,35 @@
                 android:layout_marginRight="50dp"
                 android:background="@drawable/lockslider" />
 
+            <ImageView
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_alignRight="@id/unlockSlider"
+                android:layout_marginRight="15dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/circle"
+                android:scaleType="centerInside"
+                android:src="@drawable/lock" />
+
             <View
+                android:id="@+id/silentSlider"
                 android:layout_width="400dp"
                 android:layout_height="fill_parent"
                 android:layout_marginLeft="50dp"
+                android:layout_toRightOf="@id/unlockSlider"
                 android:background="@drawable/lockslider" />
-        </LinearLayout>
+            
+            <ImageView
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_alignLeft="@id/silentSlider"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/circle"
+                android:scaleType="centerInside"
+                android:src="@drawable/silent" />
+            
+        </RelativeLayout>
     </HorizontalScrollView>
 
 </RelativeLayout>

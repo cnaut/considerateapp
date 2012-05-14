@@ -19,6 +19,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.webkit.WebView;
 import android.widget.Toast;
+import android.util.Log;
 
 public class ConsiderateAppActivity extends Activity {
 
@@ -121,6 +122,7 @@ public class ConsiderateAppActivity extends Activity {
 					+ " times today</center></font></body> <br /> <br />";
 			String data = phoneUnlockText + graphString;
 			wv.loadData(data, "text/html", "UTF-8");
+			Log.d("timerClearTask", "Reloaded!");
 		}
 	}
 
@@ -160,15 +162,13 @@ public class ConsiderateAppActivity extends Activity {
 		StatsService.initContext(getApplicationContext());
 		StatsService.start(getApplicationContext());
 
-		String phoneUnlockText = "<body bgcolor = 'black'><font color= 'white' size = 5><center>You have checked <br />your phone "
-				+ StatsService.getNumPowerChecks()
-				+ " times <br /> and unlocked your phone "
-				+ StatsService.getNumLocks()
-				+ " times today</center></font></body> <br /> <br />";
-		String data = phoneUnlockText + graphString;
-		wv.loadData(data, "text/html", "UTF-8");
-		setContentView(wv);
-		dailyTimer.schedule(new timerClearTask(), 0, delay);
+		// String phoneUnlockText = "<body bgcolor = 'black'><font color= 'white' size = 5><center>You have checked <br />your phone "
+		// 		+ StatsService.getNumPowerChecks()
+		// 		+ " times <br /> and unlocked your phone "
+		// 		+ StatsService.getNumLocks()
+		// 		+ " times today</center></font></body> <br /> <br />";
+		// String data = phoneUnlockText + graphString;
+		// wv.loadData(data, "text/html", "UTF-8");
 
 	}
 
@@ -185,6 +185,10 @@ public class ConsiderateAppActivity extends Activity {
 	@Override
 	protected void onResume() {
 		super.onResume();
+		setContentView(wv);
+		//If we don't delay this by about 200 seconds, we will rebuild the view before
+		//StatsService is done registering.
+		dailyTimer.schedule(new timerClearTask(), 200, delay);
 	}
 
 	@Override

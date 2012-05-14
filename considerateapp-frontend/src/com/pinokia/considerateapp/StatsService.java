@@ -148,6 +148,7 @@ public class StatsService extends Service {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			if(!intent.getAction().equals(OnIntent)) return;
+			Log.d("StatsService", "screenOn");
 
 			numPowerChecks++;
 			saveData();
@@ -162,6 +163,7 @@ public class StatsService extends Service {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			if(!intent.getAction().equals(OffIntent)) return;
+			Log.d("StatsService", "screenOff");
 
 			//Right now we're doing nothing.
 			saveData();
@@ -171,11 +173,12 @@ public class StatsService extends Service {
 
 	BroadcastReceiver screenUnlocked = new BroadcastReceiver() {
 		public static final String TAG="screenUnlocked";
-		public static final String UnlockIntent="android.intent.action.ACTION_USER_PRESENT";
+		public static final String UnlockIntent="android.intent.action.USER_PRESENT";
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			if(!intent.getAction().equals(UnlockIntent)) return;
+			Log.d("StatsService", "screenUnlocked");
 
 			numLocks++;
 			saveData();

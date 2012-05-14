@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/tree" />
+
+    <DigitalClock
+        android:id="@+id/digitalClock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="20dp"
+        android:textSize="50dp" />
+
+    <TextView
+        android:id="@+id/phoneScore"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:background="#c558D9FC"
+        android:clickable="true"
+        android:gravity="center"
+        android:text="0"
+        android:textColor="#ffffff"
+        android:textSize="100dp" />
+
+    <View
+        android:id="@+id/dropShadowBottom"
+        android:layout_width="150dp"
+        android:layout_height="5dp"
+        android:layout_below="@id/phoneScore"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/dropshadow_bottom" />
+
+    <View
+        android:id="@+id/dropShadowRight"
+        android:layout_width="5dp"
+        android:layout_height="150dp"
+        android:layout_alignTop="@id/phoneScore"
+        android:layout_toRightOf="@id/phoneScore"
+        android:background="@drawable/dropshadow_right" />
+
+    <View
+        android:layout_width="5dp"
+        android:layout_height="5dp"
+        android:layout_below="@id/dropShadowRight"
+        android:layout_toRightOf="@id/dropShadowBottom"
+        android:background="@drawable/dropshadow_corner" />
+
+    <HorizontalScrollView
+        android:id="@+id/lock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="50dp"
+        android:fadingEdgeLength="0dp"
+        android:scrollbars="none" >
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="80dp"
+            android:orientation="horizontal" >
+
+            <View
+                android:id="@+id/unlockSlider"
+                android:layout_width="400dp"
+                android:layout_height="fill_parent"
+                android:layout_marginRight="50dp"
+                android:background="@drawable/lockslider" />
+
+            <ImageView
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_alignRight="@id/unlockSlider"
+                android:layout_marginRight="15dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/circle"
+                android:scaleType="centerInside"
+                android:src="@drawable/lock" />
+
+            <View
+                android:id="@+id/silentSlider"
+                android:layout_width="400dp"
+                android:layout_height="fill_parent"
+                android:layout_marginLeft="50dp"
+                android:layout_toRightOf="@id/unlockSlider"
+                android:background="@drawable/lockslider" />
+
+            <ImageView
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_alignLeft="@id/silentSlider"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/circle"
+                android:scaleType="centerInside"
+                android:src="@drawable/silent" />
+        </RelativeLayout>
+    </HorizontalScrollView>
+
+</RelativeLayout>

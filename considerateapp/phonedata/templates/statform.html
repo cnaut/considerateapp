@@ -1,0 +1,7 @@
+<form action="/addstat/" method="post" >
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+    {{ form.type }}
+    {{ form.value }}
+    <input type="submit" value="Add Stat" />
+</form>

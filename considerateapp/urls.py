@@ -7,7 +7,12 @@ from django.conf.urls.defaults import patterns, include, url
 urlpatterns = patterns('',
     # Examples:
     url(r'^$', 'phonedata.views.home', name='home'),
-    url(r'^adduser$', 'phonedata.views.adduser', name='adduser'),
+    url(r'^adduser', 'phonedata.views.adduser', name='adduser'),
+    url(r'^allusers', 'phonedata.views.allusers', name='alluser'),
+    url(r'^userform', 'phonedata.views.userform', name='userform'),
+    url(r'^addstat', 'phonedata.views.addstat', name='addstat'),
+    url(r'^allstats', 'phonedata.views.allstats', name='allstats'),
+    url(r'^statform', 'phonedata.views.statform', name='statform'),
     # url(r'^considerateapp/', include('considerateapp.foo.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:

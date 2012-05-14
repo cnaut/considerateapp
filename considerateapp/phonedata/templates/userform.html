@@ -1,0 +1,6 @@
+<form action="/adduser/" method="post">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+    {{ form.name }}
+    <input type="submit" value="Add User" />
+</form>

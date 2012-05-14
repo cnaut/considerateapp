@@ -22,7 +22,7 @@ def adduser(request):
     if(request.GET):
 	data = request.GET
 
-    user = User()
+    user = User(name=data.get("name"))
     user.save()
     response = user.id
 
@@ -30,7 +30,7 @@ def adduser(request):
 
 @csrf_exempt
 def allusers(request):
-   users = User.objects.all()
+   users = User.objects.values_list()
    return HttpResponse(users)
 
 @csrf_exempt
@@ -38,7 +38,7 @@ def userform(request):
     form = UserForm()
     return render_to_response(
         'userform.html',
-        {'form': form},
+        {'form': form, },
         context_instance=RequestContext(request)
     )
 
@@ -56,19 +56,14 @@ def addstat(request):
 @csrf_exempt
 def statform(request):
     form = StatForm()
+    users = User.objects.all()
     return render_to_response(
         'statform.html',
-        {'form': form},
+        {'form': form, 'users': users},
         context_instance=RequestContext(request)
     )
 
 @csrf_exempt
 def allstats(request):
-   data = None
-   if(request.POST):
-       data = request.POST
-   if(request.GET):
-       data = request.GET
-    
-   stats = Stat.objects.all()
+   stats = Stat.objects.values_list()
    return HttpResponse(stats)

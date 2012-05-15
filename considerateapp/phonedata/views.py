@@ -13,7 +13,7 @@ from phonedata.forms import StatForm
 from phonedata.forms import LbSearchForm
 
 def home(request):
-    return HttpResponse("Welcome to the Considerate App")
+    return render_to_response('home.html')
 
 @csrf_exempt
 def adduser(request):

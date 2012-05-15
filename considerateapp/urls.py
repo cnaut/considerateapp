@@ -13,6 +13,8 @@ urlpatterns = patterns('',
     url(r'^addstat', 'phonedata.views.addstat', name='addstat'),
     url(r'^allstats', 'phonedata.views.allstats', name='allstats'),
     url(r'^statform', 'phonedata.views.statform', name='statform'),
+    url(r'^leaderboard', 'phonedata.views.leaderboard', name='leaderboard'),
+    url(r'^lboardsearch', 'phonedata.views.lboardsearch', name='lsearch'),
     # url(r'^considerateapp/', include('considerateapp.foo.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:

@@ -4,7 +4,15 @@ from phonedata.models import User
 
 class UserForm(forms.Form):
     name = forms.CharField()
+
+class UserStatChoiceField(forms.ModelChoiceField):
+    def label_from_instance(self, obj):
+        return obj['name']
+
 class StatForm(forms.Form):
-    user = forms.ChoiceField(widget=forms.Select, choices=[(user.id, user.name) for user in User.objects.all()])
+    user = UserStatChoiceField(queryset=User.objects.values(), empty_label="None")
     type = forms.CharField()
     value = forms.CharField()
+
+class LbSearchForm(forms.Form):
+    type = forms.CharField()

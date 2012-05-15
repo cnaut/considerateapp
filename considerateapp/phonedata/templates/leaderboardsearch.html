@@ -1,0 +1,7 @@
+<form action="/leaderboard/" method="post">
+    {% csrf_token %}
+    <h2>Search Leaderboard</h2>
+    {{ form.non_field_errors }}
+    Stat type: {{ form.type }}
+    <input type="submit" value="Get Leaderboard" />
+</form>

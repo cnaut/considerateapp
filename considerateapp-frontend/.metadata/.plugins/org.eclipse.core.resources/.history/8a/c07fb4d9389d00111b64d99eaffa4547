@@ -1,0 +1,7 @@
+package com.pinokia.considerateapp;
+
+import android.app.Fragment;
+
+public class UnLocksFragment extends Fragment {
+
+}

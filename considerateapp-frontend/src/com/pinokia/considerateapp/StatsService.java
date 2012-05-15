@@ -20,7 +20,17 @@ public class StatsService extends Service {
 	//This makes the running variable read-only.
 	public static boolean isRunning() {return running;}
 
-	private static int numPowerChecks, numLocks;
+	private static int numPowerChecks = 0;
+	private static int numLocks = 0;
+	private static boolean userPresent = true;
+	private static StopWatch stopwatch = new StopWatch();
+		
+	protected static void saveData() {
+	    editor.putInt("numLocks", numLocks);
+	    editor.putInt("numPowerChecks", numPowerChecks);
+	    editor.commit();
+	}
+	
 	public static int getNumLocks() {
 		ensureStatsLoaded();
 		return numLocks;
@@ -28,6 +38,23 @@ public class StatsService extends Service {
 	public static int getNumPowerChecks() {
 		ensureStatsLoaded();
 		return numPowerChecks;
+	}
+	public static boolean getUserPresent() {
+		ensureStatsLoaded();
+		return userPresent;
+	}
+	public static StopWatch getStopWatch() {
+		ensureStatsLoaded();
+		return stopwatch;
+	}
+	
+	public static void setNumLocks(int newNumLocks) {
+		numLocks = newNumLocks;
+		saveData();
+	}
+	public static void setNumPowerChecks(int newNumPowerChecks) {
+		numPowerChecks = newNumPowerChecks;
+		saveData();
 	}
 
 	public static void initContext(Context aContext) {
@@ -135,11 +162,7 @@ public class StatsService extends Service {
 		unregisterReceiver(screenUnlocked);
 	}
 
-	protected void saveData() {
-	    editor.putInt("numLocks", numLocks);
-	    editor.putInt("numPowerChecks", numPowerChecks);
-	    editor.commit();
-	}
+	
 
 	BroadcastReceiver screenOn = new BroadcastReceiver() {
 		public static final String TAG="screenOn";
@@ -150,6 +173,7 @@ public class StatsService extends Service {
 			if(!intent.getAction().equals(OnIntent)) return;
 
 			numPowerChecks++;
+			System.out.println("NumPowerChecks: " + numPowerChecks);
 			saveData();
 			return;
 		}
@@ -163,7 +187,9 @@ public class StatsService extends Service {
 		public void onReceive(Context context, Intent intent) {
 			if(!intent.getAction().equals(OffIntent)) return;
 
-			//Right now we're doing nothing.
+
+			userPresent = false;
+			stopwatch.stop();
 			saveData();
 			return;
 		}
@@ -172,13 +198,20 @@ public class StatsService extends Service {
 	BroadcastReceiver screenUnlocked = new BroadcastReceiver() {
 		public static final String TAG="screenUnlocked";
 		public static final String UnlockIntent="android.intent.action.ACTION_USER_PRESENT";
-
+		
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			if(!intent.getAction().equals(UnlockIntent)) return;
-
+			//if(!intent.getAction().equals(UnlockIntent)) return;
+			//System.out.println("1");
+			stopwatch.start();
+			userPresent = true;
 			numLocks++;
+			System.out.println("NumLocks: " + numLocks);
+			//System.out.println("2");
 			saveData();
+			//System.out.println("3");
+			UnlocksFragment.update();
+			//System.out.println("4");
 			return;
 		}
 	};

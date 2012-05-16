@@ -1,5 +1,6 @@
 package com.pinokia.considerateapp;
 
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -8,12 +9,17 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.Cursor;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.media.AudioManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Contacts.People;
+import android.provider.ContactsContract;
+import android.provider.ContactsContract.Contacts;
 import android.view.MenuInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -204,11 +210,57 @@ public class ConsiderateAppActivity extends Activity {
 		case R.id.toggle_lockscreen:
 			toggleSleepMonitor();
 			return true;
+		case R.id.whitelist_button:
+      toggleWhitelist();
+      return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
 	}
 
+  protected static boolean whitelistEnabled = false;
+	
+  private void toggleWhitelist() {
+	  whitelistEnabled = !whitelistEnabled;
+	  if(whitelistEnabled) {
+	    Toast.makeText(getApplicationContext(),
+        "Whitelist is enabled.",
+        Toast.LENGTH_SHORT).show();
+	  } else {
+	    Toast.makeText(getApplicationContext(),
+          "Whitelist is disabled.",
+          Toast.LENGTH_SHORT).show();
+	  }
+	}
+	
+  private void refreshWhitelist(String incomingNumber) {
+    ArrayList<String> favGroupId=new ArrayList<String>();
+    final String[] proj = new String[] {
+            ContactsContract.Contacts.LOOKUP_KEY, ContactsContract.Contacts.DISPLAY_NAME};
+    Cursor cursor = this.managedQuery(
+        ContactsContract.Contacts.CONTENT_URI, proj, "starred=1 && has_phone_number > 0",
+        new String[] {"1"}, null);
+
+    while (cursor.moveToNext()) {
+        String id = cursor.getString(cursor
+                .getColumnIndex(ContactsContract.Groups._ID));
+        Log.v("Test",id);
+
+        String gTitle = (cursor.getString(cursor
+                .getColumnIndex(ContactsContract.Groups.TITLE)));
+
+        Log.v("Test",gTitle);
+        if (gTitle.contains("Favorite_")) {
+            gTitle = "Favorites";
+            favGroupId.add(id);
+        }
+    }
+    cursor.close();
+    
+    //if(PhoneNumberUtils.compare(me, incomingNumber))
+  }
+  
+  
 	protected void toggleSleepMonitor() {
 		if (SleepMonitorService.toggleService(getApplicationContext())) {
 			Toast.makeText(getApplicationContext(),

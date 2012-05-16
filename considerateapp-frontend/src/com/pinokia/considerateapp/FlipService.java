@@ -25,19 +25,15 @@ public class FlipService extends Service implements SensorEventListener  {
 	private SensorManager sensorManager;
 	private Sensor accelerometerSensor;
 	private Sensor proximitySensor;
-	private AudioManager am;
+	private static AudioManager am;
 	TextView flippedText;
 
-	private boolean faceDown = false;
-	private PrevState pv;
+	protected static boolean faceDown = false;
+	protected static int prevAudioState;
 
 	public FlipService() {
 	}
 
-	//State to recover
-	private class PrevState {
-		int audioState;
-	}
 
 	//Code to toggle the service
 	public static boolean toggleService(Context context) {
@@ -79,7 +75,11 @@ public class FlipService extends Service implements SensorEventListener  {
 	public void onAccuracyChanged(Sensor sensor, int accuracy) {
 		// TODO Auto-generated method stub	
 	}
-
+	
+	public static void setToPrevAudioState() {
+	  am.setRingerMode(prevAudioState);
+	}
+	
 	public void onSensorChanged(SensorEvent event) {
 		boolean newFaceDown = faceDown;
 
@@ -106,13 +106,13 @@ public class FlipService extends Service implements SensorEventListener  {
 
 		if (!faceDown && newFaceDown) {
 			// Change phone to Silent mode
-			pv.audioState = am.getRingerMode();
+		  prevAudioState = am.getRingerMode();
 			Log.i(tag, "going silent");
 			am.setRingerMode(AudioManager.RINGER_MODE_SILENT);
 		} else if (faceDown && !newFaceDown) {
 			Log.i(tag, "ungoing silent");
 			// Change phone back to previous state
-			am.setRingerMode(pv.audioState);
+			am.setRingerMode(prevAudioState);
 		}
 
 		faceDown = newFaceDown;
@@ -143,8 +143,7 @@ public class FlipService extends Service implements SensorEventListener  {
 		// 	Log.e(tag, "No proximity sensor present!");
 		// }
 		am = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
-		pv = new PrevState();
-		pv.audioState = am.getRingerMode();
+		prevAudioState = am.getRingerMode();
 		return 1;
 	}
 

@@ -167,6 +167,7 @@ public class ConsiderateAppActivity extends Activity {
 
 		StatsService.initContext(getApplicationContext());
 		StatsService.start(getApplicationContext());
+		refreshWhitelist();
 
 		// String phoneUnlockText = "<body bgcolor = 'black'><font color= 'white' size = 5><center>You have checked <br />your phone "
 		// 		+ StatsService.getNumPowerChecks()
@@ -223,6 +224,7 @@ public class ConsiderateAppActivity extends Activity {
   private void toggleWhitelist() {
 	  whitelistEnabled = !whitelistEnabled;
 	  if(whitelistEnabled) {
+	    refreshWhitelist();
 	    Toast.makeText(getApplicationContext(),
         "Whitelist is enabled.",
         Toast.LENGTH_SHORT).show();
@@ -233,31 +235,33 @@ public class ConsiderateAppActivity extends Activity {
 	  }
 	}
 	
-  private void refreshWhitelist(String incomingNumber) {
-    ArrayList<String> favGroupId=new ArrayList<String>();
-    final String[] proj = new String[] {
-            ContactsContract.Contacts.LOOKUP_KEY, ContactsContract.Contacts.DISPLAY_NAME};
-    Cursor cursor = this.managedQuery(
-        ContactsContract.Contacts.CONTENT_URI, proj, "starred=1 && has_phone_number > 0",
-        new String[] {"1"}, null);
-
-    while (cursor.moveToNext()) {
-        String id = cursor.getString(cursor
-                .getColumnIndex(ContactsContract.Groups._ID));
-        Log.v("Test",id);
-
-        String gTitle = (cursor.getString(cursor
-                .getColumnIndex(ContactsContract.Groups.TITLE)));
-
-        Log.v("Test",gTitle);
-        if (gTitle.contains("Favorite_")) {
-            gTitle = "Favorites";
-            favGroupId.add(id);
-        }
+  protected static ArrayList<String> whitelist;
+  
+  private void refreshWhitelist() {
+    if(whitelistEnabled) {
+      whitelist = new ArrayList<String>();
+      Cursor cCur = this.managedQuery(ContactsContract.Contacts.CONTENT_URI, 
+          new String[] {ContactsContract.Contacts._ID, ContactsContract.Contacts.DISPLAY_NAME},
+          "starred=1 AND has_phone_number=1", null, null);
+  
+      while (cCur.moveToNext()) {
+          String id = cCur.getString(cCur
+                  .getColumnIndex(ContactsContract.Contacts._ID));
+  
+          //String name = (cCur.getString(cCur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME)));
+          Cursor pCur = this.managedQuery(
+              ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, 
+              ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = ?", 
+              new String[]{id}, null);
+          while (pCur.moveToNext()) {
+            String phoneNumber = pCur.getString(
+              pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+            whitelist.add(phoneNumber);
+          } 
+          pCur.close();
+      }
+      cCur.close();
     }
-    cursor.close();
-    
-    //if(PhoneNumberUtils.compare(me, incomingNumber))
   }
   
   

@@ -1,3 +1,9 @@
+<html>
+<head>
+	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}static/css/bootstrap.css" />
+</head>
+
+<body>
 <script>
 	name = "";
 	window.fbAsyncInit = function() {
@@ -9,7 +15,7 @@
             oauth      : true,
           });
           FB.Event.subscribe('auth.login', function () {
-            window.location = "http://considerateapp.com:8001/profile";
+            window.location = "http://dev.considerateapp.com:8001/profile";
       	  });
           FB.Event.subscribe('auth.statusChange', function (response) {   
             if (response.authResponse) {
@@ -17,7 +23,7 @@
               FB.api('/me', function(me){
                 if (me.name) {
                   name = me.name;
-		  window.location = "http://considerateapp.com:8001/profile";
+		  window.location = "http://dev.considerateapp.com:8001/profile";
                 }
               })
             } else {
@@ -32,6 +38,9 @@
            d.getElementsByTagName('head')[0].appendChild(js);
 	}(document));
 </script>
-
-Welcome to the considerate app
-<div class="fb-login-button" scope="email, status_update, publish_stream">Login with Facebook</div>
+<div class="hero-unit">
+	<h2>Welcome to the considerate app</h2>
+	<div class="fb-login-button" scope="email, status_update, publish_stream">Login with Facebook</div>
+</div>
+</body>
+</html>

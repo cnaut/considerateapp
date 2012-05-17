@@ -1,5 +1,6 @@
 <html>
 <head>
+	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}static/css/bootstrap.css" />
 </head>
 
 <body onload="getUserInfo()">
@@ -57,13 +58,13 @@
              });
       	}
 </script>
+<div class="hero-unit">
+	<h3>Profile</h3>
+	Hi, <span id="username"></span>
+	<div>Gender: <span id="usergender"></span></div>
+	<div>Location: <span id="userlocation"></span></div>
 
-<h3>Profile</h3>
-Hi, <span id="username"></span>
-<div>Gender: <span id="usergender"></span></div>
-<div>Location: <span id="userlocation"></span></div>
-
-<a onclick="publish()" href="#">Share Phone Score</a>
-
+	<a onclick="publish()" href="#" class="btn">Share Phone Score</a>
+</div>
 </body>
 </html>

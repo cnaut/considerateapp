@@ -1,0 +1,47 @@
+<html>
+<head>
+</head>
+
+<body onload="getUserInfo()">
+<div id="fb-root"></div>
+<script>
+	window.fbAsyncInit = function() {
+          FB.init({
+            appId      : '103004293171382',
+ 	    status     : true, 
+            cookie     : true,
+            xfbml      : true,
+            oauth      : true,
+          });
+
+	};
+
+	function getUserInfo() {
+	  FB.getLoginStatus(function(response) {
+  	    if (response.status === 'connected') {
+              FB.api('/me', function(me){
+                if (me.name) {
+	          document.getElementById('username').innerHTML = me.name;
+	          document.getElementById('usergender').innerHTML = me.gender;
+	          document.getElementById('userlocation').innerHTML = me.location.name;
+	        }
+              })
+            }
+	  });
+	}
+        (function(d){
+           var js, id = 'facebook-jssdk'; if (d.getElementById(id)) {return;}
+           js = d.createElement('script'); js.id = id; js.async = true;
+           js.src = "//connect.facebook.net/en_US/all.js";
+           d.getElementsByTagName('head')[0].appendChild(js);
+	}(document));
+</script>
+
+<h3>Profile</h3>
+Hi, <span id="username"></span>
+<div>Gender: <span id="usergender"></span></div>
+<div>Location: <span id="userlocation"></span></div>
+
+
+</body>
+</html>

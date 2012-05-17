@@ -15,6 +15,12 @@ from phonedata.forms import LbSearchForm
 def home(request):
     return render_to_response('home.html')
 
+def profile(request):
+    return render_to_response('profile.html')
+
+def channel(request):
+   return HttpResponse('<script src="//connect.facebook.net/en_US/all.js"></script>')
+
 @csrf_exempt
 def adduser(request):
    data = getData(request);

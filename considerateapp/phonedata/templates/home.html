@@ -1,4 +1,5 @@
 <script>
+	name = "";
 	window.fbAsyncInit = function() {
           FB.init({
             appId      : '103004293171382',
@@ -15,7 +16,8 @@
               // user has auth'd your app and is logged into Facebook
               FB.api('/me', function(me){
                 if (me.name) {
-                  window.location = "http://considerateapp.com:8001/profile";
+                  name = me.name;
+		  window.location = "http://considerateapp.com:8001/profile";
                 }
               })
             } else {
@@ -32,4 +34,4 @@
 </script>
 
 Welcome to the considerate app
-<div class="fb-login-button">Login with Facebook</div>
+<div class="fb-login-button" scope="email, status_update, publish_stream">Login with Facebook</div>

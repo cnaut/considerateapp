@@ -15,44 +15,54 @@ import android.util.Log;
 
 public class StatsService extends Service {
 
-	//This is a bit of a hacky way to see if the service is running, but from sources, it looks like it's the best way to do it.
+	// This is a bit of a hacky way to see if the service is running, but from
+	// sources, it looks like it's the best way to do it.
 	protected static boolean running = false;
-	//This makes the running variable read-only.
-	public static boolean isRunning() {return running;}
+
+	// This makes the running variable read-only.
+	public static boolean isRunning() {
+		return running;
+	}
 
 	private static int numPowerChecks = 0;
 	private static int numLocks = 0;
 	private static boolean userPresent = true;
 	private static StopWatch stopwatch = new StopWatch();
-		
+
 	protected static void saveData() {
-	    editor.putInt("numLocks", numLocks);
-	    editor.putInt("numPowerChecks", numPowerChecks);
-	    editor.commit();
+		editor.putInt("numLocks", numLocks);
+		editor.putInt("numPowerChecks", numPowerChecks);
+		editor.commit();
 	}
-	
+
 	public static int getNumLocks() {
 		ensureStatsLoaded();
 		return numLocks;
 	}
+
 	public static int getNumPowerChecks() {
 		ensureStatsLoaded();
 		return numPowerChecks;
 	}
+
 	public static boolean getUserPresent() {
 		ensureStatsLoaded();
 		return userPresent;
 	}
+
 	public static StopWatch getStopWatch() {
 		ensureStatsLoaded();
 		return stopwatch;
 	}
-	
+
 	public static void setNumLocks(int newNumLocks) {
+		ensureStatsLoaded();
 		numLocks = newNumLocks;
 		saveData();
 	}
+
 	public static void setNumPowerChecks(int newNumPowerChecks) {
+		ensureStatsLoaded();
 		numPowerChecks = newNumPowerChecks;
 		saveData();
 	}
@@ -73,33 +83,32 @@ public class StatsService extends Service {
 	@Override
 	public IBinder onBind(Intent arg0) {
 		Log.d(getClass().getSimpleName(), "onBind()");
-		return null;//we don't bind
+		return null;// we don't bind
 	}
 
-	//Code to toggle the service
+	// Code to toggle the service
 	public static boolean toggleService(Context context) {
-		if (isRunning())
-		{
+		if (isRunning()) {
 			stop(context);
 			return false;
-		} else
-		{
+		} else {
 			start(context);
 			return true;
 		}
 	}
 
 	public static void start(Context context) {
-	    Intent serviceIntent = new Intent(context, StatsService.class);
-		if(!isRunning())
+		Intent serviceIntent = new Intent(context, StatsService.class);
+		if (!isRunning())
 			context.startService(serviceIntent);
 	}
+
 	public static void stop(Context context) {
-	    Intent serviceIntent = new Intent(context, StatsService.class);
-		if(isRunning())
+		Intent serviceIntent = new Intent(context, StatsService.class);
+		if (isRunning())
 			context.stopService(serviceIntent);
 	}
-	
+
 	@Override
 	public void onCreate() {
 		super.onCreate();
@@ -114,11 +123,10 @@ public class StatsService extends Service {
 	}
 
 	@Override
-	public int onStartCommand(Intent intent, int flags, int startId){
-		super.onStartCommand(intent, flags, startId);	
+	public int onStartCommand(Intent intent, int flags, int startId) {
+		super.onStartCommand(intent, flags, startId);
 
-		if (initialized)
-		{
+		if (initialized) {
 			return 1;
 		}
 		Log.v("onStartCommand", "SleepMonitorService started!");
@@ -126,34 +134,38 @@ public class StatsService extends Service {
 		ensureStatsLoaded();
 
 		startReceivers();
-		initialized=true;
+		initialized = true;
 		return 1;
-	}	
+	}
 
 	protected static void ensureStatsLoaded() {
-		if(statsLoaded || context == null)
+		if (statsLoaded || context == null)
 			return;
 
-    	savedData = context.getSharedPreferences("considerateapp", 0);
-    	editor = savedData.edit();
-    	
-    	numLocks = savedData.getInt("numLocks", 0);
-    	numPowerChecks = savedData.getInt("numPowerChecks", 0);
+		savedData = context.getSharedPreferences("considerateapp", 0);
+		editor = savedData.edit();
+
+		numLocks = savedData.getInt("numLocks", 0);
+		numPowerChecks = savedData.getInt("numPowerChecks", 0);
 	}
 
 	void startReceivers() {
-		if (active) return;
+		if (active)
+			return;
 		IntentFilter onFilter = new IntentFilter(Intent.ACTION_SCREEN_ON);
 		IntentFilter offFilter = new IntentFilter(Intent.ACTION_SCREEN_OFF);
 		IntentFilter unlockFilter = new IntentFilter(Intent.ACTION_USER_PRESENT);
-		// IntentFilter battfilter = new IntentFilter(Intent.ACTION_SCREEN_CHANGED);
+		// IntentFilter battfilter = new
+		// IntentFilter(Intent.ACTION_SCREEN_CHANGED);
 
 		registerReceiver(screenOn, onFilter);
 		registerReceiver(screenOff, offFilter);
 		registerReceiver(screenUnlocked, unlockFilter);
 		// registerReceiver(battchange, battfilter);
 
-		active=true;
+		active = true;
+		
+		
 	}
 
 	void stopReceivers() {
@@ -162,15 +174,14 @@ public class StatsService extends Service {
 		unregisterReceiver(screenUnlocked);
 	}
 
-	
-
 	BroadcastReceiver screenOn = new BroadcastReceiver() {
-		public static final String TAG="screenOn";
-		public static final String OnIntent="android.intent.action.SCREEN_ON";
+		public static final String TAG = "screenOn";
+		public static final String OnIntent = "android.intent.action.SCREEN_ON";
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			if(!intent.getAction().equals(OnIntent)) return;
+			if (!intent.getAction().equals(OnIntent))
+				return;
 
 			numPowerChecks++;
 			System.out.println("NumPowerChecks: " + numPowerChecks);
@@ -180,13 +191,13 @@ public class StatsService extends Service {
 	};
 
 	BroadcastReceiver screenOff = new BroadcastReceiver() {
-		public static final String TAG="screenOff";
-		public static final String OffIntent="android.intent.action.SCREEN_OFF";
+		public static final String TAG = "screenOff";
+		public static final String OffIntent = "android.intent.action.SCREEN_OFF";
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			if(!intent.getAction().equals(OffIntent)) return;
-
+			if (!intent.getAction().equals(OffIntent))
+				return;
 
 			userPresent = false;
 			stopwatch.stop();
@@ -196,22 +207,22 @@ public class StatsService extends Service {
 	};
 
 	BroadcastReceiver screenUnlocked = new BroadcastReceiver() {
-		public static final String TAG="screenUnlocked";
-		public static final String UnlockIntent="android.intent.action.ACTION_USER_PRESENT";
-		
+		public static final String TAG = "screenUnlocked";
+		public static final String UnlockIntent = "android.intent.action.ACTION_USER_PRESENT";
+
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			//if(!intent.getAction().equals(UnlockIntent)) return;
-			//System.out.println("1");
+			// if(!intent.getAction().equals(UnlockIntent)) return;
+			// System.out.println("1");
 			stopwatch.start();
 			userPresent = true;
 			numLocks++;
 			System.out.println("NumLocks: " + numLocks);
-			//System.out.println("2");
+			// System.out.println("2");
 			saveData();
-			//System.out.println("3");
+			// System.out.println("3");
 			UnlocksFragment.update();
-			//System.out.println("4");
+			// System.out.println("4");
 			return;
 		}
 	};

@@ -1,7 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
 
-<LinearLayout android:orientation="vertical" android:layout_height="fill_parent" android:layout_width="fill_parent" 
-    xmlns:android="http://schemas.android.com/apk/res/android"> 
-    <android.support.v4.view.ViewPager android:layout_height="fill_parent" android:layout_width="fill_parent" 
-        android:id="@+android:id/viewpager"/> 
+    <android.support.v4.view.ViewPager
+        android:id="@+android:id/viewpager"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
+
+        <!-- fragment
+            android:id="@+id/unlocks"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            class="com.pinokia.considerateapp.UnlocksFragment" />
+        
+        <fragment
+            android:id="@+id/totaltime"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            class="com.pinokia.considerateapp.TotalTimeFragment" />
+        
+        <fragment
+            android:id="@+id/topapps"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            class="com.pinokia.considerateapp.TopAppsFragment" /-->
+        
+    </android.support.v4.view.ViewPager>
+
 </LinearLayout>

@@ -24,7 +24,6 @@ public class FlipService extends Service implements SensorEventListener  {
 	String tag = "CONSIDERATE_APP";
 	private SensorManager sensorManager;
 	private Sensor accelerometerSensor;
-	private Sensor proximitySensor;
 	private static AudioManager am;
 	TextView flippedText;
 
@@ -79,30 +78,30 @@ public class FlipService extends Service implements SensorEventListener  {
 	public static void setToPrevAudioState() {
 	  am.setRingerMode(prevAudioState);
 	}
+
+	private float error = (float) 0.015;
+	private boolean isSimilarAccelaration(float prev, float curr) {
+	  if(prev + error > curr && prev - error < curr) {
+	    return true;
+	  }
+	  return false;
+	}
+	
+	private float prev_z, curr_z;
 	
 	public void onSensorChanged(SensorEvent event) {
 		boolean newFaceDown = faceDown;
 
 		// Handle accelerometer change
 		if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-			float z_value = event.values[2];
-			Log.v(tag, "ACCELEROMETER:" + z_value);
-			if (z_value >= -9) {
-				newFaceDown = false;
-			} else {
+			curr_z = event.values[2];
+			Log.v(tag, "ACCELEROMETER:" + curr_z);
+			if (prev_z < -9 && curr_z < -9 && isSimilarAccelaration(prev_z, curr_z)) {
 				newFaceDown = true;
+			} else {
+				newFaceDown = false;
 			}
 		}	
-		// Handle proximity sensor change
-		 /*else if (event.sensor.getType() == Sensor.TYPE_PROXIMITY) {
-			float distance = event.values[0];
-			Log.v(tag, "DISTANCE:" + distance);
-			if (distance < 1.0) {
-				newCloseToObject = true;
-			} else {
-				newCloseToObject = false;
-			}
-		}*/
 
 		if (!faceDown && newFaceDown) {
 			// Change phone to Silent mode
@@ -116,6 +115,7 @@ public class FlipService extends Service implements SensorEventListener  {
 		}
 
 		faceDown = newFaceDown;
+		prev_z = curr_z;
 	}
 
 
@@ -127,7 +127,7 @@ public class FlipService extends Service implements SensorEventListener  {
 
 		// Configure accelerometer
 		accelerometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-		sensorManager.registerListener(this, accelerometerSensor, SensorManager.SENSOR_DELAY_NORMAL);
+		sensorManager.registerListener(this, accelerometerSensor, 5000);
 
 		List<Sensor> sensorList = sensorManager.getSensorList(Sensor.TYPE_ACCELEROMETER);
 		if(sensorList.size() > 0) {

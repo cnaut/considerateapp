@@ -28,6 +28,9 @@ public class TotalTimeFragment extends Fragment {
 	
 	Timer dailyTimer = new Timer();
 	long dailyDelay = 60 * 1000; // number of millisec in 1 minute
+	
+	Timer secondTimer = new Timer();
+	long secondDelay = 1000;
 
 	String graphString = "";
 
@@ -53,6 +56,20 @@ public class TotalTimeFragment extends Fragment {
 			System.out.println("Total Time day passed");
 		}
 	}
+	
+	class timerSecondTask extends TimerTask {
+		public void run() {
+			double timeSpentSeconds = (double) StatsService.getStopWatch().getTotalTime() / 1000.00;
+			
+			int hours = (int) timeSpentSeconds / (60 * 60);
+			int mins = (int) (timeSpentSeconds / (60)) % 60;
+			int secs = (int) (timeSpentSeconds) % 60;
+			
+			// CAN'T SET TEXT FROM DIFFERENT THREAD
+			//text.setText("You have been on your phone for\n" + hours + " hours " + mins + " mins and " + secs + " secs today.");
+			//wv.loadData(graphString, "text/html", "UTF-8");
+		}
+	}
 
 	/** Called when the activity is first created. */
 	@Override
@@ -66,6 +83,7 @@ public class TotalTimeFragment extends Fragment {
 		
 		// System.out.println("at oncreate");
 		dailyTimer.schedule(new timerDailyTask(), 0, dailyDelay);
+		secondTimer.schedule (new timerSecondTask(), 0, secondDelay);
 		return view;
 	}
 

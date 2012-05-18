@@ -1,5 +1,7 @@
 package com.pinokia.considerateapp;
 
+import java.util.Timer;
+
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -14,6 +16,11 @@ import android.os.Handler;
 import android.util.Log;
 
 public class StatsService extends Service {
+	
+	//Timers
+	
+	Timer secondTimer = new Timer(); //updates every second
+	long secondDelay = 1000; //# millis in a second
 
 	// This is a bit of a hacky way to see if the service is running, but from
 	// sources, it looks like it's the best way to do it.
@@ -226,4 +233,5 @@ public class StatsService extends Service {
 			return;
 		}
 	};
+	
 }

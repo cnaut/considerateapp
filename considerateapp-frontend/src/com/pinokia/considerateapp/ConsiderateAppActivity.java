@@ -5,21 +5,10 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import android.app.Activity;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
+import android.content.ContentResolver;
 import android.database.Cursor;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
-import android.media.AudioManager;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.Contacts.People;
 import android.provider.ContactsContract;
-import android.provider.ContactsContract.Contacts;
 import android.view.MenuInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -240,7 +229,8 @@ public class ConsiderateAppActivity extends Activity {
   private void refreshWhitelist() {
     if(whitelistEnabled) {
       whitelist = new ArrayList<String>();
-      Cursor cCur = this.managedQuery(ContactsContract.Contacts.CONTENT_URI, 
+      ContentResolver cr = getContentResolver();
+      Cursor cCur = cr.query(ContactsContract.Contacts.CONTENT_URI, 
           new String[] {ContactsContract.Contacts._ID, ContactsContract.Contacts.DISPLAY_NAME},
           "starred=1 AND has_phone_number=1", null, null);
   
@@ -249,7 +239,7 @@ public class ConsiderateAppActivity extends Activity {
                   .getColumnIndex(ContactsContract.Contacts._ID));
   
           //String name = (cCur.getString(cCur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME)));
-          Cursor pCur = this.managedQuery(
+          Cursor pCur = cr.query(
               ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, 
               ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = ?", 
               new String[]{id}, null);
@@ -257,6 +247,7 @@ public class ConsiderateAppActivity extends Activity {
             String phoneNumber = pCur.getString(
               pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
             whitelist.add(phoneNumber);
+            System.out.println("adding : " +phoneNumber);
           } 
           pCur.close();
       }

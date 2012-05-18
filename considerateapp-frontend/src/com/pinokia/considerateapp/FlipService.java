@@ -13,6 +13,7 @@ import android.media.AudioManager;
 import android.os.IBinder;
 import android.util.Log;
 import android.widget.TextView;
+import java.util.Date;
 
 public class FlipService extends Service implements SensorEventListener  {
 
@@ -79,8 +80,8 @@ public class FlipService extends Service implements SensorEventListener  {
 	  am.setRingerMode(prevAudioState);
 	}
 
-	private float error = (float) 0.015;
-	private boolean isSimilarAccelaration(float prev, float curr) {
+	private float error = (float) 0.2;
+	private boolean isSimilarAcceleration(float prev, float curr) {
 	  if(prev + error > curr && prev - error < curr) {
 	    return true;
 	  }
@@ -88,18 +89,27 @@ public class FlipService extends Service implements SensorEventListener  {
 	}
 	
 	private float prev_z, curr_z;
+        private Date startingTime = null;
 	
 	public void onSensorChanged(SensorEvent event) {
 		boolean newFaceDown = faceDown;
+
+                Date currTime = new Date();
 
 		// Handle accelerometer change
 		if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
 			curr_z = event.values[2];
 			Log.v(tag, "ACCELEROMETER:" + curr_z);
-			if (prev_z < -9 && curr_z < -9 && isSimilarAccelaration(prev_z, curr_z)) {
-				newFaceDown = true;
+			if (prev_z < -9 && curr_z < -9 && isSimilarAcceleration(prev_z, curr_z)) {
+                            if (startingTime == null) {
+                                startingTime = new Date();
+                            } else if (currTime.getTime() - startingTime.getTime() > 5000) {
+                                newFaceDown = true;
+                            }
+
 			} else {
-				newFaceDown = false;
+                            startingTime = null;
+                            newFaceDown = false;
 			}
 		}	
 
@@ -127,7 +137,7 @@ public class FlipService extends Service implements SensorEventListener  {
 
 		// Configure accelerometer
 		accelerometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-		sensorManager.registerListener(this, accelerometerSensor, 5000);
+		sensorManager.registerListener(this, accelerometerSensor, SensorManager.SENSOR_DELAY_NORMAL);
 
 		List<Sensor> sensorList = sensorManager.getSensorList(Sensor.TYPE_ACCELEROMETER);
 		if(sensorList.size() > 0) {

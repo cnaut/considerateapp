@@ -29,17 +29,7 @@ public class TotalTimeFragment extends Fragment {
 	Timer dailyTimer = new Timer();
 	long dailyDelay = 60 * 1000; // number of millisec in 1 minute
 
-	String graphString = "<center><img src='http://chart.apis.google.com/chart"
-			+ "?chf=bg,s,67676700|c,s,67676700"
-			+ "&chxl=0:|3 days ago|2 days ago|1 day ago|yesterday|today" // chart labels
-			+ "&chxr=0,1,5,1|1,0," + max + ",1" // axis range
-			+ "&chxs=0,000000,14,0,lt,000000|1,000000,14,1,l,000000" // chart axis style
-			+ "&chxt=x,y" // chart axis ordering
-			+ "&chs=" + chartWidth + "x" + chartHeight // chart size
-			+ "&cht=lc" // chart type
-			+ "&chco=58D9FC,EE58FC" // line colors
-			+ "&chd=t:0,0,0,0,0" // chart data
-			+ "&chls=3' />"; // line style (thickness)
+	String graphString = "";
 
 	// Power Check
 	double tMinus5_tt = 0;
@@ -125,6 +115,8 @@ public class TotalTimeFragment extends Fragment {
 				+ "&chco=58D9FC,EE58FC" // line colors
 				+ "&chd=t:" + plotPointsTotalTime // chart data
 				+ "&chls=3' />"; // line style (thickness)
+		
+		System.out.println("TOTALTIME_URL" + graphString);
 		
 		text.setText("You have been on your phone for\n" + hours + " hours " + mins + " mins and " + secs + " secs today.");
 		wv.loadData(graphString, "text/html", "UTF-8");

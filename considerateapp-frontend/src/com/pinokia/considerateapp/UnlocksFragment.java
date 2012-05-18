@@ -38,12 +38,26 @@ public class UnlocksFragment extends Fragment {
 	static WebView wv;
 	static TextView text;
 
+	static int chartWidth = 500;
+	static int chartHeight = 220;
+	
 	Timer dailyTimer = new Timer();
 	// long delay = 86400 * 1000; //number of millisec in 24 hours
 	long delay = 120 * 1000; // number of millisec in 1 minute
 
-	public static String graphString = "";
-	public static String graphUrl = "";
+	public static String graphString = "<center><img src='http://0.chart.apis.google.com/chart?"
+			+ "chf=bg,s,67676700|c,s,67676700" // transparent background
+			+ "&chxl=0:|3 days ago|2 days ago|1 day ago|yesterday|today" // chart labels
+			+ "&chxr=0,1,5,1|1,0,5,1" // axis range
+			+ "&chxs=0,000000,14,0,lt,000000|1,000000,14,1,l,000000" // chart axis style
+			+ "&chxt=x,y" // chart axis ordering
+			+ "&chs=" + chartWidth + "x" + chartHeight // chart size
+			+ "&cht=lxy" // chart type
+			+ "&chco=58D9FC,EE58FC" // line colors
+			+ "&chd=t:-1|0,0,0,0,0|-1|0,0,0,0,0" // chart data
+			+ "&chdl=Number of Screen Views|Number of Unlocks" // chart legend text
+			+ "&chls=3|3" // line style (thickness)
+			+ "&chm=B,58D9FC36,0,0,0,1|B,EE58FC34,1,0,0' />"; // area fill colors;
 
 	static double max = 5;
 	// Power Check
@@ -59,26 +73,21 @@ public class UnlocksFragment extends Fragment {
 	static double tMinus2_nu = 0;
 	static double tMinus1_nu = 0;
 
-	static int chartWidth = 500;
-	static int chartHeight = 220;
-
 	class timerClearTask extends TimerTask {
 		public void run() {
 			// Power Checks
 			tMinus5_pc = tMinus4_pc;
 			tMinus4_pc = tMinus3_pc;
 			tMinus3_pc = tMinus2_pc;
-			tMinus2_pc = tMinus1_pc;
+			tMinus2_pc = StatsService.getNumPowerChecks();;
 			tMinus1_pc = 0;
 
 			// Num Unlocks
 			tMinus5_nu = tMinus4_nu;
 			tMinus4_nu = tMinus3_nu;
 			tMinus3_nu = tMinus2_nu;
-			tMinus2_nu = tMinus1_nu;
+			tMinus2_nu = StatsService.getNumLocks();;
 			tMinus1_nu = 0;
-			
-			System.out.println("TIMER:CLEAR!");
 			
 			StatsService.setNumPowerChecks(0);
 			StatsService.setNumLocks(0);
@@ -130,15 +139,22 @@ public class UnlocksFragment extends Fragment {
 		super.onResume();
 		System.out.println("OnResume: Unlocks");
 
-		update();
-		System.out.println("RESUME_URL:" + graphString);
+		text.setText("You have checked your phone "
+				+ tMinus1_pc
+				+ " times\n and unlocked your phone "
+				+ tMinus1_nu + " times today.");
+		wv.loadData(graphString, "text/html", "UTF-8");
+
+		
+		System.out.println("UNLOCKS_URL:" + graphString);
 	}
 
-	public static void update() {
-		if (StatsService.getNumPowerChecks() > max)
-			max = StatsService.getNumPowerChecks();
+	public static void update() { 
 		tMinus1_pc = StatsService.getNumPowerChecks();
 		tMinus1_nu = StatsService.getNumLocks();
+		
+		if (tMinus1_pc > max)
+			max = tMinus1_pc;
 		
 		String plotPointsPowerCheck = ""
 				+ Double.toString((tMinus5_pc/max) * 100.0) + ","
@@ -167,14 +183,10 @@ public class UnlocksFragment extends Fragment {
 				+ "&chls=3|3" // line style (thickness)
 				+ "&chm=B,58D9FC36,0,0,0,1|B,EE58FC34,1,0,0' />"; // area fill colors
 		
-		System.out.println("UPDATE:" + plotPointsPowerCheck);
-		
 		text.setText("You have checked your phone "
 				+ tMinus1_pc
 				+ " times\n and unlocked your phone "
 				+ tMinus1_nu + " times today.");
-		wv.loadData(graphString, "text/html", "UTF-8");	
-		
+		wv.loadData(graphString, "text/html", "UTF-8");
 	}
-
 }

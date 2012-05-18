@@ -130,7 +130,7 @@ public class TopAppsFragment extends Fragment {
 
 			appsMap.clear();
 
-			System.out.println("finished loading graph: Top Apps");
+			System.out.println("Top Apps day passed");
 		}
 	}
 

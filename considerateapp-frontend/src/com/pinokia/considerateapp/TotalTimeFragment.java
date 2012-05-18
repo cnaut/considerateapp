@@ -59,15 +59,21 @@ public class TotalTimeFragment extends Fragment {
 	
 	class timerSecondTask extends TimerTask {
 		public void run() {
-			double timeSpentSeconds = (double) StatsService.getStopWatch().getTotalTime() / 1000.00;
-			
-			int hours = (int) timeSpentSeconds / (60 * 60);
-			int mins = (int) (timeSpentSeconds / (60)) % 60;
-			int secs = (int) (timeSpentSeconds) % 60;
-			
-			// CAN'T SET TEXT FROM DIFFERENT THREAD
-			//text.setText("You have been on your phone for\n" + hours + " hours " + mins + " mins and " + secs + " secs today.");
-			//wv.loadData(graphString, "text/html", "UTF-8");
+
+			getActivity().runOnUiThread(new Runnable() {
+				public void run() {
+					double timeSpentSeconds = (double) StatsService
+							.getStopWatch().getTotalTime() / 1000.00;
+
+					int hours = (int) timeSpentSeconds / (60 * 60);
+					int mins = (int) (timeSpentSeconds / (60)) % 60;
+					int secs = (int) (timeSpentSeconds) % 60;
+					text.setText("You have been on your phone for\n" + hours
+							+ " hours " + mins + " mins and " + secs
+							+ " secs today.");
+				}
+			});
+			// wv.loadData(graphString, "text/html", "UTF-8");
 		}
 	}
 

@@ -1,0 +1,1 @@
+INDEX VERSION 1.126+C:\Users\Angela\Desktop\meandmyphone\considerateapp-frontend\.metadata\.plugins\org.eclipse.jdt.core

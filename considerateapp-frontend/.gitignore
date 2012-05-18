@@ -1,5 +1,6 @@
 /bin
 /gen
+/.metadata
 *.orig
 build.xml
 local.properties

@@ -41,9 +41,9 @@ public class UnlocksFragment extends Fragment {
 	static int chartWidth = 500;
 	static int chartHeight = 220;
 	
-	Timer dailyTimer = new Timer();
+	//Timer dailyTimer = new Timer();
 	// long delay = 86400 * 1000; //number of millisec in 24 hours
-	long delay = 120 * 1000; // number of millisec in 1 minute
+	//long delay = 60 * 1000; // number of millisec in 1 minute
 
 	public static String graphString = "<center><img src='http://0.chart.apis.google.com/chart?"
 			+ "chf=bg,s,67676700|c,s,67676700" // transparent background
@@ -58,7 +58,7 @@ public class UnlocksFragment extends Fragment {
 			+ "&chdl=Number of Screen Views|Number of Unlocks" // chart legend text
 			+ "&chls=3|3" // line style (thickness)
 			+ "&chm=B,58D9FC36,0,0,0,1|B,EE58FC34,1,0,0' />"; // area fill colors;
-
+	/*
 	static double max = 5;
 	// Power Check
 	static double tMinus5_pc = 0;
@@ -72,7 +72,8 @@ public class UnlocksFragment extends Fragment {
 	static double tMinus3_nu = 0;
 	static double tMinus2_nu = 0;
 	static double tMinus1_nu = 0;
-
+	*/
+	/*
 	class timerClearTask extends TimerTask {
 		public void run() {
 			// Power Checks
@@ -96,6 +97,30 @@ public class UnlocksFragment extends Fragment {
 
 		}
 	}
+	*/
+	
+	/*
+	public static void dailyUpdate() { 
+		// Power Checks
+		tMinus5_pc = tMinus4_pc;
+		tMinus4_pc = tMinus3_pc;
+		tMinus3_pc = tMinus2_pc;
+		tMinus2_pc = StatsService.getNumPowerChecks();;
+		tMinus1_pc = 0;
+
+		// Num Unlocks
+		tMinus5_nu = tMinus4_nu;
+		tMinus4_nu = tMinus3_nu;
+		tMinus3_nu = tMinus2_nu;
+		tMinus2_nu = StatsService.getNumLocks();;
+		tMinus1_nu = 0;
+
+		StatsService.setNumPowerChecks(0);
+		StatsService.setNumLocks(0);
+
+		System.out.println("Unlocks day passed");
+
+	}*/
 
 	/** Called when the activity is first created. */
 	@Override
@@ -112,7 +137,7 @@ public class UnlocksFragment extends Fragment {
 		StatsService.initContext(getActivity().getApplicationContext());
 		StatsService.start(getActivity().getApplicationContext());
 
-		dailyTimer.schedule(new timerClearTask(), 0, delay);
+		//dailyTimer.schedule(new timerClearTask(), 0, delay);
 		return view;
 
 	}
@@ -137,6 +162,10 @@ public class UnlocksFragment extends Fragment {
 	@Override
 	public void onResume() {
 		super.onResume();
+		
+		double tMinus1_pc = StatsService.get_tMinus1_pc();
+		double tMinus1_nu = StatsService.get_tMinus1_nu();
+		
 		System.out.println("OnResume: Unlocks");
 
 		text.setText("You have checked your phone "
@@ -150,8 +179,24 @@ public class UnlocksFragment extends Fragment {
 	}
 
 	public static void update() { 
-		tMinus1_pc = StatsService.getNumPowerChecks();
-		tMinus1_nu = StatsService.getNumLocks();
+		StatsService.set_tMinus1_pc(StatsService.getNumPowerChecks());
+		StatsService.set_tMinus1_nu(StatsService.getNumLocks());
+		//tMinus1_pc = StatsService.getNumPowerChecks();
+		//tMinus1_nu = StatsService.getNumLocks();
+		
+		double tMinus1_pc = StatsService.get_tMinus1_pc();
+		double tMinus2_pc = StatsService.get_tMinus2_pc();
+		double tMinus3_pc = StatsService.get_tMinus3_pc();
+		double tMinus4_pc = StatsService.get_tMinus4_pc();
+		double tMinus5_pc = StatsService.get_tMinus5_pc();
+		
+		double tMinus1_nu = StatsService.get_tMinus1_nu();
+		double tMinus2_nu = StatsService.get_tMinus2_nu();
+		double tMinus3_nu = StatsService.get_tMinus3_nu();
+		double tMinus4_nu = StatsService.get_tMinus4_nu();
+		double tMinus5_nu = StatsService.get_tMinus5_nu();
+		
+		double max = StatsService.getMax();
 		
 		if (tMinus1_pc > max)
 			max = tMinus1_pc;

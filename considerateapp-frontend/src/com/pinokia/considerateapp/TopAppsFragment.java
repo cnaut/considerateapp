@@ -32,20 +32,20 @@ public class TopAppsFragment extends Fragment {
 	static int chartWidth = 500;// = 400;
 	static int chartHeight = 220;// = 240;
 
-	ActivityManager am;
-	PackageManager pack;
-	int numTopApps = 5;
+	static ActivityManager am;
+	static PackageManager pack;
+	//static int numTopApps = 5;
 
-	Timer dailyTimer = new Timer();
-	long dailyDelay = 60 * 1000; // number of millisec in 1 minute
+	//Timer dailyTimer = new Timer();
+	//long dailyDelay = 60 * 1000; // number of millisec in 1 minute
 
 	Timer pollTimer = new Timer();
 	int pollDelay = 5 * 1000; // 5 seconds
 	int pollElapsed = pollDelay / 1000;
 
-	HashMap<String, Double> appsMap;
+	//static HashMap<String, Double> appsMap;
 
-	String graphString = "<img src='http://2.chart.apis.google.com/chart?"
+	static String graphString = "<img src='http://2.chart.apis.google.com/chart?"
 			+ "chf=bg,s,67676700|c,s,67676700" // transparent background
 			+ "&chs=" + chartWidth + "x" + chartHeight // chart size
 			+ "&cht=p" // chart type
@@ -54,10 +54,14 @@ public class TopAppsFragment extends Fragment {
 			+ "&chd=t:200,842,942,432,594" // chart data
 			+ "&chdl=App+1|App+2|App+3|App+4+|App+5&chdlp=l' />"; // chart labels
 
+	
 	class timerPollTask extends TimerTask {
 		public void run() {
 
 			if (StatsService.getUserPresent()) {
+				
+				HashMap<String, Double> appsMap = StatsService.getAppsMap();
+				
 				int numberOfTasks = 1;
 				String packageName = am.getRunningTasks(numberOfTasks).get(0).topActivity
 						.getPackageName();
@@ -82,7 +86,74 @@ public class TopAppsFragment extends Fragment {
 			}
 		}
 	}
+	
+	public static String getGraphString() {
+		return graphString;
+	}
+	
+	public static void setGraphString(String updatedGraphString) {
+		graphString= updatedGraphString;
+	}
+	
+	public static int getChartWidth() {
+		return chartWidth;
+	}
+	
+	public static int getChartHeight() {
+		return chartHeight;
+	}
+	
+	/*
+	public static void dailyUpdate() { 
+		HashMap<String, Double> tempMap = appsMap;
+		ValueComparator bvc = new ValueComparator(tempMap);
+		TreeMap<String, Double> sorted_map = new TreeMap<String, Double>(bvc);
+		
+		sorted_map.putAll(tempMap);
 
+		String plotPointsApps = "";
+		String plotPointsTime = "";
+		double max = -1;
+
+		int size = sorted_map.size();
+		if (size > numTopApps) {
+			size = numTopApps;
+		}
+
+		while (size > 0) {
+			for (String key : sorted_map.keySet()) {
+				// System.out.println("key/value: " + key +
+				// "/"+sorted_map.get(key));
+				double value = sorted_map.get(key);
+				if (value > max)
+					max = value;
+
+				if (size == 1) {
+					plotPointsApps = plotPointsApps + key;
+					plotPointsTime = plotPointsTime + value;
+				} else {
+					plotPointsApps = plotPointsApps + key + "|";
+					plotPointsTime = plotPointsTime + value + ",";
+				}
+				size -= 1;
+			}
+		}
+		graphString = "<img src='http://2.chart.apis.google.com/chart?"
+				+ "chf=bg,s,67676700|c,s,67676700" // transparent background
+				+ "&chs=" + chartWidth + "x" + chartHeight // chart size
+				+ "&cht=p" // chart type
+				+ "&chco=58D9FC,EE58FC" // slice colors
+				+ "&chds=0," + max // range
+				+ "&chd=t:" + plotPointsTime // data
+				+ "&chdl=" + plotPointsApps + "' />"; // labels
+
+		appsMap.clear();
+
+		System.out.println("Top Apps day passed");
+		
+	}*/
+
+	/*
 	class timerDailyTask extends TimerTask {
 		public void run() {
 
@@ -132,8 +203,9 @@ public class TopAppsFragment extends Fragment {
 
 			System.out.println("Top Apps day passed");
 		}
-	}
+	}*/
 
+	/*
 	class ValueComparator implements Comparator<Object> {
 
 		Map<String, Double> base;
@@ -152,7 +224,7 @@ public class TopAppsFragment extends Fragment {
 				return -1;
 			}
 		}
-	}
+	}*/
 
 	/** Called when the activity is first created. */
 	@Override
@@ -165,13 +237,12 @@ public class TopAppsFragment extends Fragment {
 		wv = (WebView) view.findViewById(R.id.graph);
 		wv.setBackgroundColor(0);
 		
-		am = (ActivityManager) getActivity().getSystemService(
-				Context.ACTIVITY_SERVICE);
+		am = (ActivityManager) getActivity().getSystemService(Context.ACTIVITY_SERVICE);
 		pack = getActivity().getPackageManager();
-		appsMap = new HashMap<String, Double>();
+		//appsMap = new HashMap<String, Double>();
 
 		pollTimer.schedule(new timerPollTask(), 0, pollDelay);
-		dailyTimer.schedule(new timerDailyTask(), 0, dailyDelay);
+		//dailyTimer.schedule(new timerDailyTask(), 0, dailyDelay);
 		return view;
 	}
 

@@ -2,7 +2,9 @@ package com.pinokia.considerateapp;
 
 
 import android.app.Activity;
+import android.database.Cursor;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.PagerAdapter;
@@ -16,6 +18,7 @@ import android.widget.Toast;
 import android.util.Log;
 
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 

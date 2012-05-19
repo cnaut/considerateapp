@@ -26,8 +26,8 @@ public class TotalTimeFragment extends Fragment {
 	static int chartHeight = 220;// = 240;
 	double max = 10;	
 	
-	Timer dailyTimer = new Timer();
-	long dailyDelay = 60 * 1000; // number of millisec in 1 minute
+	//Timer dailyTimer = new Timer();
+	//long dailyDelay = 60 * 1000; // number of millisec in 1 minute
 	
 	Timer secondTimer = new Timer();
 	long secondDelay = 1000;
@@ -35,13 +35,15 @@ public class TotalTimeFragment extends Fragment {
 	String graphString = "";
 
 	// Power Check
-	double tMinus5_tt = 0;
-	double tMinus4_tt = 0;
-	double tMinus3_tt = 0;
-	double tMinus2_tt = 0;
-	double tMinus1_tt = 0;
+	/*
+	static double tMinus5_tt = 0;
+	static double tMinus4_tt = 0;
+	static double tMinus3_tt = 0;
+	static double tMinus2_tt = 0;
+	static double tMinus1_tt = 0;
+	*/
 
-	class timerDailyTask extends TimerTask {
+	/*class timerDailyTask extends TimerTask {
 		public void run() {
 
 			// System.out.println("BEFORE: "+ stopwatch.getTotalTime());
@@ -55,25 +57,45 @@ public class TotalTimeFragment extends Fragment {
 
 			System.out.println("Total Time day passed");
 		}
-	}
+	}*/
+	
+	/*
+	public static void dailyUpdate() { 
+		tMinus5_tt = tMinus4_tt;
+		tMinus4_tt = tMinus3_tt;
+		tMinus3_tt = tMinus2_tt;
+		tMinus2_tt = tMinus1_tt;
+		tMinus1_tt = 0;
+		StatsService.getStopWatch().setTotalTime(0);
+		// System.out.println("AFTER: "+ stopwatch.getTotalTime());
+
+		System.out.println("Total Time day passed");
+	}*/
+	
 	
 	class timerSecondTask extends TimerTask {
 		public void run() {
-
-			getActivity().runOnUiThread(new Runnable() {
-				public void run() {
-					double timeSpentSeconds = (double) StatsService
-							.getStopWatch().getTotalTime() / 1000.00;
-
-					int hours = (int) timeSpentSeconds / (60 * 60);
-					int mins = (int) (timeSpentSeconds / (60)) % 60;
-					int secs = (int) (timeSpentSeconds) % 60;
-					text.setText("You have been on your phone for\n" + hours
-							+ " hours " + mins + " mins and " + secs
-							+ " secs today.");
-				}
-			});
-			// wv.loadData(graphString, "text/html", "UTF-8");
+			
+			Activity a = getActivity();
+			if (a == null) {
+				//do nothing
+				//System.out.println("activity is null");
+			} else {
+				a.runOnUiThread(new Runnable() {
+					public void run() {
+						double timeSpentSeconds = (double) StatsService
+								.getStopWatch().getTotalTime() / 1000.00;
+	
+						int hours = (int) timeSpentSeconds / (60 * 60);
+						int mins = (int) (timeSpentSeconds / (60)) % 60;
+						int secs = (int) (timeSpentSeconds) % 60;
+						text.setText("You have been on your phone for\n" + hours
+								+ " hours " + mins + " mins and " + secs
+								+ " secs today.");
+					}
+				
+				});
+			}
 		}
 	}
 
@@ -88,7 +110,7 @@ public class TotalTimeFragment extends Fragment {
 		wv.setBackgroundColor(0);
 		
 		// System.out.println("at oncreate");
-		dailyTimer.schedule(new timerDailyTask(), 0, dailyDelay);
+		//dailyTimer.schedule(new timerDailyTask(), 0, dailyDelay);
 		secondTimer.schedule (new timerSecondTask(), 0, secondDelay);
 		return view;
 	}
@@ -108,6 +130,7 @@ public class TotalTimeFragment extends Fragment {
 	@Override
 	public void onResume() {
 		super.onResume();
+		
 		System.out.println("OnResume: TotalTime");
 
 		long timeSpentMillis = StatsService.getStopWatch().getTotalTime();
@@ -119,6 +142,12 @@ public class TotalTimeFragment extends Fragment {
 				.getTotalTime() / 1000.00;
 		if (timeSpentSeconds > max)
 			max = timeSpentSeconds;
+		
+		double tMinus1_tt = StatsService.get_tMinus1_tt();
+		double tMinus2_tt = StatsService.get_tMinus2_tt();
+		double tMinus3_tt = StatsService.get_tMinus3_tt();
+		double tMinus4_tt = StatsService.get_tMinus4_tt();
+		double tMinus5_tt = StatsService.get_tMinus5_tt();
 		
 		tMinus1_tt = timeSpentSeconds;		
 		String plotPointsTotalTime = ""

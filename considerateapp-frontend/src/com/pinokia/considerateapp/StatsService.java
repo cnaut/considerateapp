@@ -1,22 +1,67 @@
 package com.pinokia.considerateapp;
 
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Timer;
+import java.util.TimerTask;
+import java.util.TreeMap;
 
+import com.pinokia.considerateapp.TotalTimeFragment.timerSecondTask;
+
+import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.IBinder;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.util.Log;
 
 public class StatsService extends Service {
 	
 	//Timers
+	private static Timer dailyTimer = new Timer();
+	// long delay = 86400 * 1000; //number of millisec in 24 hours
+	private static long dailyDelay = 60 * 1000; // number of millisec in 1 minute
+
 	
-	Timer secondTimer = new Timer(); //updates every second
-	long secondDelay = 1000; //# millis in a second
+	//Timer pollTimer = new Timer(); //polls for app currenlty in foreground
+	//int pollDelay = 5 * 1000; // 5 seconds
+	//int pollElapsed = pollDelay / 1000;
+	
+	//Top Apps
+	static HashMap<String, Double> appsMap = new HashMap<String, Double>();
+	static int numTopApps = 5;
+	//ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+	//PackageManager pack = getPackageManager();
+	
+	//Total Time
+	static double tMinus5_tt = 0;
+	static double tMinus4_tt = 0;
+	static double tMinus3_tt = 0;
+	static double tMinus2_tt = 0;
+	static double tMinus1_tt = 0;
+	
+	//NumUnlocks
+	static double max = 5;
+	// Power Check
+	static double tMinus5_pc = 0;
+	static double tMinus4_pc = 0;
+	static double tMinus3_pc = 0;
+	static double tMinus2_pc = 0;
+	static double tMinus1_pc = 0;
+	// Num Unlock
+	static double tMinus5_nu = 0;
+	static double tMinus4_nu = 0;
+	static double tMinus3_nu = 0;
+	static double tMinus2_nu = 0;
+	static double tMinus1_nu = 0;
 
 	// This is a bit of a hacky way to see if the service is running, but from
 	// sources, it looks like it's the best way to do it.
@@ -32,42 +77,113 @@ public class StatsService extends Service {
 	private static boolean userPresent = true;
 	private static StopWatch stopwatch = new StopWatch();
 
+	/*
 	protected static void saveData() {
 		editor.putInt("numLocks", numLocks);
 		editor.putInt("numPowerChecks", numPowerChecks);
 		editor.commit();
-	}
+	}*/
 
+	public static double get_tMinus5_tt() {
+		return tMinus5_tt;
+	}
+	
+	public static double get_tMinus4_tt() {
+		return tMinus4_tt;
+	}
+	
+	public static double get_tMinus3_tt() {
+		return tMinus3_tt;
+	}
+	
+	public static double get_tMinus2_tt() {
+		return tMinus2_tt;
+	}
+	
+	public static double get_tMinus1_tt() {
+		return tMinus1_tt;
+	}
+	
+	public static double get_tMinus5_pc() {
+		return tMinus5_pc;
+	}
+	
+	public static double get_tMinus4_pc() {
+		return tMinus4_pc;
+	}
+	
+	public static double get_tMinus3_pc() {
+		return tMinus3_pc;
+	}
+	
+	public static double get_tMinus2_pc() {
+		return tMinus2_pc;
+	}
+	
+	public static double get_tMinus1_pc() {
+		return tMinus1_pc;
+	}
+	public static double get_tMinus5_nu() {
+		return tMinus5_nu;
+	}
+	public static double get_tMinus4_nu() {
+		return tMinus4_nu;
+	}
+	public static double get_tMinus3_nu() {
+		return tMinus3_nu;
+	}
+	public static double get_tMinus2_nu() {
+		return tMinus2_nu;
+	}
+	public static double get_tMinus1_nu() {
+		return tMinus1_nu;
+	}
+	
+	public static HashMap<String, Double> getAppsMap() {
+		return appsMap;
+	}
+	
+	public static double getMax() {
+		return max;
+	}
 	public static int getNumLocks() {
-		ensureStatsLoaded();
+		//ensureStatsLoaded();
 		return numLocks;
 	}
 
 	public static int getNumPowerChecks() {
-		ensureStatsLoaded();
+		//ensureStatsLoaded();
 		return numPowerChecks;
 	}
 
 	public static boolean getUserPresent() {
-		ensureStatsLoaded();
+		//ensureStatsLoaded();
 		return userPresent;
 	}
 
 	public static StopWatch getStopWatch() {
-		ensureStatsLoaded();
+		//ensureStatsLoaded();
 		return stopwatch;
 	}
 
 	public static void setNumLocks(int newNumLocks) {
-		ensureStatsLoaded();
+		//ensureStatsLoaded();
 		numLocks = newNumLocks;
-		saveData();
+		//saveData();
 	}
 
 	public static void setNumPowerChecks(int newNumPowerChecks) {
-		ensureStatsLoaded();
+		//ensureStatsLoaded();
 		numPowerChecks = newNumPowerChecks;
-		saveData();
+		//saveData();
+	}
+	
+	public static void set_tMinus1_nu(double newInt) {
+		tMinus1_nu = newInt;
+	}
+	
+	public static void set_tMinus1_pc(double newInt) {
+		tMinus1_pc = newInt;
 	}
 
 	public static void initContext(Context aContext) {
@@ -82,6 +198,151 @@ public class StatsService extends Service {
 	private boolean initialized = false;
 	private boolean active = false;
 	private boolean awake = false;
+	
+	//TIMER SHIT
+	/*
+	class timerPollTask extends TimerTask {
+		public void run() {
+
+			if (StatsService.getUserPresent()) {
+				ActivityManager am = TopAppsFragment.am;
+				PackageManager pack = TopAppsFragment.pack;
+				
+				int numberOfTasks = 1;
+				String packageName = am.getRunningTasks(numberOfTasks).get(0).topActivity
+						.getPackageName();
+				String appName = "";
+
+				try {
+					appName = (String) pack.getApplicationLabel(pack
+							.getApplicationInfo(packageName, PackageManager.GET_META_DATA));
+				} catch (NameNotFoundException e) {
+					e.printStackTrace();
+				}
+
+				if (appsMap.containsKey(appName)) { // already present
+					double currValue = appsMap.get(appName);
+					appsMap.put(appName, currValue + pollElapsed);
+				} else {
+					appsMap.put(appName, (double) 5);
+				}
+
+				System.out.println(appsMap);
+			}
+		}
+	}*/
+	
+	class timerDailyTask extends TimerTask {
+		public void run() {
+			dailyUpdateUnlocks();
+			dailyUpdateTotalTime();
+			dailyUpdateTopApps();
+		}
+	}
+	
+	public static void dailyUpdateUnlocks() { 
+		// Power Checks
+		tMinus5_pc = tMinus4_pc;
+		tMinus4_pc = tMinus3_pc;
+		tMinus3_pc = tMinus2_pc;
+		tMinus2_pc = StatsService.getNumPowerChecks();;
+		tMinus1_pc = 0;
+
+		// Num Unlocks
+		tMinus5_nu = tMinus4_nu;
+		tMinus4_nu = tMinus3_nu;
+		tMinus3_nu = tMinus2_nu;
+		tMinus2_nu = StatsService.getNumLocks();;
+		tMinus1_nu = 0;
+
+		StatsService.setNumPowerChecks(0);
+		StatsService.setNumLocks(0);
+
+		System.out.println("Unlocks day passed");
+
+	}
+	
+	public void dailyUpdateTotalTime() { 
+		tMinus5_tt = tMinus4_tt;
+		tMinus4_tt = tMinus3_tt;
+		tMinus3_tt = tMinus2_tt;
+		tMinus2_tt = tMinus1_tt;
+		tMinus1_tt = 0;
+		StatsService.getStopWatch().setTotalTime(0);
+		// System.out.println("AFTER: "+ stopwatch.getTotalTime());
+
+		System.out.println("Total Time day passed");
+	}
+	
+	
+	public void dailyUpdateTopApps() {
+		HashMap<String, Double> tempMap = appsMap;
+		ValueComparator bvc = new ValueComparator(tempMap);
+		TreeMap<String, Double> sorted_map = new TreeMap<String, Double>(bvc);
+		
+		sorted_map.putAll(tempMap);
+
+		String plotPointsApps = "";
+		String plotPointsTime = "";
+		double max = -1;
+
+		int size = sorted_map.size();
+		if (size > numTopApps) {
+			size = numTopApps;
+		}
+
+		while (size > 0) {
+			for (String key : sorted_map.keySet()) {
+				// System.out.println("key/value: " + key +
+				// "/"+sorted_map.get(key));
+				double value = sorted_map.get(key);
+				if (value > max)
+					max = value;
+
+				if (size == 1) {
+					plotPointsApps = plotPointsApps + key;
+					plotPointsTime = plotPointsTime + value;
+				} else {
+					plotPointsApps = plotPointsApps + key + "|";
+					plotPointsTime = plotPointsTime + value + ",";
+				}
+				size -= 1;
+			}
+		}
+		String graphString = "<img src='http://2.chart.apis.google.com/chart?"
+				+ "chf=bg,s,67676700|c,s,67676700" // transparent background
+				+ "&chs=" + TopAppsFragment.chartWidth + "x" + TopAppsFragment.chartHeight // chart size
+				+ "&cht=p" // chart type
+				+ "&chco=58D9FC,EE58FC" // slice colors
+				+ "&chds=0," + max // range
+				+ "&chd=t:" + plotPointsTime // data
+				+ "&chdl=" + plotPointsApps + "' />"; // labels
+		TopAppsFragment.setGraphString(graphString);
+
+		appsMap.clear();
+
+		System.out.println("Top Apps day passed");
+	}
+	
+	class ValueComparator implements Comparator<Object> {
+
+		Map<String, Double> base;
+
+		public ValueComparator(Map<String, Double> base) {
+			this.base = base;
+		}
+
+		public int compare(Object a, Object b) {
+
+			if ((Double) base.get(a) < (Double) base.get(b)) {
+				return 1;
+			} else if ((Double) base.get(a) == (Double) base.get(b)) {
+				return 0;
+			} else {
+				return -1;
+			}
+		}
+	}
 
 	@Override
 	public IBinder onBind(Intent arg0) {
@@ -116,6 +377,10 @@ public class StatsService extends Service {
 	public void onCreate() {
 		super.onCreate();
 		running = true;
+		dailyTimer.schedule(new timerDailyTask(), 0, dailyDelay);
+		//pollTimer.schedule(new timerPollTask(), 0, pollDelay);
+		
+		
 	}
 
 	@Override
@@ -134,7 +399,7 @@ public class StatsService extends Service {
 		}
 		Log.v("onStartCommand", "SleepMonitorService started!");
 
-		ensureStatsLoaded();
+		//ensureStatsLoaded();
 
 		startReceivers();
 		initialized = true;
@@ -184,14 +449,12 @@ public class StatsService extends Service {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 
-
 			if (!intent.getAction().equals(OnIntent))
 				return;
 
-
 			numPowerChecks++;
 			System.out.println("NumPowerChecks: " + numPowerChecks);
-			saveData();
+			//saveData();
 			return;
 		}
 	};
@@ -209,7 +472,7 @@ public class StatsService extends Service {
 
 			userPresent = false;
 			stopwatch.stop();
-			saveData();
+			//saveData();
 			return;
 		}
 	};
@@ -219,22 +482,18 @@ public class StatsService extends Service {
 
 
 		public static final String TAG = "screenUnlocked";
-		public static final String UnlockIntent = "android.intent.action.ACTION_USER_PRESENT";
+		public static final String UnlockIntent = "android.intent.action.USER_PRESENT";
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			// if(!intent.getAction().equals(UnlockIntent)) return;
-			// System.out.println("1");
+			if(!intent.getAction().equals(UnlockIntent)) return;
 			stopwatch.start();
 			userPresent = true;
 
 			numLocks++;
 			System.out.println("NumLocks: " + numLocks);
-			// System.out.println("2");
-			saveData();
-			// System.out.println("3");
+			//saveData();
 			UnlocksFragment.update();
-			// System.out.println("4");
 			return;
 		}
 	};

@@ -109,7 +109,7 @@ public class TotalTimeFragment extends Fragment {
 		wv = (WebView) view.findViewById(R.id.graph);
 		wv.setBackgroundColor(0);
 		
-		// System.out.println("at oncreate");
+		System.out.println("at oncreate: Total Time");
 		//dailyTimer.schedule(new timerDailyTask(), 0, dailyDelay);
 		secondTimer.schedule (new timerSecondTask(), 0, secondDelay);
 		return view;
@@ -119,6 +119,18 @@ public class TotalTimeFragment extends Fragment {
 	public void onSaveInstanceState(Bundle savedInstanceState) {
 		super.onSaveInstanceState(savedInstanceState);
 		setUserVisibleHint(true);
+	}
+	
+	@Override
+	public void onStop() {
+		super.onStop();
+		System.out.println("OnStop: TotalTime");
+	}
+	
+	@Override
+	public void onStart() {
+		super.onStart();
+		System.out.println("OnStart: TotalTime");
 	}
 
 	@Override
@@ -138,18 +150,19 @@ public class TotalTimeFragment extends Fragment {
 		int mins = (int) (timeSpentMillis / (1000 * 60)) % 60;
 		int secs = (int) (timeSpentMillis / (1000)) % 60;
 
-		double timeSpentSeconds = (double) StatsService.getStopWatch()
-				.getTotalTime() / 1000.00;
+		double timeSpentSeconds = timeSpentMillis / 1000.00;
 		if (timeSpentSeconds > max)
 			max = timeSpentSeconds;
+		
+		StatsService.set_tMinus1_tt(timeSpentSeconds);
+		//tMinus1_tt = timeSpentSeconds;		
 		
 		double tMinus1_tt = StatsService.get_tMinus1_tt();
 		double tMinus2_tt = StatsService.get_tMinus2_tt();
 		double tMinus3_tt = StatsService.get_tMinus3_tt();
 		double tMinus4_tt = StatsService.get_tMinus4_tt();
 		double tMinus5_tt = StatsService.get_tMinus5_tt();
-		
-		tMinus1_tt = timeSpentSeconds;		
+	
 		String plotPointsTotalTime = ""
 				+ Double.toString(((tMinus5_tt / max) * 100.00)) + ","
 				+ Double.toString(((tMinus4_tt / max) * 100.00)) + ","
@@ -160,7 +173,7 @@ public class TotalTimeFragment extends Fragment {
 		graphString = "<center><img src='http://1.chart.apis.google.com/chart"
 				+ "?chf=bg,s,67676700|c,s,67676700" // transparent background
 				+ "&chxl=0:|3 days ago|2 days ago|1 day ago|yesterday|today" // chart labels
-				+ "&chxr=0,1,5,1|1,0," + max + ",5" // axis range
+				+ "&chxr=0,1,5,1|1,0," + max + "" // axis range
 				+ "&chxs=0,000000,14,0,lt,000000|1,000000,14,1,l,000000" // chart axis style
 				+ "&chxt=x,y" // chart axis ordering
 				+ "&chs=" + chartWidth + "x" + chartHeight // chart size
@@ -169,7 +182,7 @@ public class TotalTimeFragment extends Fragment {
 				+ "&chd=t:" + plotPointsTotalTime // chart data
 				+ "&chls=3' />"; // line style (thickness)
 		
-		System.out.println("TOTALTIME_URL" + graphString);
+		//System.out.println("TOTALTIME_URL" + graphString);
 		
 		text.setText("You have been on your phone for\n" + hours + " hours " + mins + " mins and " + secs + " secs today.");
 		wv.loadData(graphString, "text/html", "UTF-8");

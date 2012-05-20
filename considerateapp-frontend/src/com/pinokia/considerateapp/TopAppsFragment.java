@@ -45,6 +45,7 @@ public class TopAppsFragment extends Fragment {
 
 	//static HashMap<String, Double> appsMap;
 
+	
 	static String graphString = "<img src='http://2.chart.apis.google.com/chart?"
 			+ "chf=bg,s,67676700|c,s,67676700" // transparent background
 			+ "&chs=" + chartWidth + "x" + chartHeight // chart size
@@ -82,7 +83,7 @@ public class TopAppsFragment extends Fragment {
 					appsMap.put(appName, (double) 5);
 				}
 
-				System.out.println(appsMap);
+				//System.out.println(appsMap);
 			}
 		}
 	}

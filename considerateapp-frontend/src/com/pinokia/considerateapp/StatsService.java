@@ -25,6 +25,8 @@ import android.util.Log;
 
 public class StatsService extends Service {
 	
+	
+
 	//Timers
 	private static Timer dailyTimer = new Timer();
 	// long delay = 86400 * 1000; //number of millisec in 24 hours
@@ -123,18 +125,23 @@ public class StatsService extends Service {
 	public static double get_tMinus1_pc() {
 		return tMinus1_pc;
 	}
+	
 	public static double get_tMinus5_nu() {
 		return tMinus5_nu;
 	}
+	
 	public static double get_tMinus4_nu() {
 		return tMinus4_nu;
 	}
+	
 	public static double get_tMinus3_nu() {
 		return tMinus3_nu;
 	}
+	
 	public static double get_tMinus2_nu() {
 		return tMinus2_nu;
 	}
+	
 	public static double get_tMinus1_nu() {
 		return tMinus1_nu;
 	}
@@ -146,6 +153,7 @@ public class StatsService extends Service {
 	public static double getMax() {
 		return max;
 	}
+	
 	public static int getNumLocks() {
 		//ensureStatsLoaded();
 		return numLocks;
@@ -178,12 +186,16 @@ public class StatsService extends Service {
 		//saveData();
 	}
 	
-	public static void set_tMinus1_nu(double newInt) {
-		tMinus1_nu = newInt;
+	public static void set_tMinus1_nu(double newDouble) {
+		tMinus1_nu = newDouble;
 	}
 	
-	public static void set_tMinus1_pc(double newInt) {
-		tMinus1_pc = newInt;
+	public static void set_tMinus1_pc(double newDouble) {
+		tMinus1_pc = newDouble;
+	}
+	
+	public static void set_tMinus1_tt(double newDouble) {
+		tMinus1_tt = newDouble;
 	}
 
 	public static void initContext(Context aContext) {
@@ -199,38 +211,8 @@ public class StatsService extends Service {
 	private boolean active = false;
 	private boolean awake = false;
 	
-	//TIMER SHIT
-	/*
-	class timerPollTask extends TimerTask {
-		public void run() {
-
-			if (StatsService.getUserPresent()) {
-				ActivityManager am = TopAppsFragment.am;
-				PackageManager pack = TopAppsFragment.pack;
-				
-				int numberOfTasks = 1;
-				String packageName = am.getRunningTasks(numberOfTasks).get(0).topActivity
-						.getPackageName();
-				String appName = "";
-
-				try {
-					appName = (String) pack.getApplicationLabel(pack
-							.getApplicationInfo(packageName, PackageManager.GET_META_DATA));
-				} catch (NameNotFoundException e) {
-					e.printStackTrace();
-				}
-
-				if (appsMap.containsKey(appName)) { // already present
-					double currValue = appsMap.get(appName);
-					appsMap.put(appName, currValue + pollElapsed);
-				} else {
-					appsMap.put(appName, (double) 5);
-				}
-
-				System.out.println(appsMap);
-			}
-		}
-	}*/
+	//TIMERR
+	
 	
 	class timerDailyTask extends TimerTask {
 		public void run() {
@@ -268,9 +250,9 @@ public class StatsService extends Service {
 		tMinus3_tt = tMinus2_tt;
 		tMinus2_tt = tMinus1_tt;
 		tMinus1_tt = 0;
-		StatsService.getStopWatch().setTotalTime(0);
+		getStopWatch().setTotalTime(0);
 		// System.out.println("AFTER: "+ stopwatch.getTotalTime());
-
+		
 		System.out.println("Total Time day passed");
 	}
 	

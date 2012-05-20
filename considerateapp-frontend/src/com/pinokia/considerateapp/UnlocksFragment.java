@@ -126,7 +126,7 @@ public class UnlocksFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		System.out.println("OnCreate: Unlocks");
+		//System.out.println("OnCreate: Unlocks");
 
 		super.onCreate(savedInstanceState);
 		View view = inflater.inflate(R.layout.stats_layout, container, false);
@@ -175,7 +175,7 @@ public class UnlocksFragment extends Fragment {
 		wv.loadData(graphString, "text/html", "UTF-8");
 
 		
-		System.out.println("UNLOCKS_URL:" + graphString);
+		//System.out.println("UNLOCKS_URL:" + graphString);
 	}
 
 	public static void update() { 
@@ -199,7 +199,7 @@ public class UnlocksFragment extends Fragment {
 		double max = StatsService.getMax();
 		
 		if (tMinus1_pc > max)
-			max = tMinus1_pc;
+			StatsService.setMax(tMinus1_pc);
 		
 		String plotPointsPowerCheck = ""
 				+ Double.toString((tMinus5_pc/max) * 100.0) + ","

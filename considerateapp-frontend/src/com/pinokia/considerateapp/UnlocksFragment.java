@@ -1,5 +1,6 @@
 package com.pinokia.considerateapp;
 
+import java.util.Calendar;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -130,6 +131,7 @@ public class UnlocksFragment extends Fragment {
 
 		super.onCreate(savedInstanceState);
 		View view = inflater.inflate(R.layout.stats_layout, container, false);
+		
 		text = (TextView) view.findViewById(R.id.text);
 		wv = (WebView) view.findViewById(R.id.graph);
 		wv.setBackgroundColor(0);

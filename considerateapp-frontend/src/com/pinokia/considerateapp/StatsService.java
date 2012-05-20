@@ -1,6 +1,8 @@
 package com.pinokia.considerateapp;
 
+import java.util.Calendar;
 import java.util.Comparator;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Timer;
@@ -365,8 +367,35 @@ public class StatsService extends Service {
 	public void onCreate() {
 		super.onCreate();
 		running = true;
-		dailyTimer.schedule(new timerDailyTask(), 0, dailyDelay);
-		//pollTimer.schedule(new timerPollTask(), 0, pollDelay);
+		
+		Calendar now = Calendar.getInstance();
+		int year = now.get(Calendar.YEAR);
+		int month = now.get(Calendar.MONTH);
+		int day = now.get(Calendar.DAY_OF_MONTH);
+		int hour = now.get(Calendar.HOUR_OF_DAY);
+		int min = now.get(Calendar.MINUTE);
+		int sec = now.get(Calendar.SECOND);
+		
+		System.out.println("Hour: " + hour 
+				+ "Minute: " + min
+				+ "Second: " + sec);
+		
+		Calendar firstExecutionDate = new GregorianCalendar();
+		//For testing; starts at top of every minute
+		firstExecutionDate.set(Calendar.HOUR_OF_DAY, hour);
+		firstExecutionDate.set(Calendar.MINUTE, min+1); //rollover to next minute
+		firstExecutionDate.set(Calendar.SECOND, 0); //start at top of minute
+		
+		//For Realz; starts at midnite every day
+		/*
+		firstExecutionDate.set(Calendar.YEAR, year);
+		firstExecutionDate.set(Calendar.MONTH, month);
+		firstExecutionDate.set(Calendar.DAY_OF_MONTH, day+1);
+		firstExecutionDate.set(Calendar.HOUR_OF_DAY, 0); //start at top of day.
+		firstExecutionDate.set(Calendar.MINUTE, 0); 
+		firstExecutionDate.set(Calendar.SECOND, 0);
+		*/
+		dailyTimer.schedule(new timerDailyTask(), firstExecutionDate.getTime(), dailyDelay);
 		
 		
 	}

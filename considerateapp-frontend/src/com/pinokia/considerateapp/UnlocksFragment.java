@@ -169,9 +169,9 @@ public class UnlocksFragment extends Fragment {
 		System.out.println("OnResume: Unlocks");
 
 		text.setText("You have checked your phone "
-				+ tMinus1_pc
+				+ (int) tMinus1_pc
 				+ " times\n and unlocked your phone "
-				+ tMinus1_nu + " times today.");
+				+ (int) tMinus1_nu + " times today.");
 		wv.loadData(graphString, "text/html", "UTF-8");
 
 		
@@ -198,8 +198,10 @@ public class UnlocksFragment extends Fragment {
 		
 		double max = StatsService.getMax();
 		
-		if (tMinus1_pc > max)
+		if (tMinus1_pc > max) {
 			StatsService.setMax(tMinus1_pc);
+			max = StatsService.getMax();
+		}
 		
 		String plotPointsPowerCheck = ""
 				+ Double.toString((tMinus5_pc/max) * 100.0) + ","
@@ -229,9 +231,9 @@ public class UnlocksFragment extends Fragment {
 				+ "&chm=B,58D9FC36,0,0,0,1|B,EE58FC34,1,0,0' />"; // area fill colors
 		
 		text.setText("You have checked your phone "
-				+ tMinus1_pc
+				+ (int) tMinus1_pc
 				+ " times\n and unlocked your phone "
-				+ tMinus1_nu + " times today.");
+				+ (int) tMinus1_nu + " times today.");
 		wv.loadData(graphString, "text/html", "UTF-8");
 	}
 }

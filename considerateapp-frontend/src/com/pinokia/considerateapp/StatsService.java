@@ -197,6 +197,10 @@ public class StatsService extends Service {
 	public static void set_tMinus1_tt(double newDouble) {
 		tMinus1_tt = newDouble;
 	}
+	
+	public static void setMax(double newDouble) {
+		max = newDouble;
+	}
 
 	public static void initContext(Context aContext) {
 		context = aContext;
@@ -239,6 +243,8 @@ public class StatsService extends Service {
 
 		StatsService.setNumPowerChecks(0);
 		StatsService.setNumLocks(0);
+		
+		UnlocksFragment.update();
 
 		System.out.println("Unlocks day passed");
 

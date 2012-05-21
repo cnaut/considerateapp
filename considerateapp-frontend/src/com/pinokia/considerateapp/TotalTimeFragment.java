@@ -24,7 +24,7 @@ public class TotalTimeFragment extends Fragment {
 	
 	static int chartWidth = 500;// = 400;
 	static int chartHeight = 220;// = 240;
-	double max = 10;	
+	//double max = 10;	
 	
 	//Timer dailyTimer = new Timer();
 	//long dailyDelay = 60 * 1000; // number of millisec in 1 minute
@@ -151,10 +151,12 @@ public class TotalTimeFragment extends Fragment {
 		int secs = (int) (timeSpentMillis / (1000)) % 60;
 
 		double timeSpentSeconds = timeSpentMillis / 1000.00;
-		if (timeSpentSeconds > max)
-			max = timeSpentSeconds;
+		if (timeSpentSeconds > StatsService.get_max_TotalTime())
+			StatsService.setMaxTotalTime(timeSpentSeconds);
+			//max = timeSpentSeconds;
 		
 		StatsService.set_tMinus1_tt(timeSpentSeconds);
+		double max = StatsService.get_max_TotalTime();
 		//tMinus1_tt = timeSpentSeconds;		
 		
 		double tMinus1_tt = StatsService.get_tMinus1_tt();

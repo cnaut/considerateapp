@@ -46,6 +46,7 @@ public class StatsService extends Service {
 	//PackageManager pack = getPackageManager();
 	
 	//Total Time
+	static double max_TotalTime = 10;
 	static double tMinus5_tt = 0;
 	static double tMinus4_tt = 0;
 	static double tMinus3_tt = 0;
@@ -148,6 +149,10 @@ public class StatsService extends Service {
 		return tMinus1_nu;
 	}
 	
+	public static double get_max_TotalTime() {
+		return max_TotalTime;
+	}
+	
 	public static HashMap<String, Double> getAppsMap() {
 		return appsMap;
 	}
@@ -203,6 +208,10 @@ public class StatsService extends Service {
 	public static void setMax(double newDouble) {
 		max = newDouble;
 	}
+	
+	public static void setMaxTotalTime(double newMax) {
+		max_TotalTime = newMax;
+	}
 
 	public static void initContext(Context aContext) {
 		context = aContext;
@@ -248,7 +257,7 @@ public class StatsService extends Service {
 		
 		UnlocksFragment.update();
 
-		System.out.println("Unlocks day passed");
+		//System.out.println("Unlocks day passed");
 
 	}
 	
@@ -256,10 +265,15 @@ public class StatsService extends Service {
 		tMinus5_tt = tMinus4_tt;
 		tMinus4_tt = tMinus3_tt;
 		tMinus3_tt = tMinus2_tt;
-		tMinus2_tt = tMinus1_tt;
+		tMinus2_tt = getStopWatch().getTotalTime();
 		tMinus1_tt = 0;
 		getStopWatch().setTotalTime(0);
-		// System.out.println("AFTER: "+ stopwatch.getTotalTime());
+		
+		//double timeSpentSeconds = timeSpentMillis / 1000.00;
+		if (getStopWatch().getTotalTime() > max_TotalTime)
+			max_TotalTime = getStopWatch().getTotalTime();
+	 
+		//System.out.println("AFTER: "+ stopwatch.getTotalTime());
 		
 		System.out.println("Total Time day passed");
 	}
@@ -396,6 +410,10 @@ public class StatsService extends Service {
 		firstExecutionDate.set(Calendar.SECOND, 0);
 		*/
 		dailyTimer.schedule(new timerDailyTask(), firstExecutionDate.getTime(), dailyDelay);
+		//
+		dailyUpdateUnlocks();
+		//dailyUpdateTotalTime();
+		dailyUpdateTopApps();
 		
 		
 	}

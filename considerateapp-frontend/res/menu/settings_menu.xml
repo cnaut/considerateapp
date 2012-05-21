@@ -5,5 +5,5 @@
 			android:title="Toggle Lockscreen" />
 		<item android:id="@+id/whitelist_button"
       android:icon="@drawable/ic_toggle_lockscreen"
-      android:title="Toggle Whitelist" />
+      android:title="Toggle Considerate Mode" />
 </menu>

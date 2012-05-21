@@ -32,16 +32,12 @@ public class StatsService extends Service {
 	//Timers
 	private static Timer dailyTimer = new Timer();
 	// long delay = 86400 * 1000; //number of millisec in 24 hours
-	private static long dailyDelay = 60 * 1000; // number of millisec in 1 minute
-
-	
-	//Timer pollTimer = new Timer(); //polls for app currenlty in foreground
-	//int pollDelay = 5 * 1000; // 5 seconds
-	//int pollElapsed = pollDelay / 1000;
+	private static long dailyDelay = 5 * 60 * 1000; // number of millisec in 1 minute
 	
 	//Top Apps
 	static HashMap<String, Double> appsMap = new HashMap<String, Double>();
 	static int numTopApps = 5;
+	ValueComparator bvc;
 	//ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
 	//PackageManager pack = getPackageManager();
 	
@@ -151,6 +147,10 @@ public class StatsService extends Service {
 	
 	public static double get_max_TotalTime() {
 		return max_TotalTime;
+	}
+	
+	public static int getNumTopApps() {
+		return numTopApps;
 	}
 	
 	public static HashMap<String, Double> getAppsMap() {
@@ -281,7 +281,7 @@ public class StatsService extends Service {
 	
 	public void dailyUpdateTopApps() {
 		HashMap<String, Double> tempMap = appsMap;
-		ValueComparator bvc = new ValueComparator(tempMap);
+		bvc = new ValueComparator(tempMap);
 		TreeMap<String, Double> sorted_map = new TreeMap<String, Double>(bvc);
 		
 		sorted_map.putAll(tempMap);
@@ -328,6 +328,7 @@ public class StatsService extends Service {
 		System.out.println("Top Apps day passed");
 	}
 	
+	/*
 	class ValueComparator implements Comparator<Object> {
 
 		Map<String, Double> base;
@@ -346,7 +347,7 @@ public class StatsService extends Service {
 				return -1;
 			}
 		}
-	}
+	}*/
 
 	@Override
 	public IBinder onBind(Intent arg0) {

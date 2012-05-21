@@ -38,10 +38,15 @@ public class TopAppsFragment extends Fragment {
 
 	//Timer dailyTimer = new Timer();
 	//long dailyDelay = 60 * 1000; // number of millisec in 1 minute
+	
+	Timer constantUpdateTimer; 
+	long constantUpdateDelay = 10 * 1000; 
 
 	Timer pollTimer = new Timer();
 	int pollDelay = 5 * 1000; // 5 seconds
 	int pollElapsed = pollDelay / 1000;
+	
+	ValueComparator bvc;
 
 	//static HashMap<String, Double> appsMap;
 
@@ -235,6 +240,7 @@ public class TopAppsFragment extends Fragment {
 
 		View view = inflater.inflate(R.layout.stats_layout, container, false);
 		text = (TextView) view.findViewById(R.id.text);
+		text.setText("Here are the apps you've spent the most time on today:");
 		wv = (WebView) view.findViewById(R.id.graph);
 		wv.setBackgroundColor(0);
 		
@@ -252,19 +258,71 @@ public class TopAppsFragment extends Fragment {
 		super.onSaveInstanceState(savedInstanceState);
 		setUserVisibleHint(true);
 	}
+	
+	class timerConstantUpdateTask extends TimerTask {
+		public void run() {
+			
+			HashMap<String, Double> tempMap = StatsService.getAppsMap();
+			bvc = new ValueComparator(tempMap);
+			TreeMap<String, Double> sorted_map = new TreeMap<String, Double>(bvc);
+			sorted_map.putAll(tempMap);
+
+			String plotPointsApps = "";
+			String plotPointsTime = "";
+			double max = -1;
+
+			int size = sorted_map.size();
+			if (size > StatsService.getNumTopApps()) {
+				size = StatsService.getNumTopApps();
+			}
+
+			while (size > 0) {
+				for (String key : sorted_map.keySet()) {
+					// System.out.println("key/value: " + key +
+					// "/"+sorted_map.get(key));
+					double value = sorted_map.get(key);
+					if (value > max)
+						max = value;
+
+					if (size == 1) {
+						plotPointsApps = plotPointsApps + key;
+						plotPointsTime = plotPointsTime + value;
+					} else {
+						plotPointsApps = plotPointsApps + key + "|";
+						plotPointsTime = plotPointsTime + value + ",";
+					}
+					size -= 1;
+				}
+			}
+			graphString = "<img src='http://2.chart.apis.google.com/chart?"
+					+ "chf=bg,s,67676700|c,s,67676700" // transparent background
+					+ "&chs=" + TopAppsFragment.chartWidth + "x" + TopAppsFragment.chartHeight // chart size
+					+ "&cht=p" // chart type
+					+ "&chco=58D9FC,EE58FC" // slice colors
+					+ "&chds=0," + max // range
+					+ "&chd=t:" + plotPointsTime // data
+					+ "&chdl=" + plotPointsApps + "' />"; // labels
+			
+			
+			//text.setText("Here are the apps you've spent the most time on today:");
+			wv.loadData(graphString, "text/html", "UTF-8");
+//
+		}
+	}
 
 	@Override
 	public void onPause() {
 		super.onPause();
 		System.out.println("OnPause: TopApps");
+		constantUpdateTimer.cancel();
 	}
 
 	@Override
 	public void onResume() {
 		super.onResume();
 		System.out.println("OnResume: TopApps");
-
-		text.setText("Here are the apps you've spent the most time on today:");
-		wv.loadData(graphString, "text/html", "UTF-8");
+		
+		constantUpdateTimer = new Timer();
+		constantUpdateTimer.schedule(new timerConstantUpdateTask(), 0, constantUpdateDelay);
 	}
 }

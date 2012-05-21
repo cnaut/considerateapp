@@ -14,7 +14,6 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.protocol.HTTP;
-import org.json.JSONArray;
 
 import android.app.ActivityManager;
 import android.app.Service;
@@ -25,6 +24,7 @@ import android.content.IntentFilter;
 import android.os.IBinder;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 
 public class StatsService extends Service {
@@ -43,12 +43,11 @@ public class StatsService extends Service {
 	
 	// Timers
 	private static Timer dailyTimer = new Timer();
-	/* TODO: change to day */
-	// private final long dailyDelay = 86400 * 1000; //number of millisec in 24 hours
-	private final long dailyDelay = 5 * 60 * 1000; // number of ms in 1 min
+	/* TODO: change to one day */
+	private final long dailyDelay = 5 * 60 * 1000;
 	private static Timer sendDataTimer = new Timer();
-	/* TODO: change to hour */
-	private final long sendDataDelay = 1 * 60 * 1000; // one hour
+	/* TODO: change to one hour */
+	private final long sendDataDelay = 1 * 60 * 1000;
 
 	// Top Apps
 	static TreeMap<String, Double> appsMap = new TreeMap<String, Double>();
@@ -68,6 +67,10 @@ public class StatsService extends Service {
 	Intent updateUIIntent;
 	public static final String BROADCAST_ACTION = "com.pinokia.considerateapp.updateunlocks";
 
+	public static void initContext(Context aContext) {
+		context = aContext;
+	}
+	
 	// This makes the running variable read-only.
 	public static boolean isRunning() {
 		return running;
@@ -82,6 +85,10 @@ public class StatsService extends Service {
 	
 	public static ArrayList<Integer> getNumUnlocks() {
 		return numUnlocks;
+	}
+	
+	public static StopWatch getStopWatch() {
+		return stopwatch;
 	}
 	
 	public static ArrayList<Double> getTotalTime() {
@@ -102,22 +109,10 @@ public class StatsService extends Service {
 		return numPowerChecks;
 	}
 
-	public static boolean getUserPresent() {
-		return userPresent;
-	}
-
-	public static StopWatch getStopWatch() {
-		return stopwatch;
-	}
-
-	public static void initContext(Context aContext) {
-		context = aContext;
-	}
-
 	class topAppsTask extends TimerTask {
 		public void run() {
 
-			if (StatsService.getUserPresent()) {
+			if (userPresent) {
 
 				int numberOfTasks = 1;
 				String packageName = am.getRunningTasks(numberOfTasks).get(0).topActivity
@@ -138,8 +133,6 @@ public class StatsService extends Service {
 				} else {
 					appsMap.put(appName, (double) 5);
 				}
-
-				// System.out.println(appsMap);
 			}
 		}
 	}
@@ -168,6 +161,7 @@ public class StatsService extends Service {
 	
 	class sendDataTask extends TimerTask {
 		public void run() {
+			System.out.println("APPS EMPTY??:" + appsMap.size());
 			Stats stats = new Stats(System.currentTimeMillis(),
 					numUnlocks.get(numDays - 1),
 					numScreenViews.get(numDays - 1),
@@ -175,13 +169,19 @@ public class StatsService extends Service {
 					appsMap);
 			sendDataQueue.add(stats);
 			HttpClient httpClient = new DefaultHttpClient();
-		    HttpPost httpPost = new HttpPost("http://www.yoursite.com/script.php");
+		    HttpPost httpPost = new HttpPost("http://www.dev.considerateapp.com:8001/"); /* Charles fix this! */
 		    
 		    try {
-		        // Add your data	
-		    	JSONArray json = new JSONArray(sendDataQueue);
-		    	System.out.println("JSON:" + json.toString());
-		    	/*    	StringEntity content = new StringEntity(json.toString());  
+
+		    	TelephonyManager tManager = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+		    	String uid = tManager.getDeviceId();
+		    	String json = "json:{ id:" + uid + ", data:{ ";
+		    	for (int i = 0; i < sendDataQueue.size(); i++) {
+		    		json += sendDataQueue.get(0).toJsonString() + ", ";
+		    	}
+		    	json = json.substring(0, json.length() - 2) + " } }";
+		    	System.out.println(json);
+		    	StringEntity content = new StringEntity(json);  
                 content.setContentType(new BasicHeader(HTTP.CONTENT_TYPE, "application/json"));
 		        httpPost.setEntity(content);
 
@@ -189,10 +189,10 @@ public class StatsService extends Service {
 		        HttpResponse response = httpClient.execute(httpPost);
 		        if (response.getEntity().getContent().toString() == "success") {
 		        	sendDataQueue.clear(); // only clear data if successfully sent to server
-		        }*/
+		        }
 		        
 		    } catch (Exception e) {
-		        // TODO Auto-generated catch block
+		        // Auto-generated catch block
 		    }
 		}
 	}

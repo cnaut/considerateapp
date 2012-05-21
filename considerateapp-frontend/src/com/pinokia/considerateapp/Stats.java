@@ -19,5 +19,21 @@ public class Stats {
 		this.timeOnApps = new TreeMap<String, Double>();
 		timeOnApps.putAll(timeOnApps);
 	}
+	
+	public String toJsonString() {
+		String timeOnAppsString = "{ ";
+		for (String key : timeOnApps.keySet()) {
+			double value = timeOnApps.get(key);
+			timeOnAppsString += key + ":" + value + ", ";
+		}
+		timeOnAppsString = timeOnAppsString.substring(timeOnAppsString.length() - 2) + " }";
+		return "{ "
+				+ "time:" + timeInMs + ", "
+				+ "unlocks:" + numUnlocks + ", "
+				+ "checks:" + numScreenChecks + ", "
+				+ "totaltime:" + totalTime + ", "
+				+ "apps:" + timeOnAppsString
+				+ " }";
+	}
 
 }

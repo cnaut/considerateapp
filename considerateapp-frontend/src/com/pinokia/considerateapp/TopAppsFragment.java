@@ -26,14 +26,7 @@ public class TopAppsFragment extends Fragment {
 	Timer constantUpdateTimer;
 	long constantUpdateDelay = 10 * 1000;
 
-	static String graphString = "";/*"<img src='http://2.chart.apis.google.com/chart?"
-			+ "chf=bg,s,67676700|c,s,67676700" // transparent background
-			+ "&chs=" + chartWidth + "x" + chartHeight // chart size
-			+ "&cht=p" // chart type
-			+ "&chco=58D9FC,EE58FC" // slice colors
-			+ "&chds=0,942" // range
-			+ "&chd=t:200,842,942,432,594" // chart data
-			+ "&chdl=App+1|App+2|App+3|App+4+|App+5&chdlp=l' />"; // chart labels*/
+	static String graphString = "";
 
 	class timerConstantUpdateTask extends TimerTask {
 		public void run() {
@@ -50,8 +43,6 @@ public class TopAppsFragment extends Fragment {
 			}
 
 			for (String key : sorted_map.keySet()) {
-				// System.out.println("key/value: " + key +
-				// "/"+sorted_map.get(key));
 				assert (sorted_map != null);
 				double value = sorted_map.get(key);
 				if (value > max)

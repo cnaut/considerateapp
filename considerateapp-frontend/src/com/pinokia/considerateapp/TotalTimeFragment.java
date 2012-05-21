@@ -128,8 +128,6 @@ public class TotalTimeFragment extends Fragment {
 	public void onStop() {
 		super.onStop();
 		System.out.println("OnStop: TotalTime");
-
-		// constantUpdateTimer.cancel();
 	}
 
 	@Override

@@ -26,26 +26,11 @@ public class UnlocksFragment extends Fragment {
 	static double max = 0.0;
 	
 	public static String graphString = "";
-/*	public static String graphString = "<center><img src='http://0.chart.apis.google.com/chart?"
-			+ "chf=bg,s,67676700|c,s,67676700" // transparent background
-			+ "&chxl=0:|3 days ago|2 days ago|1 day ago|yesterday|today" // chart labels
-			+ "&chxr=0,1,5,1|1,0,5,1" // axis range
-			+ "&chxs=0,000000,14,0,lt,000000|1,000000,14,1,l,000000" // chart axis style
-			+ "&chxt=x,y" // chart axis ordering
-			+ "&chs=" + chartWidth + "x" + chartHeight // chart size
-			+ "&cht=lxy" // chart type
-			+ "&chco=58D9FC,EE58FC" // line colors
-			+ "&chd=t:-1|0,0,0,0,0|-1|0,0,0,0,0" // chart data
-			+ "&chdl=Number of Screen Views|Number of Unlocks" // chart legend text
-			+ "&chls=3|3" // line style (thickness)
-			+ "&chm=B,58D9FC36,0,0,0,1|B,EE58FC34,1,0,0' />"; // area fill colors;*/
-
 
 	/** Called when the activity is first created. */
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		//System.out.println("OnCreate: Unlocks");
 
 		super.onCreate(savedInstanceState);
 		View view = inflater.inflate(R.layout.stats_layout, container, false);
@@ -53,10 +38,6 @@ public class UnlocksFragment extends Fragment {
 		text = (TextView) view.findViewById(R.id.text);
 		wv = (WebView) view.findViewById(R.id.graph);
 		wv.setBackgroundColor(0);
-
-		StatsService.initContext(getActivity().getApplicationContext());
-		StatsService.start(getActivity().getApplicationContext());
-		
 		return view;
 	}
 
@@ -83,18 +64,6 @@ public class UnlocksFragment extends Fragment {
 		super.onResume();
 		getActivity().registerReceiver(broadcastReceiver, new IntentFilter(StatsService.BROADCAST_ACTION));
 		update();
-/*		double tMinus1_pc = 0;//StatsService.get_tMinus1_pc();
-		double tMinus1_nu = 0;//StatsService.get_tMinus1_nu();
-		
-		System.out.println("OnResume: Unlocks");
-
-		text.setText("You have checked your phone "
-				+ (int) tMinus1_pc
-				+ " times\n and unlocked your phone "
-				+ (int) tMinus1_nu + " times today.");
-		wv.loadData(graphString, "text/html", "UTF-8");*/
-
-		//System.out.println("UNLOCKS_URL:" + graphString);
 	}
 	
 	private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {

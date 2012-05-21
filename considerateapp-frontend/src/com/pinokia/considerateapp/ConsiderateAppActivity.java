@@ -1,9 +1,6 @@
 package com.pinokia.considerateapp;
 
-
-import android.app.Activity;
 import android.database.Cursor;
-import android.content.CursorLoader;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v4.app.FragmentActivity;
@@ -11,6 +8,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.CursorLoader;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -27,16 +25,12 @@ public class ConsiderateAppActivity extends FragmentActivity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		// if(savedInstanceState == null) {
-		// throw new IllegalStateException("SavedInstanceState is null");
-		// } else {
 		super.onCreate(savedInstanceState);
 		super.setContentView(R.layout.viewpager_layout);
 		refreshWhitelist();
-// System.out.println("1");
-		// initialize the pager
+		StatsService.initContext(getApplicationContext());
+		StatsService.start(getApplicationContext());
 		this.initialisePaging();
-		// }
 	}
 
 	/**
@@ -56,7 +50,6 @@ public class ConsiderateAppActivity extends FragmentActivity {
 			System.out.println("fm is null");
 			throw new IllegalStateException("fm is null");
 		} else {
-			// this.mPagerAdapter = new MyPagerAdapter()
 			this.mPagerAdapter = new MyPagerAdapter(fm, fragments);
 			ViewPager pager = (ViewPager) super.findViewById(R.id.viewpager);
 			pager.setAdapter(this.mPagerAdapter);
@@ -115,41 +108,47 @@ public class ConsiderateAppActivity extends FragmentActivity {
 
     protected static ArrayList<String> whitelist;
 
-    private void refreshWhitelist() {
-        if(whitelistEnabled) {
-            whitelist = new ArrayList<String>();
-            CursorLoader loader1 = new CursorLoader(this, ContactsContract.Contacts.CONTENT_URI, 
-                    			new String[] {ContactsContract.Contacts._ID, ContactsContract.Contacts.DISPLAY_NAME},
-                    			"starred=1 AND has_phone_number=1", null, null);
-	    Cursor cCur = loader1.loadInBackground(); 
-			//this.managedQuery(ContactsContract.Contacts.CONTENT_URI, 
-                    //new String[] {ContactsContract.Contacts._ID, ContactsContract.Contacts.DISPLAY_NAME},
-                    //"starred=1 AND has_phone_number=1", null, null);
+	private void refreshWhitelist() {
+		if (whitelistEnabled) {
+			whitelist = new ArrayList<String>();
+			CursorLoader loader1 = new CursorLoader(this,
+					ContactsContract.Contacts.CONTENT_URI, new String[] {
+							ContactsContract.Contacts._ID,
+							ContactsContract.Contacts.DISPLAY_NAME },
+					"starred=1 AND has_phone_number=1", null, null);
+			Cursor cCur = loader1.loadInBackground();
+			// this.managedQuery(ContactsContract.Contacts.CONTENT_URI,
+			// new String[] {ContactsContract.Contacts._ID,
+			// ContactsContract.Contacts.DISPLAY_NAME},
+			// "starred=1 AND has_phone_number=1", null, null);
 
-            while (cCur.moveToNext()) {
-                String id = cCur.getString(cCur
-                        .getColumnIndex(ContactsContract.Contacts._ID));
+			while (cCur.moveToNext()) {
+				String id = cCur.getString(cCur
+						.getColumnIndex(ContactsContract.Contacts._ID));
 
-                //String name = (cCur.getString(cCur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME)));
-                CursorLoader loader2 = new CursorLoader(this, ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, 
-                        			ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = ?", 
-                        			new String[]{id}, null);
-		Cursor pCur = loader2.loadInBackground();
-			//this.managedQuery(
-                        //ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, 
-                        //ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = ?", 
-                        //new String[]{id}, null);
-                while (pCur.moveToNext()) {
-                    String phoneNumber = pCur.getString(
-                            pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                    whitelist.add(phoneNumber);
-                    Log.d("whitelist", phoneNumber);
-                } 
-                pCur.close();
-            }
-            cCur.close();
-        }
-    }
+				// String name =
+				// (cCur.getString(cCur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME)));
+				CursorLoader loader2 = new CursorLoader(this,
+						ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+						null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID
+								+ " = ?", new String[] { id }, null);
+				Cursor pCur = loader2.loadInBackground();
+				// this.managedQuery(
+				// ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
+				// ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = ?",
+				// new String[]{id}, null);
+				while (pCur.moveToNext()) {
+					String phoneNumber = pCur
+							.getString(pCur
+									.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+					whitelist.add(phoneNumber);
+					Log.d("whitelist", phoneNumber);
+				}
+				pCur.close();
+			}
+			cCur.close();
+		}
+	}
 
 	protected void toggleSleepMonitor() {
 		if (SleepMonitorService.toggleService(getApplicationContext())) {

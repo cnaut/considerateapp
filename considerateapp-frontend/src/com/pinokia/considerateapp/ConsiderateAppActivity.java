@@ -9,6 +9,7 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.CursorLoader;
+import android.content.SharedPreferences;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -22,6 +23,7 @@ import java.util.Vector;
 public class ConsiderateAppActivity extends FragmentActivity {
 
 	private PagerAdapter mPagerAdapter;
+	private SharedPreferences prefs;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +67,7 @@ public class ConsiderateAppActivity extends FragmentActivity {
 	@Override
 	public void onResume() {
 		super.onResume();
+		prefs = getSharedPreferences("considerateapp", 0);
 		System.out.println("OnResume: Main Activity");
 	}
 
@@ -151,15 +154,19 @@ public class ConsiderateAppActivity extends FragmentActivity {
 	}
 
 	protected void toggleSleepMonitor() {
+		SharedPreferences.Editor prefsEdit = prefs.edit();
 		if (SleepMonitorService.toggleService(getApplicationContext())) {
 			Toast.makeText(getApplicationContext(),
 					"Lockscreen is currently being replaced.",
 					Toast.LENGTH_SHORT).show();
+			prefsEdit.putBoolean("boot", true);
 
 		} else {
 			Toast.makeText(getApplicationContext(),
 					"Lockscreen is no longer being replaced.",
 					Toast.LENGTH_SHORT).show();
+			prefsEdit.putBoolean("boot", true);
 		}
+		prefsEdit.commit();
 	}
 }

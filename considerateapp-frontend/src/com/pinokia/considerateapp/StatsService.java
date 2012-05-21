@@ -395,12 +395,13 @@ public class StatsService extends Service {
 				+ "Second: " + sec);
 		
 		Calendar firstExecutionDate = new GregorianCalendar();
-		//For testing; starts at top of every minute
+		
+		//For mock testing; starts at top of every minute.  Comment out the next three lines of code.
 		firstExecutionDate.set(Calendar.HOUR_OF_DAY, hour);
 		firstExecutionDate.set(Calendar.MINUTE, min+1); //rollover to next minute
 		firstExecutionDate.set(Calendar.SECOND, 0); //start at top of minute
 		
-		//For Realz; starts at midnite every day
+		//For Release into the real world; Uncomment out this block!
 		/*
 		firstExecutionDate.set(Calendar.YEAR, year);
 		firstExecutionDate.set(Calendar.MONTH, month);

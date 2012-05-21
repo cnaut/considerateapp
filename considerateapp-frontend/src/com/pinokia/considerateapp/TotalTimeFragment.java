@@ -13,6 +13,8 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebSettings;
+import android.webkit.WebSettings.RenderPriority;
 import android.webkit.WebView;
 import android.widget.TextView;
 
@@ -31,6 +33,9 @@ public class TotalTimeFragment extends Fragment {
 	
 	Timer secondTimer = new Timer();
 	long secondDelay = 1000;
+	
+	Timer constantUpdateTimer; 
+	long constantUpdateDelay = 10 * 1000; 
 
 	String graphString = "";
 
@@ -107,13 +112,68 @@ public class TotalTimeFragment extends Fragment {
 		View view = inflater.inflate(R.layout.stats_layout, container, false);
 		text = (TextView) view.findViewById(R.id.text);
 		wv = (WebView) view.findViewById(R.id.graph);
+		wv.getSettings().setRenderPriority(RenderPriority.HIGH);
+		wv.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
 		wv.setBackgroundColor(0);
 		
 		System.out.println("at oncreate: Total Time");
-		//dailyTimer.schedule(new timerDailyTask(), 0, dailyDelay);
+		
 		secondTimer.schedule (new timerSecondTask(), 0, secondDelay);
 		return view;
 	}
+	
+	
+	class timerConstantUpdateTask extends TimerTask {
+		public void run() {
+			
+			//Update while user is in the app
+			System.out.println("OnResume timer task: TotalTime");
+
+			long timeSpentMillis = StatsService.getStopWatch().getTotalTime();
+			int hours = (int) timeSpentMillis / (1000 * 60 * 60);
+			int mins = (int) (timeSpentMillis / (1000 * 60)) % 60;
+			int secs = (int) (timeSpentMillis / (1000)) % 60;
+			
+			double timeSpentSeconds = timeSpentMillis / 1000.00;
+			if (timeSpentSeconds > StatsService.get_max_TotalTime())
+				StatsService.setMaxTotalTime(timeSpentSeconds);
+				//max = timeSpentSeconds;
+			
+			StatsService.set_tMinus1_tt(timeSpentSeconds);
+			double max = StatsService.get_max_TotalTime();
+			//tMinus1_tt = timeSpentSeconds;
+			
+			double tMinus1_tt = StatsService.get_tMinus1_tt();
+			double tMinus2_tt = StatsService.get_tMinus2_tt();
+			double tMinus3_tt = StatsService.get_tMinus3_tt();
+			double tMinus4_tt = StatsService.get_tMinus4_tt();
+			double tMinus5_tt = StatsService.get_tMinus5_tt();
+			
+			String plotPointsTotalTime = ""
+					+ Double.toString(((tMinus5_tt / max) * 100.00)) + ","
+					+ Double.toString(((tMinus4_tt / max) * 100.00)) + ","
+					+ Double.toString(((tMinus3_tt / max) * 100.00)) + ","
+					+ Double.toString(((tMinus2_tt / max) * 100.00)) + ","
+					+ Double.toString(((tMinus1_tt / max) * 100.00));
+
+			graphString = "<center><img src='http://1.chart.apis.google.com/chart"
+					+ "?chf=bg,s,67676700|c,s,67676700" // transparent background
+					+ "&chxl=0:|3 days ago|2 days ago|1 day ago|yesterday|today" // chart labels
+					+ "&chxr=0,1,5,1|1,0," + max + "" // axis range
+					+ "&chxs=0,000000,14,0,lt,000000|1,000000,14,1,l,000000" // chart axis style
+					+ "&chxt=x,y" // chart axis ordering
+					+ "&chs=" + chartWidth + "x" + chartHeight // chart size
+					+ "&cht=lc" // chart type
+					+ "&chco=58D9FC,EE58FC" // line colors
+					+ "&chd=t:" + plotPointsTotalTime // chart data
+					+ "&chls=3' />"; // line style (thickness)
+			
+			//text.setText("You have been on your phone for\n" + hours + " hours " + mins + " mins and " + secs + " secs today.");
+			
+			wv.loadData(graphString, "text/html", "UTF-8");
+		}
+	}
+	
 
 	@Override
 	public void onSaveInstanceState(Bundle savedInstanceState) {
@@ -125,6 +185,8 @@ public class TotalTimeFragment extends Fragment {
 	public void onStop() {
 		super.onStop();
 		System.out.println("OnStop: TotalTime");
+		
+		//constantUpdateTimer.cancel();
 	}
 	
 	@Override
@@ -137,56 +199,15 @@ public class TotalTimeFragment extends Fragment {
 	public void onPause() {
 		super.onPause();
 		System.out.println("OnPause: TotalTime");
+		
+		constantUpdateTimer.cancel();
 	}
 
 	@Override
 	public void onResume() {
 		super.onResume();
+		constantUpdateTimer = new Timer();
+		constantUpdateTimer.schedule(new timerConstantUpdateTask(), 0, constantUpdateDelay);
 		
-		System.out.println("OnResume: TotalTime");
-
-		long timeSpentMillis = StatsService.getStopWatch().getTotalTime();
-		int hours = (int) timeSpentMillis / (1000 * 60 * 60);
-		int mins = (int) (timeSpentMillis / (1000 * 60)) % 60;
-		int secs = (int) (timeSpentMillis / (1000)) % 60;
-
-		double timeSpentSeconds = timeSpentMillis / 1000.00;
-		if (timeSpentSeconds > StatsService.get_max_TotalTime())
-			StatsService.setMaxTotalTime(timeSpentSeconds);
-			//max = timeSpentSeconds;
-		
-		StatsService.set_tMinus1_tt(timeSpentSeconds);
-		double max = StatsService.get_max_TotalTime();
-		//tMinus1_tt = timeSpentSeconds;		
-		
-		double tMinus1_tt = StatsService.get_tMinus1_tt();
-		double tMinus2_tt = StatsService.get_tMinus2_tt();
-		double tMinus3_tt = StatsService.get_tMinus3_tt();
-		double tMinus4_tt = StatsService.get_tMinus4_tt();
-		double tMinus5_tt = StatsService.get_tMinus5_tt();
-	
-		String plotPointsTotalTime = ""
-				+ Double.toString(((tMinus5_tt / max) * 100.00)) + ","
-				+ Double.toString(((tMinus4_tt / max) * 100.00)) + ","
-				+ Double.toString(((tMinus3_tt / max) * 100.00)) + ","
-				+ Double.toString(((tMinus2_tt / max) * 100.00)) + ","
-				+ Double.toString(((tMinus1_tt / max) * 100.00));
-
-		graphString = "<center><img src='http://1.chart.apis.google.com/chart"
-				+ "?chf=bg,s,67676700|c,s,67676700" // transparent background
-				+ "&chxl=0:|3 days ago|2 days ago|1 day ago|yesterday|today" // chart labels
-				+ "&chxr=0,1,5,1|1,0," + max + "" // axis range
-				+ "&chxs=0,000000,14,0,lt,000000|1,000000,14,1,l,000000" // chart axis style
-				+ "&chxt=x,y" // chart axis ordering
-				+ "&chs=" + chartWidth + "x" + chartHeight // chart size
-				+ "&cht=lc" // chart type
-				+ "&chco=58D9FC,EE58FC" // line colors
-				+ "&chd=t:" + plotPointsTotalTime // chart data
-				+ "&chls=3' />"; // line style (thickness)
-		
-		//System.out.println("TOTALTIME_URL" + graphString);
-		
-		text.setText("You have been on your phone for\n" + hours + " hours " + mins + " mins and " + secs + " secs today.");
-		wv.loadData(graphString, "text/html", "UTF-8");
 	}
 }

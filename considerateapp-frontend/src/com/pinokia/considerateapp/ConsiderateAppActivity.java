@@ -3,6 +3,7 @@ package com.pinokia.considerateapp;
 
 import android.app.Activity;
 import android.database.Cursor;
+import android.content.CursorLoader;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v4.app.FragmentActivity;
@@ -10,7 +11,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.app.Fragment;
-
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -119,19 +119,27 @@ public class ConsiderateAppActivity extends FragmentActivity {
     private void refreshWhitelist() {
         if(whitelistEnabled) {
             whitelist = new ArrayList<String>();
-            Cursor cCur = this.managedQuery(ContactsContract.Contacts.CONTENT_URI, 
-                    new String[] {ContactsContract.Contacts._ID, ContactsContract.Contacts.DISPLAY_NAME},
-                    "starred=1 AND has_phone_number=1", null, null);
+            CursorLoader loader1 = new CursorLoader(this, ContactsContract.Contacts.CONTENT_URI, 
+                    			new String[] {ContactsContract.Contacts._ID, ContactsContract.Contacts.DISPLAY_NAME},
+                    			"starred=1 AND has_phone_number=1", null, null);
+	    Cursor cCur = loader1.loadInBackground(); 
+			//this.managedQuery(ContactsContract.Contacts.CONTENT_URI, 
+                    //new String[] {ContactsContract.Contacts._ID, ContactsContract.Contacts.DISPLAY_NAME},
+                    //"starred=1 AND has_phone_number=1", null, null);
 
             while (cCur.moveToNext()) {
                 String id = cCur.getString(cCur
                         .getColumnIndex(ContactsContract.Contacts._ID));
 
                 //String name = (cCur.getString(cCur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME)));
-                Cursor pCur = this.managedQuery(
-                        ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, 
-                        ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = ?", 
-                        new String[]{id}, null);
+                CursorLoader loader2 = new CursorLoader(this, ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, 
+                        			ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = ?", 
+                        			new String[]{id}, null);
+		Cursor pCur = loader2.loadInBackground();
+			//this.managedQuery(
+                        //ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, 
+                        //ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = ?", 
+                        //new String[]{id}, null);
                 while (pCur.moveToNext()) {
                     String phoneNumber = pCur.getString(
                             pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));

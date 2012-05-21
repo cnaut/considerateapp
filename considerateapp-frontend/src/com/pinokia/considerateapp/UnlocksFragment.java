@@ -1,37 +1,18 @@
 package com.pinokia.considerateapp;
 
-import java.util.Calendar;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.ArrayList;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Point;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
-import android.media.AudioManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.util.DisplayMetrics;
-import android.view.Display;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.webkit.WebView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class UnlocksFragment extends Fragment {
 
@@ -42,11 +23,10 @@ public class UnlocksFragment extends Fragment {
 	static int chartWidth = 500;
 	static int chartHeight = 220;
 	
-	//Timer dailyTimer = new Timer();
-	// long delay = 86400 * 1000; //number of millisec in 24 hours
-	//long delay = 60 * 1000; // number of millisec in 1 minute
-
-	public static String graphString = "<center><img src='http://0.chart.apis.google.com/chart?"
+	static double max = 0.0;
+	
+	public static String graphString = "";
+/*	public static String graphString = "<center><img src='http://0.chart.apis.google.com/chart?"
 			+ "chf=bg,s,67676700|c,s,67676700" // transparent background
 			+ "&chxl=0:|3 days ago|2 days ago|1 day ago|yesterday|today" // chart labels
 			+ "&chxr=0,1,5,1|1,0,5,1" // axis range
@@ -58,70 +38,8 @@ public class UnlocksFragment extends Fragment {
 			+ "&chd=t:-1|0,0,0,0,0|-1|0,0,0,0,0" // chart data
 			+ "&chdl=Number of Screen Views|Number of Unlocks" // chart legend text
 			+ "&chls=3|3" // line style (thickness)
-			+ "&chm=B,58D9FC36,0,0,0,1|B,EE58FC34,1,0,0' />"; // area fill colors;
-	/*
-	static double max = 5;
-	// Power Check
-	static double tMinus5_pc = 0;
-	static double tMinus4_pc = 0;
-	static double tMinus3_pc = 0;
-	static double tMinus2_pc = 0;
-	static double tMinus1_pc = 0;
-	// Num Unlock
-	static double tMinus5_nu = 0;
-	static double tMinus4_nu = 0;
-	static double tMinus3_nu = 0;
-	static double tMinus2_nu = 0;
-	static double tMinus1_nu = 0;
-	*/
-	/*
-	class timerClearTask extends TimerTask {
-		public void run() {
-			// Power Checks
-			tMinus5_pc = tMinus4_pc;
-			tMinus4_pc = tMinus3_pc;
-			tMinus3_pc = tMinus2_pc;
-			tMinus2_pc = StatsService.getNumPowerChecks();;
-			tMinus1_pc = 0;
+			+ "&chm=B,58D9FC36,0,0,0,1|B,EE58FC34,1,0,0' />"; // area fill colors;*/
 
-			// Num Unlocks
-			tMinus5_nu = tMinus4_nu;
-			tMinus4_nu = tMinus3_nu;
-			tMinus3_nu = tMinus2_nu;
-			tMinus2_nu = StatsService.getNumLocks();;
-			tMinus1_nu = 0;
-			
-			StatsService.setNumPowerChecks(0);
-			StatsService.setNumLocks(0);
-
-			System.out.println("Unlocks day passed");
-
-		}
-	}
-	*/
-	
-	/*
-	public static void dailyUpdate() { 
-		// Power Checks
-		tMinus5_pc = tMinus4_pc;
-		tMinus4_pc = tMinus3_pc;
-		tMinus3_pc = tMinus2_pc;
-		tMinus2_pc = StatsService.getNumPowerChecks();;
-		tMinus1_pc = 0;
-
-		// Num Unlocks
-		tMinus5_nu = tMinus4_nu;
-		tMinus4_nu = tMinus3_nu;
-		tMinus3_nu = tMinus2_nu;
-		tMinus2_nu = StatsService.getNumLocks();;
-		tMinus1_nu = 0;
-
-		StatsService.setNumPowerChecks(0);
-		StatsService.setNumLocks(0);
-
-		System.out.println("Unlocks day passed");
-
-	}*/
 
 	/** Called when the activity is first created. */
 	@Override
@@ -138,10 +56,8 @@ public class UnlocksFragment extends Fragment {
 
 		StatsService.initContext(getActivity().getApplicationContext());
 		StatsService.start(getActivity().getApplicationContext());
-
-		//dailyTimer.schedule(new timerClearTask(), 0, delay);
+		
 		return view;
-
 	}
 
 	@Override
@@ -158,15 +74,17 @@ public class UnlocksFragment extends Fragment {
 	@Override
 	public void onPause() {
 		super.onPause();
+		getActivity().unregisterReceiver(broadcastReceiver);
 		System.out.println("OnPause: Unlocks");
 	}
 
 	@Override
 	public void onResume() {
 		super.onResume();
-		
-		double tMinus1_pc = StatsService.get_tMinus1_pc();
-		double tMinus1_nu = StatsService.get_tMinus1_nu();
+		getActivity().registerReceiver(broadcastReceiver, new IntentFilter(StatsService.BROADCAST_ACTION));
+		update();
+/*		double tMinus1_pc = 0;//StatsService.get_tMinus1_pc();
+		double tMinus1_nu = 0;//StatsService.get_tMinus1_nu();
 		
 		System.out.println("OnResume: Unlocks");
 
@@ -174,68 +92,75 @@ public class UnlocksFragment extends Fragment {
 				+ (int) tMinus1_pc
 				+ " times\n and unlocked your phone "
 				+ (int) tMinus1_nu + " times today.");
-		wv.loadData(graphString, "text/html", "UTF-8");
+		wv.loadData(graphString, "text/html", "UTF-8");*/
 
-		
 		//System.out.println("UNLOCKS_URL:" + graphString);
 	}
-
-	public static void update() { 
-		StatsService.set_tMinus1_pc(StatsService.getNumPowerChecks());
-		StatsService.set_tMinus1_nu(StatsService.getNumLocks());
-		//tMinus1_pc = StatsService.getNumPowerChecks();
-		//tMinus1_nu = StatsService.getNumLocks();
-		
-		double tMinus1_pc = StatsService.get_tMinus1_pc();
-		double tMinus2_pc = StatsService.get_tMinus2_pc();
-		double tMinus3_pc = StatsService.get_tMinus3_pc();
-		double tMinus4_pc = StatsService.get_tMinus4_pc();
-		double tMinus5_pc = StatsService.get_tMinus5_pc();
-		
-		double tMinus1_nu = StatsService.get_tMinus1_nu();
-		double tMinus2_nu = StatsService.get_tMinus2_nu();
-		double tMinus3_nu = StatsService.get_tMinus3_nu();
-		double tMinus4_nu = StatsService.get_tMinus4_nu();
-		double tMinus5_nu = StatsService.get_tMinus5_nu();
-		
-		double max = StatsService.getMax();
-		
-		if (tMinus1_pc > max) {
-			StatsService.setMax(tMinus1_pc);
-			max = StatsService.getMax();
+	
+	private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			update();
 		}
+	};
+	
+	public static void update() { 
 		
-		String plotPointsPowerCheck = ""
-				+ Double.toString((tMinus5_pc/max) * 100.0) + ","
-				+ Double.toString((tMinus4_pc/max) * 100.0) + ","
-				+ Double.toString((tMinus3_pc/max) * 100.0) + ","
-				+ Double.toString((tMinus2_pc/max) * 100.0) + ","
-				+ Double.toString((tMinus1_pc/max) * 100.0);
-		String plotPointsNumLocks = ""
-				+ Double.toString((tMinus5_nu/max) * 100.0) + ","
-				+ Double.toString((tMinus4_nu/max) * 100.0) + ","
-				+ Double.toString((tMinus3_nu/max) * 100.0) + ","
-				+ Double.toString((tMinus2_nu/max) * 100.0) + ","
-				+ Double.toString((tMinus1_nu/max) * 100.0);
+		ArrayList<Integer> numScreenViews = StatsService.getNumScreenViews();
+		ArrayList<Integer> numUnlocks = StatsService.getNumUnlocks();
+		
+		String plotPointsScreenViews = "";
+		String plotPointsNumUnlocks = "";
+		if (numScreenViews == null || numUnlocks == null) {
+			plotPointsScreenViews = "0,0,0,0,0";
+			plotPointsNumUnlocks = "0,0,0,0,0";
+			text.setText("You have checked your phone 0 times\n and "
+					+ "unlocked your phone 0 times today.");
+
+		} else {
+
+			int lastIndex = numScreenViews.size() - 1;
+
+			if (numScreenViews.get(lastIndex) > max) {
+				max = numScreenViews.get(lastIndex);
+			}
+
+			for (int i = 0; i <= lastIndex; i++) {
+				plotPointsScreenViews += Double
+						.toString(((double) numScreenViews.get(i) / max) * 100.0)
+						+ ",";
+				plotPointsNumUnlocks += Double.toString(((double) numUnlocks
+						.get(i) / max) * 100.0) + ",";
+			}
+			plotPointsScreenViews = plotPointsScreenViews.substring(0,
+					plotPointsScreenViews.length() - 1);
+			plotPointsNumUnlocks = plotPointsNumUnlocks.substring(0,
+					plotPointsNumUnlocks.length() - 1);
+
+			text.setText("You have checked your phone "
+					+ numScreenViews.get(lastIndex).intValue()
+					+ " times\n and unlocked your phone "
+					+ numUnlocks.get(lastIndex).intValue() + " times today.");
+
+		}
 
 		graphString = "<center><img src='http://0.chart.apis.google.com/chart?"
 				+ "chf=bg,s,67676700|c,s,67676700" // transparent background
 				+ "&chxl=0:|3 days ago|2 days ago|1 day ago|yesterday|today" // chart labels
-				+ "&chxr=0,1,5,1|1,0," + max + ",1" // axis range
+				+ "&chxr=0,1,5,1|1,0," + max
+				+ ",1" // axis range
 				+ "&chxs=0,000000,14,0,lt,000000|1,000000,14,1,l,000000" // chart axis style
 				+ "&chxt=x,y" // chart axis ordering
-				+ "&chs=" + chartWidth + "x" + chartHeight // chart size
+				+ "&chs=" + chartWidth + "x"
+				+ chartHeight // chart size
 				+ "&cht=lxy" // chart type
 				+ "&chco=58D9FC,EE58FC" // line colors
-				+ "&chd=t:-1|" + plotPointsPowerCheck + "|-1|" + plotPointsNumLocks // chart data
+				+ "&chd=t:-1|" + plotPointsScreenViews + "|-1|"
+				+ plotPointsNumUnlocks // chart data
 				+ "&chdl=Number of Screen Views|Number of Unlocks" // chart legend text
 				+ "&chls=3|3" // line style (thickness)
 				+ "&chm=B,58D9FC36,0,0,0,1|B,EE58FC34,1,0,0' />"; // area fill colors
-		
-		text.setText("You have checked your phone "
-				+ (int) tMinus1_pc
-				+ " times\n and unlocked your phone "
-				+ (int) tMinus1_nu + " times today.");
+
 		wv.loadData(graphString, "text/html", "UTF-8");
 	}
 }

@@ -47,7 +47,10 @@ public class Lockscreen extends Activity implements OnClickListener,
 
 		Log.v("Lockscreen", "starting to create!");
 		requestWindowFeature(android.view.Window.FEATURE_NO_TITLE);
-		getWindow().addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
+		getWindow().addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD|
+							 WindowManager.LayoutParams.FLAG_FULLSCREEN|
+							 WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
+
 
 		setContentView(R.layout.lockscreen);
 
@@ -142,15 +145,15 @@ public class Lockscreen extends Activity implements OnClickListener,
 		}
 	};
 
-	public void wakeUp() {
-		setBright((float) 0.1);// tell screen to go on with 10% brightness
-		PowerManager myPM = (PowerManager) getApplicationContext()
-				.getSystemService(Context.POWER_SERVICE);
-		myPM.userActivity(SystemClock.uptimeMillis(), false);
+	// public void wakeUp() {
+	// 	setBright((float) 0.1);// tell screen to go on with 10% brightness
+	// 	PowerManager myPM = (PowerManager) getApplicationContext()
+	// 			.getSystemService(Context.POWER_SERVICE);
+	// 	myPM.userActivity(SystemClock.uptimeMillis(), false);
 
-		screenwake = true;
-		timeleft = 0;// this way the task doesn't keep going
-	}
+	// 	screenwake = true;
+	// 	timeleft = 0;// this way the task doesn't keep going
+	// }
 
 	public void setBright(float value) {
 		Window mywindow = getWindow();
@@ -164,58 +167,62 @@ public class Lockscreen extends Activity implements OnClickListener,
 
 	@Override
 	public boolean dispatchKeyEvent(KeyEvent event) {
+		// This blocks key events from firing.
+		return true;
 
-		boolean up = event.getAction() == KeyEvent.ACTION_UP;
-		int code = event.getKeyCode();
-		Log.v("dispatching a key event", "Is this the up? -" + up);
+		// Log.v("dispatchKeyEvent", "HERE'S A KEY EVENT. LOOK AT ME.");
+		// boolean up = event.getAction() == KeyEvent.ACTION_UP;
+		// int code = event.getKeyCode();
+		// Log.v("dispatching a key event", "Is this the up? -" + up);
 
-		int reaction = 1;// wakeup, the preferred behavior in advanced mode
+		// int reaction = 1;// wakeup, the preferred behavior in advanced mode
 
-		if (code == KeyEvent.KEYCODE_BACK)
-			reaction = 3;// check for wake, if yes, exit
-		else if (code == KeyEvent.KEYCODE_POWER)
-			reaction = 2;// unlock
-		else if (code == KeyEvent.KEYCODE_FOCUS)
-			reaction = 0;// locked (advanced power save)
+		// if (code == KeyEvent.KEYCODE_BACK)
+		// 	reaction = 3;// check for wake, if yes, exit
+		// else if (code == KeyEvent.KEYCODE_POWER)
+		// 	reaction = 2;// unlock
+		// // else if (code == KeyEvent.KEYCODE_FOCUS)
+		// // 	reaction = 0;// locked (advanced power save)
 
-		switch (reaction) {
-		case 3:
-			onBackPressed();
-			return true;
-		case 2:
-			if (up && !finishing) {
-				Log.v("unlock key", "power key UP, unlocking");
-				finishing = true;
+		// switch (reaction) {
+		// case 3:
+		// 	onBackPressed();
+		// 	return true;
+		// case 2:
+		// 	Log.v("here i am", "search for me");
+		// 	if (up && !finishing) {
+		// 		Log.v("unlock key", "power key UP, unlocking");
+		// 		finishing = true;
 
-				setBright((float) 0.1);
+		// 		setBright((float) 0.1);
 
-				moveTaskToBack(true);
+		// 		moveTaskToBack(true);
 
-			}
-			return true;
+		// 	}
+		// 	return true;
 
-		case 1:
-			if (up && !screenwake) {
-				waking = true;
-				Log.v("key event", "wake key");
-				wakeUp();
-			}
-			return true;
+		// case 1:
+		// 	if (up && !screenwake) {
+		// 		waking = true;
+		// 		Log.v("key event", "wake key");
+		// 		wakeUp();
+		// 	}
+		// 	return true;
 
-		case 0:
-			if (!screenwake && up) {
-				timeleft = 10;
+		// case 0:
+		// 	if (!screenwake && up) {
+		// 		timeleft = 10;
 
-				if (!waking) {
-					Log.v("key event", "locked key timer starting");
+		// 		if (!waking) {
+		// 			Log.v("key event", "locked key timer starting");
 
-					waking = true;
-					// serviceHandler.postDelayed(myTask, 500L);
-				}
-			}
+		// 			waking = true;
+		// 			// serviceHandler.postDelayed(myTask, 500L);
+		// 		}
+		// 	}
 
-			return true;
-		}
-		return false;
+		// 	return true;
+		// }
+		// return false;
 	}
 }

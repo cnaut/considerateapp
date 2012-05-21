@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.IBinder;
 import android.os.Handler;
+import android.telephony.PhoneStateListener;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 
 public class SleepMonitorService extends Service {
@@ -20,21 +22,25 @@ public class SleepMonitorService extends Service {
 		return running;
 	}
 
+	//Set true after first onStartCommand -- prevents multiples from being launched.
 	private boolean initialized = false;
+	//Set true after the service is up and running -- makes sure we can stop the process.
 	private boolean active = false;
-	private boolean awake = false;
+
+	// Phone Status Flags
+	public boolean inCall = false;
+
+
 	Handler serviceHandler;
 	Runnable homescreenTask = new Runnable() {
 		public void run() {
-			Log.v("homescreenTask", "pre launching ze missiles!");
 			ManageKeyguard.disableKeyguard(getApplicationContext());
 			Intent lockscreen = new Intent(getApplicationContext(),
-					Lockscreen.class);
+				Lockscreen.class);
 			lockscreen.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-					| Intent.FLAG_ACTIVITY_NO_USER_ACTION);
+				| Intent.FLAG_ACTIVITY_NO_USER_ACTION);
 			getApplicationContext().startActivity(lockscreen);
 
-			Log.v("homescreenTask", "launching ze missiles!");
 		}
 	};
 
@@ -54,7 +60,7 @@ public class SleepMonitorService extends Service {
 	public void onDestroy() {
 		super.onDestroy();
 		initialized = false;
-		running = true;
+		running = false;
 		stopReceivers();
 	}
 
@@ -67,10 +73,31 @@ public class SleepMonitorService extends Service {
 		}
 		Log.v("onStartCommand", "SleepMonitorService started!");
 
+		final TelephonyManager tm = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+		assert(tm != null);
+		tm.listen(Detector, PhoneStateListener.LISTEN_CALL_STATE);
+
 		serviceHandler = new Handler();
 		startReceivers();
 		initialized = true;
 		return 1;
+	}
+
+	PhoneStateListener Detector = new PhoneStateListener() {
+		/*CALL_STATE_IDLE is 0 -- comes back when calls end
+		  CALL_STATE_RINGING is 1 -- a call is incoming, waiting for user to answer.
+		  CALL_STATE_OFFHOOK is 2 -- Call is actually in progress */
+
+		@Override
+		public void onCallStateChanged(int state, String incomingNumber) 
+		{
+			inCall = (state==2);
+		}
+	};
+
+	public void onCallStart() {
+		// if (!shouldLock)
+
 	}
 
 	// Code to toggle the service.
@@ -102,12 +129,12 @@ public class SleepMonitorService extends Service {
 			return;
 		IntentFilter onFilter = new IntentFilter(Intent.ACTION_SCREEN_ON);
 		IntentFilter offFilter = new IntentFilter(Intent.ACTION_SCREEN_OFF);
-		// IntentFilter battfilter = new
-		// IntentFilter(Intent.ACTION_SCREEN_CHANGED);
+	// IntentFilter battfilter = new
+	// IntentFilter(Intent.ACTION_SCREEN_CHANGED);
 
 		registerReceiver(screenOn, onFilter);
 		registerReceiver(screenOff, offFilter);
-		// registerReceiver(battchange, battfilter);
+	// registerReceiver(battchange, battfilter);
 
 		active = true;
 	}
@@ -132,7 +159,6 @@ public class SleepMonitorService extends Service {
 				return;
 
 			Log.v(TAG, "Screen turned on!");
-			awake = true;
 			return;
 		}
 	};
@@ -143,11 +169,16 @@ public class SleepMonitorService extends Service {
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
+			if (inCall) {
+				Log.v("screenOff", "call flag in progress, not handling.");
+				return;
+			}
+
+
 			if (!intent.getAction().equals(OffIntent))
 				return;
 
 			Log.v(TAG, "Screen turned off!");
-			awake = false;
 
 			serviceHandler.postDelayed(homescreenTask, 500L);
 

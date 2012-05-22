@@ -163,7 +163,7 @@ public class StatsService extends Service {
 			sendDataQueue.add(stats);
 			HttpClient httpClient = new DefaultHttpClient();
 			HttpPost httpPost = new HttpPost(
-					"http://www.dev.considerateapp.com:8001/batchstats");
+					"http://dev.considerateapp.com:8001/batchstats");
 
 			try {
 				TelephonyManager tManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);

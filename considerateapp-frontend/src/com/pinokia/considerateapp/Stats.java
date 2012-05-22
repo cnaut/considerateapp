@@ -17,16 +17,16 @@ public class Stats {
 		this.totalTime = totalTime;
 
 		this.timeOnApps = new TreeMap<String, Double>();
-		timeOnApps.putAll(timeOnApps);
+		this.timeOnApps.putAll(timeOnApps);
 	}
 	
 	public String toJsonString() {
 		String timeOnAppsString = "{ ";
-		for (String key : timeOnApps.keySet()) {
-			double value = timeOnApps.get(key);
-			timeOnAppsString += key + ":" + value + ", ";
+		for (String key : this.timeOnApps.keySet()) {
+			double value = this.timeOnApps.get(key);
+			timeOnAppsString += "{ name:" + key + ", timeonapp:" + value + " }, ";
 		}
-		timeOnAppsString = timeOnAppsString.substring(timeOnAppsString.length() - 2) + " }";
+		timeOnAppsString = timeOnAppsString.substring(0, timeOnAppsString.length() - 2) + " }";
 		return "{ "
 				+ "time:" + timeInMs + ", "
 				+ "unlocks:" + numUnlocks + ", "

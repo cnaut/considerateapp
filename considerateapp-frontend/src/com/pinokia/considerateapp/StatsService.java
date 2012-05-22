@@ -166,14 +166,14 @@ public class StatsService extends Service {
 			HttpClient httpClient = new DefaultHttpClient();
 			/* Charles fix this! */
 			HttpPost httpPost = new HttpPost(
-					"http://www.dev.considerateapp.com:8001/"); 
+					"http://www.dev.considerateapp.com:8001/batchstats"); 
 
 			try {
 				TelephonyManager tManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
 				String uid = tManager.getDeviceId();
 				String json = "json:{ id:" + uid + ", data:{ ";
 				for (int i = 0; i < sendDataQueue.size(); i++) {
-					json += sendDataQueue.get(0).toJsonString() + ", ";
+					json += sendDataQueue.get(i).toJsonString() + ", ";
 				}
 				json = json.substring(0, json.length() - 2) + " } }";
 				System.out.println(json);

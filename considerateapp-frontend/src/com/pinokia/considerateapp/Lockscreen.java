@@ -21,12 +21,14 @@ public class Lockscreen extends Activity implements OnClickListener,
 		OnTouchListener {
 	public int timeleft = 0;
 	public SharedPreferences savedData;
-	public boolean starting = true;// flag off after we successfully gain focus.
-									// flag on when we send task to back
-	public boolean waking = false;// any time quiet or active wake are up
-	public boolean finishing = false;// flag on when an event causes unlock,
-										// back off when onStart comes in again
-										// (relocked)
+	// flag off after we successfully gain focus.
+	// flag on when we send task to back
+	public boolean starting = true;
+	// any time quiet or active wake are up
+	public boolean waking = false;
+	// flag on when an event causes unlock, back off when onStart comes in again
+	// (relocked)
+	public boolean finishing = false;
 
 	public boolean paused = false;
 
@@ -139,7 +141,7 @@ public class Lockscreen extends Activity implements OnClickListener,
 			}
 			waking = false; // reset lifecycle
 
-			return;// avoid unresponsive receiver error outcome
+			return; // avoid unresponsive receiver error outcome
 		}
 	};
 

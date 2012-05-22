@@ -19,7 +19,7 @@
     <uses-permission android:name="android.permission.GET_TASKS" />
 
     <application
-        android:icon="@drawable/icon"
+        android:icon="@drawable/ca_icon"
         android:label="@string/app_name"
         android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
         <activity

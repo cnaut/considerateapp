@@ -100,7 +100,7 @@
                 android:layout_marginTop="10dp"
                 android:background="@drawable/circle"
                 android:scaleType="centerInside"
-                android:src="@drawable/silent" />
+                android:src="@drawable/ca_icon" />
         </RelativeLayout>
     </HorizontalScrollView>
 

@@ -30,12 +30,11 @@ public class ConsiderateAppActivity extends FragmentActivity {
 		super.onCreate(savedInstanceState);
 		super.setContentView(R.layout.viewpager_layout);
 		refreshWhitelist();
-		StatsService.initContext(getApplicationContext());
 		StatsService.start(getApplicationContext());
 		this.initialisePaging();
 	}
 
-	/**
+	/*
 	 * Initialize the fragments to be paged
 	 */
 	private void initialisePaging() {

@@ -2,8 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.pinokia.considerateapp"
     android:versionCode="1"
-    android:versionName="1.0"
-    android:installLocation="internalOnly" >
+    android:versionName="1.0" >
 
     <uses-sdk android:minSdkVersion="7" />
 
@@ -48,22 +47,20 @@
             android:screenOrientation="portrait"
             android:taskAffinity="" />
 
-        <receiver android:name=".BootReceiver">
+        <receiver android:name=".BootReceiver" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
+
         <service android:name=".FlipService" />
         <service android:name=".StatsService" />
         <service android:name=".SleepMonitorService" />
         <service android:name=".FirstBootService" />
 
-        <activity android:name="UnLocksFragment" >
-        </activity>
-        <activity android:name="TotalTimeFragment" >
-        </activity>
-        <activity android:name="TopAppsFragment" >
-        </activity>
+        <activity android:name="UnLocksFragment" />
+        <activity android:name="TotalTimeFragment" />
+        <activity android:name="TopAppsFragment" />
     </application>
 
 </manifest>

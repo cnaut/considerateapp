@@ -1,6 +1,5 @@
 package com.pinokia.considerateapp;
 
-
 public class StopWatch {
 	private long startTime = System.currentTimeMillis();
 	private long stopTime = 0;

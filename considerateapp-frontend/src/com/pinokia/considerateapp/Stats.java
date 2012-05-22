@@ -3,14 +3,14 @@ package com.pinokia.considerateapp;
 import java.util.TreeMap;
 
 public class Stats {
-	long timeInMs;
-	int numUnlocks;
-	int numScreenChecks;
-	double totalTime;
-	TreeMap<String, Double> timeOnApps;
+	private long timeInMs;
+	private int numUnlocks;
+	private int numScreenChecks;
+	private long totalTime;
+	private TreeMap<String, Double> timeOnApps;
 
 	public Stats(long time, int numUnlocks, int numScreenChecks,
-			double totalTime, TreeMap<String, Double> timeOnApps) {
+			long totalTime, TreeMap<String, Double> timeOnApps) {
 		this.timeInMs = time;
 		this.numUnlocks = numUnlocks;
 		this.numScreenChecks = numScreenChecks;

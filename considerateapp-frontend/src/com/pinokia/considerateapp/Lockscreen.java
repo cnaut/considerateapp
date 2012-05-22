@@ -6,8 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.PowerManager;
-import android.os.SystemClock;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View.OnClickListener;
@@ -47,10 +45,10 @@ public class Lockscreen extends Activity implements OnClickListener,
 
 		Log.v("Lockscreen", "starting to create!");
 		requestWindowFeature(android.view.Window.FEATURE_NO_TITLE);
-		getWindow().addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD|
-							 WindowManager.LayoutParams.FLAG_FULLSCREEN|
-							 WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
-
+		getWindow().addFlags(
+				WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
+						| WindowManager.LayoutParams.FLAG_FULLSCREEN
+						| WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
 
 		setContentView(R.layout.lockscreen);
 
@@ -146,13 +144,13 @@ public class Lockscreen extends Activity implements OnClickListener,
 	};
 
 	// public void wakeUp() {
-	// 	setBright((float) 0.1);// tell screen to go on with 10% brightness
-	// 	PowerManager myPM = (PowerManager) getApplicationContext()
-	// 			.getSystemService(Context.POWER_SERVICE);
-	// 	myPM.userActivity(SystemClock.uptimeMillis(), false);
+	// setBright((float) 0.1);// tell screen to go on with 10% brightness
+	// PowerManager myPM = (PowerManager) getApplicationContext()
+	// .getSystemService(Context.POWER_SERVICE);
+	// myPM.userActivity(SystemClock.uptimeMillis(), false);
 
-	// 	screenwake = true;
-	// 	timeleft = 0;// this way the task doesn't keep going
+	// screenwake = true;
+	// timeleft = 0;// this way the task doesn't keep going
 	// }
 
 	public void setBright(float value) {
@@ -178,50 +176,50 @@ public class Lockscreen extends Activity implements OnClickListener,
 		// int reaction = 1;// wakeup, the preferred behavior in advanced mode
 
 		// if (code == KeyEvent.KEYCODE_BACK)
-		// 	reaction = 3;// check for wake, if yes, exit
+		// reaction = 3;// check for wake, if yes, exit
 		// else if (code == KeyEvent.KEYCODE_POWER)
-		// 	reaction = 2;// unlock
+		// reaction = 2;// unlock
 		// // else if (code == KeyEvent.KEYCODE_FOCUS)
-		// // 	reaction = 0;// locked (advanced power save)
+		// // reaction = 0;// locked (advanced power save)
 
 		// switch (reaction) {
 		// case 3:
-		// 	onBackPressed();
-		// 	return true;
+		// onBackPressed();
+		// return true;
 		// case 2:
-		// 	Log.v("here i am", "search for me");
-		// 	if (up && !finishing) {
-		// 		Log.v("unlock key", "power key UP, unlocking");
-		// 		finishing = true;
+		// Log.v("here i am", "search for me");
+		// if (up && !finishing) {
+		// Log.v("unlock key", "power key UP, unlocking");
+		// finishing = true;
 
-		// 		setBright((float) 0.1);
+		// setBright((float) 0.1);
 
-		// 		moveTaskToBack(true);
+		// moveTaskToBack(true);
 
-		// 	}
-		// 	return true;
+		// }
+		// return true;
 
 		// case 1:
-		// 	if (up && !screenwake) {
-		// 		waking = true;
-		// 		Log.v("key event", "wake key");
-		// 		wakeUp();
-		// 	}
-		// 	return true;
+		// if (up && !screenwake) {
+		// waking = true;
+		// Log.v("key event", "wake key");
+		// wakeUp();
+		// }
+		// return true;
 
 		// case 0:
-		// 	if (!screenwake && up) {
-		// 		timeleft = 10;
+		// if (!screenwake && up) {
+		// timeleft = 10;
 
-		// 		if (!waking) {
-		// 			Log.v("key event", "locked key timer starting");
+		// if (!waking) {
+		// Log.v("key event", "locked key timer starting");
 
-		// 			waking = true;
-		// 			// serviceHandler.postDelayed(myTask, 500L);
-		// 		}
-		// 	}
+		// waking = true;
+		// // serviceHandler.postDelayed(myTask, 500L);
+		// }
+		// }
 
-		// 	return true;
+		// return true;
 		// }
 		// return false;
 	}

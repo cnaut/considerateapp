@@ -65,10 +65,9 @@ public class StatsService extends Service {
 	private Intent updateUIIntent;
 	public final static String BROADCAST_ACTION = "com.pinokia.considerateapp.updateUI";
 
-
-	/* 
+	/*
 	 * ========================================================================
-	 * Data access functions 
+	 * Data access functions
 	 * ========================================================================
 	 */
 
@@ -87,9 +86,9 @@ public class StatsService extends Service {
 	public static ArrayList<Long> getTotalTime() {
 		if (totalTime != null)
 			totalTime.set(totalTime.size() - 1,
-					// TODO: Replace with conversion to minutes below for release
+			// TODO: Replace with conversion to minutes below for release
 					stopwatch.getTotalTime() / 1000);
-					// stopwatch.getTotalTime() / 1000 / 60);
+		// stopwatch.getTotalTime() / 1000 / 60);
 		return totalTime;
 	}
 
@@ -97,20 +96,20 @@ public class StatsService extends Service {
 		return appsMap;
 	}
 
-	/* 
+	/*
 	 * ========================================================================
-	 * Timer tasks 
+	 * Timer tasks
 	 * ========================================================================
 	 */
-	
+
 	class topAppsTask extends TimerTask {
 		public void run() {
 
 			if (userPresent) {
 
 				int numberOfTasks = 1;
-				String packageName = am.getRunningTasks(numberOfTasks).get(0)
-						.topActivity.getPackageName();
+				String packageName = am.getRunningTasks(numberOfTasks).get(0).topActivity
+						.getPackageName();
 				String appName = "";
 
 				try {
@@ -142,9 +141,9 @@ public class StatsService extends Service {
 
 			// Update total time
 			totalTime.set(totalTime.size() - 1,
-					// TODO: Replace with conversion to minutes below for release
+			// TODO: Replace with conversion to minutes below for release
 					stopwatch.getTotalTime() / 1000);
-					// stopwatch.getTotalTime() / 1000 / 60);
+			// stopwatch.getTotalTime() / 1000 / 60);
 			totalTime.remove(0);
 			totalTime.add((long) 0);
 			stopwatch.setTotalTime(0);
@@ -159,14 +158,12 @@ public class StatsService extends Service {
 			System.out.println("APPS EMPTY??:" + appsMap.size());
 			Stats stats = new Stats(System.currentTimeMillis(),
 					numUnlocks.get(numDays - 1),
-					numScreenViews.get(numDays - 1),
-					stopwatch.getTotalTime(),
+					numScreenViews.get(numDays - 1), stopwatch.getTotalTime(),
 					appsMap);
 			sendDataQueue.add(stats);
 			HttpClient httpClient = new DefaultHttpClient();
-			/* Charles fix this! */
 			HttpPost httpPost = new HttpPost(
-					"http://www.dev.considerateapp.com:8001/batchstats"); 
+					"http://www.dev.considerateapp.com:8001/batchstats");
 
 			try {
 				TelephonyManager tManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
@@ -186,7 +183,7 @@ public class StatsService extends Service {
 				HttpResponse response = httpClient.execute(httpPost);
 				if (response.getEntity().getContent().toString() == "success") {
 					// only clear data if successfully sent to server
-					sendDataQueue.clear(); 
+					sendDataQueue.clear();
 				}
 
 			} catch (Exception e) {
@@ -195,10 +192,9 @@ public class StatsService extends Service {
 		}
 	}
 
-	
-	/* 
+	/*
 	 * ========================================================================
-	 * StatsService-related functions 
+	 * StatsService-related functions
 	 * ========================================================================
 	 */
 
@@ -268,23 +264,29 @@ public class StatsService extends Service {
 		// TODO: For mock testing, starts at top of every minute. Comment out
 		// the next block of code.
 		firstExecutionDate.set(Calendar.SECOND, 0);
-		firstExecutionDate.roll(Calendar.MINUTE, true);
+		firstExecutionDate.add(Calendar.MINUTE, 1);
+		dailyTimer.schedule(new dailyUpdateTask(),
+				firstExecutionDate.getTime(), dailyDelay);
+		
+		firstExecutionDate.add(Calendar.SECOND, -5);
+		sendDataTimer.schedule(new sendDataTask(),
+				firstExecutionDate.getTime(), sendDataDelay);
 		
 		// TODO: For release into the real world, uncomment out this block!
 		/*
 		 * firstExecutionDate.set(Calendar.SECOND, 0);
 		 * firstExecutionDate.set(Calendar.MINUTE, 0);
-		 * firstExecutionDate.roll(Calendar.HOUR_OF_DAY, true);
-		 */
-		sendDataTimer.schedule(new sendDataTask(), firstExecutionDate.getTime(), sendDataDelay);
-		
-		// TODO: For release into the real world, uncomment out this block!
-		/*
+		 * firstExecutionDate.add(Calendar.HOUR_OF_DAY, 1);
+		 * firstExecutionDate.add(Calendar.SECOND, -5);
+		 * sendDataTimer.schedule(new sendDataTask(),
+		 * firstExecutionDate.getTime(), sendDataDelay);
+		 * 
+		 * firstExecutionDate.set(Calendar.SECOND, 0);
 		 * firstExecutionDate.set(Calendar.HOUR_OF_DAY, 0);
-		 * firstExecutionDate.roll(Calendar.DAY_OF_MONTH, true);
+		 * firstExecutionDate.add(Calendar.DAY_OF_MONTH, 1);
+		 * dailyTimer.schedule(new dailyUpdateTask(),
+		 * firstExecutionDate.getTime(), dailyDelay);
 		 */
-		dailyTimer.schedule(new dailyUpdateTask(), firstExecutionDate.getTime(),
-				dailyDelay);
 	}
 
 	@Override
@@ -329,10 +331,9 @@ public class StatsService extends Service {
 		unregisterReceiver(screenUnlocked);
 	}
 
-	
-	/* 
+	/*
 	 * ========================================================================
-	 * Broadcast Receivers 
+	 * Broadcast Receivers
 	 * ========================================================================
 	 */
 

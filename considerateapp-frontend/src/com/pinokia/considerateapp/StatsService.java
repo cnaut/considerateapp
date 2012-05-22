@@ -21,6 +21,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -349,6 +350,13 @@ public class StatsService extends Service {
 			int index = numScreenViews.size() - 1;
 			Integer currNumScreenViews = numScreenViews.get(index);
 			numScreenViews.set(index, currNumScreenViews + 1);
+			
+			//Save num unlocks
+			SharedPreferences savedData = getSharedPreferences("considerateapp", 0);
+			SharedPreferences.Editor dataEdit = savedData.edit();
+			dataEdit.putInt("numScreenViews", numScreenViews.get(index));
+			dataEdit.commit();
+				
 			System.out.println("NumScreenViews: " + numScreenViews.get(index));
 			return;
 		}
@@ -382,6 +390,7 @@ public class StatsService extends Service {
 			int index = numUnlocks.size() - 1;
 			Integer currNumUnlocks = numUnlocks.get(index);
 			numUnlocks.set(index, currNumUnlocks + 1);
+
 			System.out.println("NumUnlocks: " + numUnlocks.get(index));
 			sendBroadcast(updateUIIntent);
 			return;

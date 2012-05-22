@@ -1,0 +1,70 @@
+<html>
+<head>
+	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}static/css/bootstrap.css" />
+</head>
+
+<body onload="getUserInfo()">
+<div id="fb-root"></div>
+<script>
+	var name = "";
+	window.fbAsyncInit = function() {
+          FB.init({
+            appId      : '103004293171382',
+ 	    status     : true, 
+            cookie     : true,
+            xfbml      : true,
+            oauth      : true,
+          });
+
+	};
+
+	function getUserInfo() {
+	  FB.getLoginStatus(function(response) {
+  	    if (response.status === 'connected') {
+              FB.api('/me', function(me){
+                if (me.name) {
+		  name = me.name;
+	          document.getElementById('username').innerHTML = me.name;
+	          document.getElementById('usergender').innerHTML = me.gender;
+	          document.getElementById('userlocation').innerHTML = me.location.name;
+	        }
+              })
+            }
+	  });
+	}
+
+        (function(d){
+           var js, id = 'facebook-jssdk'; if (d.getElementById(id)) {return;}
+           js = d.createElement('script'); js.id = id; js.async = true;
+           js.src = "//connect.facebook.net/en_US/all.js";
+           d.getElementsByTagName('head')[0].appendChild(js);
+	}(document));
+
+	function publish(){
+           FB.api('/me/feed', 'post', 
+	     {
+              message     : name + " is considerate! His phone score is 87.",
+              link        : 'http://considerateapp.com',
+	      picture     : 'http://www.cougarnightincanada.com/wp-content/uploads/2011/03/texting-at-dinner.png', 
+              name        : 'The Considerate App',
+              description : 'Make your phone more considerate'
+	     },
+             function(response) {
+                if (!response || response.error) {
+                   console.log('Error occured: ' + response.error);
+                } else {
+                   console.log('Post ID: ' + response.id);
+                }
+             });
+      	}
+</script>
+<div class="hero-unit">
+	<h3>Profile</h3>
+	Hi, <span id="username"></span>
+	<div>Gender: <span id="usergender"></span></div>
+	<div>Location: <span id="userlocation"></span></div>
+
+	<a onclick="publish()" href="#" class="btn">Share Phone Score</a>
+</div>
+</body>
+</html>

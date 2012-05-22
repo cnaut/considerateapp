@@ -52,6 +52,25 @@ def addstat(request):
    stat.save()	 
    return HttpResponse(stat.id)
 
+def addBatchStat(user, time, type, value)
+   stat = Stat(user=user, time=time, type=type, value=value) 
+   stat.save()
+
+@csrf_exempt
+def bathstats(request):
+   data = getData(request)
+   userid = data['id'] 
+   usagedata = data['data'] 
+   
+   for usagestat in usagedata:
+      addBatchStat(userid, usagestat['time'], "unlocks", usagestat["unlocks"]) 
+      addBatchStat(userid, usagestat['time'], "checks", usagestat["checks"]) 
+      
+      for app in usagestat['apps']:
+	addBatchStat(userid, usagestat['time'], "app-" + app['name'] + "-time", app['timeonapp']) 
+ 
+   return "successful"
+
 @csrf_exempt
 def statform(request):
     form = StatForm()
@@ -85,6 +104,9 @@ def getData(request):
    data = None
    if(request.POST):
        data = request.POST
-   if(request.GET):
+   elif(request.GET):
        data = request.GET
+   else:
+       data = request.raw_post_data
+       data = json.loads(data)
    return data	

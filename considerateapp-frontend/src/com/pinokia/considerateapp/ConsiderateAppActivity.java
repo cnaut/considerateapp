@@ -119,10 +119,6 @@ public class ConsiderateAppActivity extends FragmentActivity {
 							ContactsContract.Contacts.DISPLAY_NAME },
 					"starred=1 AND has_phone_number=1", null, null);
 			Cursor cCur = loader1.loadInBackground();
-			// this.managedQuery(ContactsContract.Contacts.CONTENT_URI,
-			// new String[] {ContactsContract.Contacts._ID,
-			// ContactsContract.Contacts.DISPLAY_NAME},
-			// "starred=1 AND has_phone_number=1", null, null);
 
 			while (cCur.moveToNext()) {
 				String id = cCur.getString(cCur
@@ -135,10 +131,7 @@ public class ConsiderateAppActivity extends FragmentActivity {
 						null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID
 								+ " = ?", new String[] { id }, null);
 				Cursor pCur = loader2.loadInBackground();
-				// this.managedQuery(
-				// ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
-				// ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = ?",
-				// new String[]{id}, null);
+				
 				while (pCur.moveToNext()) {
 					String phoneNumber = pCur
 							.getString(pCur

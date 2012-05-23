@@ -23,7 +23,7 @@ import java.util.Vector;
 public class ConsiderateAppActivity extends FragmentActivity {
 
 	// testing or release mode?
-	public static final boolean testing = true;
+	public static final boolean testing = false;
 	
 	public static final int chartWidth = 500;
 	public static final int chartHeight = 220;
@@ -97,7 +97,7 @@ public class ConsiderateAppActivity extends FragmentActivity {
             }
         }
 
-    protected static boolean whitelistEnabled = false;
+    protected static boolean whitelistEnabled = testing ? false : true;
 
     private void toggleWhitelist() {
         whitelistEnabled = !whitelistEnabled;

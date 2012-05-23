@@ -166,7 +166,7 @@ public class StatsService extends Service {
 
 		HttpClient httpClient = new DefaultHttpClient();
 		HttpPost httpPost = new HttpPost(
-				"http://dev.considerateapp.com:8002/batchstats");
+				"http://184.169.136.30/batchstats");
 		try {
 			StringEntity content = new StringEntity(json);
 			content.setContentType(new BasicHeader(HTTP.CONTENT_TYPE,

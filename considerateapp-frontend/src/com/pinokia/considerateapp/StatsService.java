@@ -254,7 +254,7 @@ public class StatsService extends Service {
 		// Set up stats for Top Apps Fragment
 		am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
 		pack = getPackageManager();
-		topAppsTimer.schedule(new topAppsTask(), 0, topAppsDelay);
+		topAppsTimer.scheduleAtFixedRate(new topAppsTask(), 0, topAppsDelay);
 
 		// Load previously stored data that hasn't been sent yet
 		SharedPreferences storage = getSharedPreferences(ConsiderateAppActivity.prefsName, 0);
@@ -265,11 +265,11 @@ public class StatsService extends Service {
 		if (ConsiderateAppActivity.testing) {
 			firstExecutionDate.set(Calendar.SECOND, 0);
 			firstExecutionDate.add(Calendar.MINUTE, 1);
-			dailyTimer.schedule(new dailyUpdateTask(),
+			dailyTimer.scheduleAtFixedRate(new dailyUpdateTask(),
 					firstExecutionDate.getTime(), dailyDelay);
 
 			firstExecutionDate.add(Calendar.SECOND, -5);
-			sendDataTimer.schedule(new sendDataTask(),
+			sendDataTimer.scheduleAtFixedRate(new sendDataTask(),
 					firstExecutionDate.getTime(), sendDataDelay);
 		} else {
 
@@ -277,13 +277,13 @@ public class StatsService extends Service {
 			firstExecutionDate.set(Calendar.MINUTE, 0);
 			firstExecutionDate.add(Calendar.HOUR_OF_DAY, 1);
 			firstExecutionDate.add(Calendar.SECOND, -5);
-			sendDataTimer.schedule(new sendDataTask(),
+			sendDataTimer.scheduleAtFixedRate(new sendDataTask(),
 					firstExecutionDate.getTime(), sendDataDelay);
 
 			firstExecutionDate.set(Calendar.SECOND, 0);
 			firstExecutionDate.set(Calendar.HOUR_OF_DAY, 0);
 			firstExecutionDate.add(Calendar.DAY_OF_MONTH, 1);
-			dailyTimer.schedule(new dailyUpdateTask(),
+			dailyTimer.scheduleAtFixedRate(new dailyUpdateTask(),
 					firstExecutionDate.getTime(), dailyDelay);
 		}
 	}

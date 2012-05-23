@@ -160,13 +160,13 @@ public class StatsService extends Service {
 
 		TelephonyManager tManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
 		String uid = tManager.getDeviceId();
-		String json = "json:{ id:" + uid + ", data:"
+		String json = "{ \"id\":" + uid + ", \"data\":"
 				+ Stats.toJsonString(sendDataQueue, prevStats) + " }";
 		System.out.println(json);
 
 		HttpClient httpClient = new DefaultHttpClient();
 		HttpPost httpPost = new HttpPost(
-				"http://www.dev.considerateapp.com:8001/batchstats");
+				"http://dev.considerateapp.com:8002/batchstats");
 		try {
 			StringEntity content = new StringEntity(json);
 			content.setContentType(new BasicHeader(HTTP.CONTENT_TYPE,

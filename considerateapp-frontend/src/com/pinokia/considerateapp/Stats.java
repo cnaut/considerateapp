@@ -22,27 +22,32 @@ public class Stats {
 	}
 	
 	public String toJsonString() {
-		String timeOnAppsString = "{ ";
-		for (String key : this.timeOnApps.keySet()) {
-			double value = this.timeOnApps.get(key);
-			timeOnAppsString += "{ name:" + key + ", timeonapp:" + value + " }, ";
+		String timeOnAppsString = "";
+                if (this.timeOnApps.size() == 0)
+			timeOnAppsString = "[]";
+		else { 
+			timeOnAppsString = "[ ";
+			for (String key : this.timeOnApps.keySet()) {
+				double value = this.timeOnApps.get(key);
+				timeOnAppsString += "{ \"name\":\"" + key + "\", \"timeonapp\":\"" + value + "\" }, ";
+			}
+			timeOnAppsString = timeOnAppsString.substring(0, timeOnAppsString.length() - 2) + " ]";
 		}
-		timeOnAppsString = timeOnAppsString.substring(0, timeOnAppsString.length() - 2) + " }";
 		return "{ "
-				+ "time:" + timeInMs + ", "
-				+ "unlocks:" + numUnlocks + ", "
-				+ "checks:" + numScreenChecks + ", "
-				+ "totaltime:" + totalTime + ", "
-				+ "apps:" + timeOnAppsString
+				+ "\"time\":" + timeInMs + ", "
+				+ "\"unlocks\":" + numUnlocks + ", "
+				+ "\"checks\":" + numScreenChecks + ", "
+				+ "\"totaltime\":" + totalTime + ", " 
+				+ "\"apps\":" + timeOnAppsString
 				+ " }";
 	}
 	
 	public static String toJsonString(ArrayList<Stats> array) {
-		String json = "{ ";
+		String json = "[ ";
 		for (int i = 0; i < array.size(); i++) {
 			json += array.get(i).toJsonString() + ", ";
 		}
-		json = json.substring(0, json.length() - 2) + " }";
+		json = json.substring(0, json.length() - 2) + " ]";
 		return json;
 	}
 	

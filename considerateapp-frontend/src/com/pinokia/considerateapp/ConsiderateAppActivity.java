@@ -22,6 +22,12 @@ import java.util.Vector;
 
 public class ConsiderateAppActivity extends FragmentActivity {
 
+	// testing or release mode?
+	public static final boolean testing = true;
+	
+	public static final int chartWidth = 500;
+	public static final int chartHeight = 220;
+	
 	private PagerAdapter mPagerAdapter;
 	private SharedPreferences prefs;
 

@@ -44,11 +44,11 @@ public class StatsService extends Service {
 
 	// Timers
 	private static Timer dailyTimer = new Timer();
-	/* TODO: change to one day */
-	private static final long dailyDelay = 5 * 60 * 1000;
+	private static final long dailyDelay = ConsiderateAppActivity.testing ? 5 * 60 * 1000
+			: 24 * 60 * 60 * 1000;
 	private static Timer sendDataTimer = new Timer();
-	/* TODO: change to one hour */
-	private static final long sendDataDelay = 1 * 60 * 1000;
+	private static final long sendDataDelay = ConsiderateAppActivity.testing ? 1 * 60 * 1000
+			: 60 * 60 * 1000;
 
 	// Top Apps
 	private static TreeMap<String, Double> appsMap = new TreeMap<String, Double>();
@@ -87,11 +87,9 @@ public class StatsService extends Service {
 	}
 
 	public static ArrayList<Long> getTotalTime() {
+		long time = ConsiderateAppActivity.testing ? stopwatch.getTotalTime() / 1000 : stopwatch.getTotalTime() / 1000 / 60;
 		if (totalTime != null)
-			totalTime.set(totalTime.size() - 1,
-			// TODO: Replace with conversion to minutes below for release
-					stopwatch.getTotalTime() / 1000);
-		// stopwatch.getTotalTime() / 1000 / 60);
+			totalTime.set(totalTime.size() - 1, time);
 		return totalTime;
 	}
 
@@ -143,10 +141,8 @@ public class StatsService extends Service {
 			sendBroadcast(updateUIIntent);
 
 			// Update total time
-			totalTime.set(totalTime.size() - 1,
-			// TODO: Replace with conversion to minutes below for release
-					stopwatch.getTotalTime() / 1000);
-			// stopwatch.getTotalTime() / 1000 / 60);
+			long time = ConsiderateAppActivity.testing ? stopwatch.getTotalTime() / 1000 : stopwatch.getTotalTime() / 1000 / 60;
+			totalTime.set(totalTime.size() - 1, time);
 			totalTime.remove(0);
 			totalTime.add((long) 0);
 			stopwatch.setTotalTime(0);
@@ -267,32 +263,30 @@ public class StatsService extends Service {
 
 		Calendar firstExecutionDate = new GregorianCalendar();
 
-		// TODO: For mock testing, starts at top of every minute. Comment out
-		// the next block of code.
-		firstExecutionDate.set(Calendar.SECOND, 0);
-		firstExecutionDate.add(Calendar.MINUTE, 1);
-		dailyTimer.schedule(new dailyUpdateTask(),
-				firstExecutionDate.getTime(), dailyDelay);
+		if (ConsiderateAppActivity.testing) {
+			firstExecutionDate.set(Calendar.SECOND, 0);
+			firstExecutionDate.add(Calendar.MINUTE, 1);
+			dailyTimer.schedule(new dailyUpdateTask(),
+					firstExecutionDate.getTime(), dailyDelay);
 
-		firstExecutionDate.add(Calendar.SECOND, -5);
-		sendDataTimer.schedule(new sendDataTask(),
-				firstExecutionDate.getTime(), sendDataDelay);
+			firstExecutionDate.add(Calendar.SECOND, -5);
+			sendDataTimer.schedule(new sendDataTask(),
+					firstExecutionDate.getTime(), sendDataDelay);
+		} else {
 
-		// TODO: For release into the real world, uncomment out this block!
-		/*
-		 * firstExecutionDate.set(Calendar.SECOND, 0);
-		 * firstExecutionDate.set(Calendar.MINUTE, 0);
-		 * firstExecutionDate.add(Calendar.HOUR_OF_DAY, 1);
-		 * firstExecutionDate.add(Calendar.SECOND, -5);
-		 * sendDataTimer.schedule(new sendDataTask(),
-		 * firstExecutionDate.getTime(), sendDataDelay);
-		 * 
-		 * firstExecutionDate.set(Calendar.SECOND, 0);
-		 * firstExecutionDate.set(Calendar.HOUR_OF_DAY, 0);
-		 * firstExecutionDate.add(Calendar.DAY_OF_MONTH, 1);
-		 * dailyTimer.schedule(new dailyUpdateTask(),
-		 * firstExecutionDate.getTime(), dailyDelay);
-		 */
+			firstExecutionDate.set(Calendar.SECOND, 0);
+			firstExecutionDate.set(Calendar.MINUTE, 0);
+			firstExecutionDate.add(Calendar.HOUR_OF_DAY, 1);
+			firstExecutionDate.add(Calendar.SECOND, -5);
+			sendDataTimer.schedule(new sendDataTask(),
+					firstExecutionDate.getTime(), sendDataDelay);
+
+			firstExecutionDate.set(Calendar.SECOND, 0);
+			firstExecutionDate.set(Calendar.HOUR_OF_DAY, 0);
+			firstExecutionDate.add(Calendar.DAY_OF_MONTH, 1);
+			dailyTimer.schedule(new dailyUpdateTask(),
+					firstExecutionDate.getTime(), dailyDelay);
+		}
 	}
 
 	@Override

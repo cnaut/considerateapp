@@ -23,14 +23,10 @@ public class TopAppsFragment extends Fragment {
 	private TextView text;
 
 	private static final int numTopApps = 5;
-	
-	private final int chartWidth = 500;
-	private final int chartHeight = 220;
+	private String graphString = "";
 
 	private Timer constantUpdateTimer;
 	private static final long constantUpdateDelay = 10 * 1000; // 10 seconds
-
-	private String graphString = "";
 
 	class timerConstantUpdateTask extends TimerTask {
 		public void run() {
@@ -70,9 +66,12 @@ public class TopAppsFragment extends Fragment {
 	public void onPause() {
 		super.onPause();
 		System.out.println("OnPause: TopApps");
-		// TODO replace timer with broadcastReceiver on release
-		// getActivity().unregisterReceiver(broadcastReceiver);
-		constantUpdateTimer.cancel();
+		
+		if (ConsiderateAppActivity.testing) {
+			constantUpdateTimer.cancel();
+		} else {
+			getActivity().unregisterReceiver(broadcastReceiver);
+		}
 	}
 
 	@Override
@@ -80,11 +79,14 @@ public class TopAppsFragment extends Fragment {
 		super.onResume();
 		System.out.println("OnResume: TopApps");
 
-		// TODO replace timer with broadcastReceiver on release
-		// getActivity().registerReceiver(broadcastReceiver, new IntentFilter(Intent.ACTION_TIME_TICK));
-		constantUpdateTimer = new Timer();
-		constantUpdateTimer.schedule(new timerConstantUpdateTask(), 0,
-				constantUpdateDelay);
+		if (ConsiderateAppActivity.testing) {
+			constantUpdateTimer = new Timer();
+			constantUpdateTimer.schedule(new timerConstantUpdateTask(), 0,
+					constantUpdateDelay);
+		} else {
+			getActivity().registerReceiver(broadcastReceiver,
+					new IntentFilter(Intent.ACTION_TIME_TICK));
+		}
 	}
 	
 	private void update() {
@@ -118,7 +120,8 @@ public class TopAppsFragment extends Fragment {
 
 		graphString = "<img src='http://2.chart.apis.google.com/chart?"
 				+ "chf=bg,s,67676700|c,s,67676700" // transparent background
-				+ "&chs=" + chartWidth + "x" + chartHeight // chart size
+				+ "&chs=" + ConsiderateAppActivity.chartWidth
+				+ "x" + ConsiderateAppActivity.chartHeight // chart size
 				+ "&cht=p" // chart type
 				+ "&chco=58D9FC,EE58FC" // slice colors
 				+ "&chds=0," + max // range

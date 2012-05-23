@@ -21,6 +21,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -28,7 +29,7 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 
 public class StatsService extends Service {
-
+ 
 	private boolean initialized = false;
 	private boolean active = false;
 	private static boolean userPresent = true;
@@ -36,24 +37,26 @@ public class StatsService extends Service {
 	// sources, it looks like it's the best way to do it.
 	protected static boolean running = false;
 
-	private final int numDays = 5; // num days to collect info for
+	private static final int numDays = 5; // num days to collect info for
 	ArrayList<Stats> sendDataQueue;
-
+	public static final String PREFS_NAME = "ConsiderateApp";
+	String prevStats = "";
+	
 	// Timers
 	private static Timer dailyTimer = new Timer();
 	/* TODO: change to one day */
-	private final long dailyDelay = 5 * 60 * 1000;
+	private static final long dailyDelay = 5 * 60 * 1000;
 	private static Timer sendDataTimer = new Timer();
 	/* TODO: change to one hour */
-	private final long sendDataDelay = 1 * 60 * 1000;
+	private static final long sendDataDelay = 1 * 60 * 1000;
 
 	// Top Apps
 	private static TreeMap<String, Double> appsMap = new TreeMap<String, Double>();
 	private ActivityManager am;
 	private PackageManager pack;
 	private Timer topAppsTimer = new Timer();
-	private final int topAppsDelay = 5 * 1000; // 5 seconds
-	private final int topAppsElapsed = topAppsDelay / 1000;
+	private static final int topAppsDelay = 5 * 1000; // 5 seconds
+	private static final int topAppsElapsed = topAppsDelay / 1000;
 
 	// Total Time
 	private static StopWatch stopwatch = new StopWatch();
@@ -63,7 +66,7 @@ public class StatsService extends Service {
 	private static ArrayList<Integer> numScreenViews;
 	private static ArrayList<Integer> numUnlocks;
 	private Intent updateUIIntent;
-	public final static String BROADCAST_ACTION = "com.pinokia.considerateapp.updateUI";
+	public static final String BROADCAST_ACTION = "com.pinokia.considerateapp.updateUI";
 
 	/*
 	 * ========================================================================
@@ -153,42 +156,43 @@ public class StatsService extends Service {
 		}
 	}
 
+	private void sendData() {
+		Stats stats = new Stats(System.currentTimeMillis(),
+				numUnlocks.get(numDays - 1),
+				numScreenViews.get(numDays - 1), stopwatch.getTotalTime(),
+				appsMap);
+		sendDataQueue.add(stats);
+		
+		TelephonyManager tManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+		String uid = tManager.getDeviceId();
+		String json = "json:{ id:" + uid + ", data:" + Stats.toJsonString(sendDataQueue, prevStats) + " }";
+		System.out.println(json);
+		
+		HttpClient httpClient = new DefaultHttpClient();
+		HttpPost httpPost = new HttpPost(
+				"http://www.dev.considerateapp.com:8001/batchstats");
+		try {
+			StringEntity content = new StringEntity(json);
+			content.setContentType(new BasicHeader(HTTP.CONTENT_TYPE,
+					"application/json"));
+			httpPost.setEntity(content);
+
+			// Execute HTTP Post Request
+			HttpResponse response = httpClient.execute(httpPost);
+			if (response.getEntity().getContent().toString() == "success") {
+				// only clear data if successfully sent to server
+				sendDataQueue.clear();
+				prevStats = "";
+			}
+
+		} catch (Exception e) {
+			// Auto-generated catch block
+		}
+	}
+	
 	class sendDataTask extends TimerTask {
 		public void run() {
-			System.out.println("APPS EMPTY??:" + appsMap.size());
-			Stats stats = new Stats(System.currentTimeMillis(),
-					numUnlocks.get(numDays - 1),
-					numScreenViews.get(numDays - 1), stopwatch.getTotalTime(),
-					appsMap);
-			sendDataQueue.add(stats);
-			HttpClient httpClient = new DefaultHttpClient();
-			HttpPost httpPost = new HttpPost(
-					"http://www.dev.considerateapp.com:8001/batchstats");
-
-			try {
-				TelephonyManager tManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-				String uid = tManager.getDeviceId();
-				String json = "json:{ id:" + uid + ", data:{ ";
-				for (int i = 0; i < sendDataQueue.size(); i++) {
-					json += sendDataQueue.get(i).toJsonString() + ", ";
-				}
-				json = json.substring(0, json.length() - 2) + " } }";
-				System.out.println(json);
-				StringEntity content = new StringEntity(json);
-				content.setContentType(new BasicHeader(HTTP.CONTENT_TYPE,
-						"application/json"));
-				httpPost.setEntity(content);
-
-				// Execute HTTP Post Request
-				HttpResponse response = httpClient.execute(httpPost);
-				if (response.getEntity().getContent().toString() == "success") {
-					// only clear data if successfully sent to server
-					sendDataQueue.clear();
-				}
-
-			} catch (Exception e) {
-				// Auto-generated catch block
-			}
+			sendData();
 		}
 	}
 
@@ -230,8 +234,6 @@ public class StatsService extends Service {
 		Intent serviceIntent = new Intent(context, StatsService.class);
 		if (isRunning())
 			context.stopService(serviceIntent);
-		dailyTimer.cancel();
-		sendDataTimer.cancel();
 	}
 
 	@Override
@@ -259,6 +261,9 @@ public class StatsService extends Service {
 		pack = getPackageManager();
 		topAppsTimer.schedule(new topAppsTask(), 0, topAppsDelay);
 
+		SharedPreferences storage = getSharedPreferences(PREFS_NAME, 0);
+	    prevStats = storage.getString("prevStats", "");
+		
 		Calendar firstExecutionDate = new GregorianCalendar();
 
 		// TODO: For mock testing, starts at top of every minute. Comment out
@@ -294,6 +299,18 @@ public class StatsService extends Service {
 		super.onDestroy();
 		running = false;
 		stopReceivers();
+		dailyTimer.cancel();
+		sendDataTimer.cancel();
+		
+		// Try to send data or save to phone to be sent at a later time
+		sendData();
+		if (sendDataQueue.size() != 0) {
+			prevStats = Stats.toJsonString(sendDataQueue, prevStats);
+		}
+		SharedPreferences storage = getSharedPreferences(PREFS_NAME, 0);
+	    SharedPreferences.Editor editor = storage.edit();
+	    editor.putString("prevStats", prevStats);
+	    editor.commit();
 	}
 
 	@Override

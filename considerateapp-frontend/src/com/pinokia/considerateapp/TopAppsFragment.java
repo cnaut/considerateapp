@@ -22,13 +22,13 @@ public class TopAppsFragment extends Fragment {
 	private WebView wv;
 	private TextView text;
 
-	private final int numTopApps = 5;
+	private static final int numTopApps = 5;
 	
 	private final int chartWidth = 500;
 	private final int chartHeight = 220;
 
 	private Timer constantUpdateTimer;
-	private final long constantUpdateDelay = 10 * 1000; // 10 seconds
+	private static final long constantUpdateDelay = 10 * 1000; // 10 seconds
 
 	private String graphString = "";
 

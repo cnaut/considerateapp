@@ -31,10 +31,10 @@ public class TotalTimeFragment extends Fragment {
 	private double max = 0.0;
 	
 	private Timer secondTimer;
-	private final long secondDelay = 1000; // 1 second
+	private static final long secondDelay = 1000; // 1 second
 
 	Timer constantUpdateTimer;
-	long constantUpdateDelay = 10 * 1000; // 10 seconds
+	private static final long constantUpdateDelay = 10 * 1000; // 10 seconds
 
 	String graphString = "";
 

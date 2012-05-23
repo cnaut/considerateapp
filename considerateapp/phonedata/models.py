@@ -10,3 +10,5 @@ class Stat(models.Model):
     user = models.TextField()
     type = models.TextField()
     value = models.TextField()
+    time_recorded = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True, null=True)

@@ -180,7 +180,7 @@ public class SleepMonitorService extends Service {
 
 			Log.v(TAG, "Screen turned off!");
 
-			serviceHandler.postDelayed(homescreenTask, 500L);
+			serviceHandler.post(homescreenTask);
 
 			return;
 		}

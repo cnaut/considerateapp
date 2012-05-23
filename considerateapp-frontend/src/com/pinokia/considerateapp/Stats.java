@@ -1,5 +1,6 @@
 package com.pinokia.considerateapp;
 
+import java.util.ArrayList;
 import java.util.TreeMap;
 
 public class Stats {
@@ -17,16 +18,16 @@ public class Stats {
 		this.totalTime = totalTime;
 
 		this.timeOnApps = new TreeMap<String, Double>();
-		timeOnApps.putAll(timeOnApps);
+		this.timeOnApps.putAll(timeOnApps);
 	}
 	
 	public String toJsonString() {
 		String timeOnAppsString = "{ ";
-		for (String key : timeOnApps.keySet()) {
-			double value = timeOnApps.get(key);
-			timeOnAppsString += key + ":" + value + ", ";
+		for (String key : this.timeOnApps.keySet()) {
+			double value = this.timeOnApps.get(key);
+			timeOnAppsString += "{ name:" + key + ", timeonapp:" + value + " }, ";
 		}
-		timeOnAppsString = timeOnAppsString.substring(timeOnAppsString.length() - 2) + " }";
+		timeOnAppsString = timeOnAppsString.substring(0, timeOnAppsString.length() - 2) + " }";
 		return "{ "
 				+ "time:" + timeInMs + ", "
 				+ "unlocks:" + numUnlocks + ", "
@@ -34,6 +35,23 @@ public class Stats {
 				+ "totaltime:" + totalTime + ", "
 				+ "apps:" + timeOnAppsString
 				+ " }";
+	}
+	
+	public static String toJsonString(ArrayList<Stats> array) {
+		String json = "{ ";
+		for (int i = 0; i < array.size(); i++) {
+			json += array.get(i).toJsonString() + ", ";
+		}
+		json = json.substring(0, json.length() - 2) + " }";
+		return json;
+	}
+	
+	public static String toJsonString(ArrayList<Stats> array, String statsString) {
+		String json = toJsonString(array);
+		if (statsString != "") {
+			json = statsString.substring(0, json.length() - 2) + ", " + json.substring(2);
+		}
+		return json;
 	}
 
 }

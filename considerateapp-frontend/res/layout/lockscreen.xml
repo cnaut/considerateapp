@@ -5,6 +5,7 @@
     android:orientation="vertical" >
 
     <ImageView
+        android:contentDescription="tree"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:scaleType="centerCrop"
@@ -19,8 +20,8 @@
 
     <TextView
         android:id="@+id/phoneScore"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:background="#c558D9FC"
@@ -75,6 +76,7 @@
                 android:background="@drawable/lockslider" />
 
             <ImageView
+                android:contentDescription="lock"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:layout_alignRight="@id/unlockSlider"
@@ -93,6 +95,7 @@
                 android:background="@drawable/lockslider" />
 
             <ImageView
+                android:contentDescription="icon"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:layout_alignLeft="@id/silentSlider"
@@ -100,7 +103,7 @@
                 android:layout_marginTop="10dp"
                 android:background="@drawable/circle"
                 android:scaleType="centerInside"
-                android:src="@drawable/silent" />
+                android:src="@drawable/ca_icon" />
         </RelativeLayout>
     </HorizontalScrollView>
 

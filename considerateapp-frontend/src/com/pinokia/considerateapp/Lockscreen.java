@@ -8,7 +8,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.MotionEvent;
 import android.view.View;
@@ -17,16 +16,17 @@ import android.view.WindowManager;
 import android.widget.HorizontalScrollView;
 import android.widget.TextView;
 
-public class Lockscreen extends Activity implements OnClickListener,
-		OnTouchListener {
+public class Lockscreen extends Activity implements OnTouchListener {
 	public int timeleft = 0;
 	public SharedPreferences savedData;
-	public boolean starting = true;// flag off after we successfully gain focus.
-									// flag on when we send task to back
-	public boolean waking = false;// any time quiet or active wake are up
-	public boolean finishing = false;// flag on when an event causes unlock,
-										// back off when onStart comes in again
-										// (relocked)
+	// flag off after we successfully gain focus.
+	// flag on when we send task to back
+	public boolean starting = true;
+	// any time quiet or active wake are up
+	public boolean waking = false;
+	// flag on when an event causes unlock, back off when onStart comes in again
+	// (relocked)
+	public boolean finishing = false;
 
 	public boolean paused = false;
 
@@ -53,7 +53,6 @@ public class Lockscreen extends Activity implements OnClickListener,
 		setContentView(R.layout.lockscreen);
 
 		phoneScore = (TextView) findViewById(R.id.phoneScore);
-		phoneScore.setOnClickListener(this);
 
 		lock = (HorizontalScrollView) findViewById(R.id.lock);
 		lock.postDelayed(new Runnable() {
@@ -64,25 +63,20 @@ public class Lockscreen extends Activity implements OnClickListener,
 		lock.setOnTouchListener(this);
 	}
 
-	// Implement the OnClickListener callback
-	public void onClick(View v) {
-		// do something when the button is clicked
-		if (v.getId() == R.id.phoneScore) {
-			Log.i(tag, "phone score clicked");
-			Intent intent = new Intent(this, ConsiderateAppActivity.class);
-			startActivity(intent);
-		}
-	}
-
 	public boolean onTouch(View v, MotionEvent event) {
 		if (v.getId() == R.id.lock) {
 			if (event.getAction() == MotionEvent.ACTION_DOWN
 					|| event.getAction() == MotionEvent.ACTION_MOVE) {
-				if (lock.getScrollX() < 200 || lock.getScrollX() > 700) {
+				if (lock.getScrollX() < 200) {
 					Intent startMain = new Intent(Intent.ACTION_MAIN);
 					startMain.addCategory(Intent.CATEGORY_HOME);
 					startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 					startActivity(startMain);
+				}
+				if (lock.getScrollX() > 700) {
+					Intent intent = new Intent(this,
+							ConsiderateAppActivity.class);
+					startActivity(intent);
 				}
 				return false;
 			}
@@ -109,7 +103,9 @@ public class Lockscreen extends Activity implements OnClickListener,
 		super.onResume();
 		Log.v("Lockscreen", "resuming!");
 		SharedPreferences savedData = getSharedPreferences("considerateapp", 0);
-		int score = 100 - savedData.getInt("numLocks", 0);
+		int score = 99 - savedData.getInt("numScreenViews", 0);
+		System.out.println("Phone Score: " + score);
+		
 		phoneScore.setText(Integer.toString(score));
 	}
 
@@ -139,7 +135,7 @@ public class Lockscreen extends Activity implements OnClickListener,
 			}
 			waking = false; // reset lifecycle
 
-			return;// avoid unresponsive receiver error outcome
+			return; // avoid unresponsive receiver error outcome
 		}
 	};
 

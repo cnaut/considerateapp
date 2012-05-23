@@ -19,12 +19,8 @@ public class UnlocksFragment extends Fragment {
 	// global variables
 	private WebView wv;
 	private TextView text;
-
-	private final int chartWidth = 500;
-	private final int chartHeight = 220;
 	
-	private double max = 0.0;
-	
+	private double max = 0.0;	
 	private static String graphString = "";
 
 	private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
@@ -121,7 +117,8 @@ public class UnlocksFragment extends Fragment {
 				+ "&chxr=0,1,5,1|1,0," + max + ",1" // axis range
 				+ "&chxs=0,000000,14,0,lt,000000|1,000000,14,1,l,000000" // chart axis style
 				+ "&chxt=x,y" // chart axis ordering
-				+ "&chs=" + chartWidth + "x" + chartHeight // chart size
+				+ "&chs=" + ConsiderateAppActivity.chartWidth
+				+ "x" + ConsiderateAppActivity.chartHeight // chart size
 				+ "&cht=lxy" // chart type
 				+ "&chco=58D9FC,EE58FC" // line colors
 				+ "&chd=t:-1|" + plotPointsScreenViews + "|-1|" + plotPointsNumUnlocks // chart data

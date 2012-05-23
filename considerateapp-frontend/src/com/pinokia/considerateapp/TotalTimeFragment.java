@@ -25,18 +25,14 @@ public class TotalTimeFragment extends Fragment {
 	private WebView wv;
 	private TextView text;
 
-	private final int chartWidth = 500;
-	private final int chartHeight = 220;
-
 	private double max = 0.0;
+	String graphString = "";
 	
 	private Timer secondTimer;
-	private final long secondDelay = 1000; // 1 second
+	private static final long secondDelay = 1000; // 1 second
 
 	Timer constantUpdateTimer;
-	long constantUpdateDelay = 10 * 1000; // 10 seconds
-
-	String graphString = "";
+	private static final long constantUpdateDelay = 10 * 1000; // 10 seconds
 
 	class timerSecondTask extends TimerTask {
 		public void run() {
@@ -115,25 +111,28 @@ public class TotalTimeFragment extends Fragment {
 		super.onPause();
 		System.out.println("OnPause: TotalTime");
 
-		// TODO replace timer with broadcastReceiver on release
-		// getActivity().unregisterReceiver(broadcastReceiver);
-		constantUpdateTimer.cancel();
-		
-		secondTimer.cancel();
+		if (ConsiderateAppActivity.testing) {
+			constantUpdateTimer.cancel();
+			secondTimer.cancel();
+		} else {
+			getActivity().unregisterReceiver(broadcastReceiver);
+		}		
 	}
 
 	@Override
 	public void onResume() {
 		super.onResume();
 		
-		// TODO replace timer with broadcastReceiver on release
-		// getActivity().registerReceiver(broadcastReceiver, new IntentFilter(Intent.ACTION_TIME_TICK));
-		constantUpdateTimer = new Timer();
-		constantUpdateTimer.schedule(new timerConstantUpdateTask(), 0,
-				constantUpdateDelay);
-		
-		secondTimer = new Timer();
-		secondTimer.schedule(new timerSecondTask(), 0, secondDelay);
+		if (ConsiderateAppActivity.testing) {
+			constantUpdateTimer = new Timer();
+			constantUpdateTimer.schedule(new timerConstantUpdateTask(), 0,
+					constantUpdateDelay);
+			secondTimer = new Timer();
+			secondTimer.schedule(new timerSecondTask(), 0, secondDelay);
+		} else {
+			getActivity().registerReceiver(broadcastReceiver,
+					new IntentFilter(Intent.ACTION_TIME_TICK));
+		}
 	}
 	
 	private void update() {
@@ -162,7 +161,8 @@ public class TotalTimeFragment extends Fragment {
 				+ "&chxr=0,1,5,1|1,0," + max + "" // axis range
 				+ "&chxs=0,000000,14,0,lt,000000|1,000000,14,1,l,000000" // chart axis style
 				+ "&chxt=x,y" // chart axis ordering
-				+ "&chs=" + chartWidth + "x" + chartHeight // chart size
+				+ "&chs=" + ConsiderateAppActivity.chartWidth
+				+ "x" + ConsiderateAppActivity.chartHeight // chart size
 				+ "&cht=lc" // chart type
 				+ "&chco=58D9FC,EE58FC" // line colors
 				+ "&chd=t:" + plotPointsTotalTime // chart data

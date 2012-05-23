@@ -23,13 +23,14 @@ import java.util.Vector;
 public class ConsiderateAppActivity extends FragmentActivity {
 
 	// testing or release mode?
-	public static final boolean testing = true;
+	public static final boolean testing = false;
 	
 	public static final int chartWidth = 500;
 	public static final int chartHeight = 220;
-	
+
 	private PagerAdapter mPagerAdapter;
 	private SharedPreferences prefs;
+	public static final String prefsName = "considerateapp";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +73,7 @@ public class ConsiderateAppActivity extends FragmentActivity {
 	@Override
 	public void onResume() {
 		super.onResume();
-		prefs = getSharedPreferences("considerateapp", 0);
+		prefs = getSharedPreferences(prefsName, 0);
 		System.out.println("OnResume: Main Activity");
 	}
 
@@ -83,40 +84,40 @@ public class ConsiderateAppActivity extends FragmentActivity {
 		return true;
 	}
 
-    @Override
-        public boolean onOptionsItemSelected(MenuItem item) {
-            switch (item.getItemId()) {
-                case R.id.toggle_lockscreen:
-                    toggleSleepMonitor();
-                    return true;
-                case R.id.whitelist_button:
-                    toggleWhitelist();
-                    return true;
+    	@Override
+    	public boolean onOptionsItemSelected(MenuItem item) {
+    		switch (item.getItemId()) {
+        		case R.id.toggle_lockscreen:
+                    	toggleSleepMonitor();
+                    	return true;
+                	case R.id.whitelist_button:
+                    	toggleWhitelist();
+                    	return true;
                 default:
                     return super.onOptionsItemSelected(item);
             }
         }
 
-    protected static boolean whitelistEnabled = false;
+    	protected static boolean whitelistEnabled = testing ? false : true;
 
-    private void toggleWhitelist() {
-        whitelistEnabled = !whitelistEnabled;
-        FlipService.toggleService(getApplicationContext());
-        if(whitelistEnabled) {
-            refreshWhitelist();
-            Toast.makeText(getApplicationContext(),
-                    "Whitelist is enabled.",
-                    Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(getApplicationContext(),
-                    "Whitelist is disabled.",
-                    Toast.LENGTH_SHORT).show();
-        }
-    }
+    	private void toggleWhitelist() {
+        	whitelistEnabled = !whitelistEnabled;
+        	FlipService.toggleService(getApplicationContext());
+        	if(whitelistEnabled) {
+        	    refreshWhitelist();
+        	    Toast.makeText(getApplicationContext(),
+        	            	"Whitelist is enabled.",
+                	    	Toast.LENGTH_SHORT).show();
+        	} else {
+            		Toast.makeText(getApplicationContext(),
+             			"Whitelist is disabled.",
+                    		Toast.LENGTH_SHORT).show();
+        	}
+    	}
 
-    protected static ArrayList<String> whitelist;
+    	protected static ArrayList<String> whitelist;
 
-	private void refreshWhitelist() {
+    	private void refreshWhitelist() {
 		if (whitelistEnabled) {
 			whitelist = new ArrayList<String>();
 			CursorLoader loader1 = new CursorLoader(this,
@@ -137,7 +138,7 @@ public class ConsiderateAppActivity extends FragmentActivity {
 						null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID
 								+ " = ?", new String[] { id }, null);
 				Cursor pCur = loader2.loadInBackground();
-				
+
 				while (pCur.moveToNext()) {
 					String phoneNumber = pCur
 							.getString(pCur

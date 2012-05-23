@@ -102,7 +102,7 @@ public class Lockscreen extends Activity implements OnTouchListener {
 	public void onResume() {
 		super.onResume();
 		Log.v("Lockscreen", "resuming!");
-		SharedPreferences savedData = getSharedPreferences("considerateapp", 0);
+		SharedPreferences savedData = getSharedPreferences(ConsiderateAppActivity.prefsName, 0);
 		int score = 99 - savedData.getInt("numScreenViews", 0);
 		System.out.println("Phone Score: " + score);
 		

@@ -38,6 +38,10 @@ public class ConsiderateAppActivity extends FragmentActivity {
 		super.setContentView(R.layout.viewpager_layout);
 		refreshWhitelist();
 		StatsService.start(getApplicationContext());
+                if (!testing)
+                    FlipService.start(getApplicationContext());
+                else
+                    FlipService.stop(getApplicationContext());
 		this.initialisePaging();
 	}
 
@@ -98,19 +102,18 @@ public class ConsiderateAppActivity extends FragmentActivity {
             }
         }
 
-    	protected static boolean whitelistEnabled = testing ? false : true;
 
     	private void toggleWhitelist() {
-        	whitelistEnabled = !whitelistEnabled;
         	FlipService.toggleService(getApplicationContext());
-        	if(whitelistEnabled) {
+                Log.d("toggling", "donetoggling");
+        	if(FlipService.isRunning()) {
         	    refreshWhitelist();
         	    Toast.makeText(getApplicationContext(),
-        	            	"Whitelist is enabled.",
+        	            	"Considerate Mode is enabled.",
                 	    	Toast.LENGTH_SHORT).show();
         	} else {
             		Toast.makeText(getApplicationContext(),
-             			"Whitelist is disabled.",
+             			"Considerate Mode is disabled.",
                     		Toast.LENGTH_SHORT).show();
         	}
     	}
@@ -118,7 +121,7 @@ public class ConsiderateAppActivity extends FragmentActivity {
     	protected static ArrayList<String> whitelist;
 
     	private void refreshWhitelist() {
-		if (whitelistEnabled) {
+		if (FlipService.isRunning()) {
 			whitelist = new ArrayList<String>();
 			CursorLoader loader1 = new CursorLoader(this,
 					ContactsContract.Contacts.CONTENT_URI, new String[] {

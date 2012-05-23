@@ -29,7 +29,7 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 
 public class StatsService extends Service {
- 
+
 	private boolean initialized = false;
 	private boolean active = false;
 	private static boolean userPresent = true;
@@ -41,7 +41,7 @@ public class StatsService extends Service {
 	ArrayList<Stats> sendDataQueue;
 	public static final String PREFS_NAME = "ConsiderateApp";
 	String prevStats = "";
-	
+
 	// Timers
 	private static Timer dailyTimer = new Timer();
 	/* TODO: change to one day */
@@ -158,16 +158,16 @@ public class StatsService extends Service {
 
 	private void sendData() {
 		Stats stats = new Stats(System.currentTimeMillis(),
-				numUnlocks.get(numDays - 1),
-				numScreenViews.get(numDays - 1), stopwatch.getTotalTime(),
-				appsMap);
+				numUnlocks.get(numDays - 1), numScreenViews.get(numDays - 1),
+				stopwatch.getTotalTime(), appsMap);
 		sendDataQueue.add(stats);
-		
+
 		TelephonyManager tManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
 		String uid = tManager.getDeviceId();
-		String json = "json:{ id:" + uid + ", data:" + Stats.toJsonString(sendDataQueue, prevStats) + " }";
+		String json = "json:{ id:" + uid + ", data:"
+				+ Stats.toJsonString(sendDataQueue, prevStats) + " }";
 		System.out.println(json);
-		
+
 		HttpClient httpClient = new DefaultHttpClient();
 		HttpPost httpPost = new HttpPost(
 				"http://www.dev.considerateapp.com:8001/batchstats");
@@ -189,7 +189,7 @@ public class StatsService extends Service {
 			// Auto-generated catch block
 		}
 	}
-	
+
 	class sendDataTask extends TimerTask {
 		public void run() {
 			sendData();
@@ -261,9 +261,10 @@ public class StatsService extends Service {
 		pack = getPackageManager();
 		topAppsTimer.schedule(new topAppsTask(), 0, topAppsDelay);
 
+		// Load previously stored data that hasn't been sent yet
 		SharedPreferences storage = getSharedPreferences(PREFS_NAME, 0);
-	    prevStats = storage.getString("prevStats", "");
-		
+		prevStats = storage.getString("prevStats", "");
+
 		Calendar firstExecutionDate = new GregorianCalendar();
 
 		// TODO: For mock testing, starts at top of every minute. Comment out
@@ -272,11 +273,11 @@ public class StatsService extends Service {
 		firstExecutionDate.add(Calendar.MINUTE, 1);
 		dailyTimer.schedule(new dailyUpdateTask(),
 				firstExecutionDate.getTime(), dailyDelay);
-		
+
 		firstExecutionDate.add(Calendar.SECOND, -5);
 		sendDataTimer.schedule(new sendDataTask(),
 				firstExecutionDate.getTime(), sendDataDelay);
-		
+
 		// TODO: For release into the real world, uncomment out this block!
 		/*
 		 * firstExecutionDate.set(Calendar.SECOND, 0);
@@ -301,16 +302,16 @@ public class StatsService extends Service {
 		stopReceivers();
 		dailyTimer.cancel();
 		sendDataTimer.cancel();
-		
+
 		// Try to send data or save to phone to be sent at a later time
 		sendData();
 		if (sendDataQueue.size() != 0) {
 			prevStats = Stats.toJsonString(sendDataQueue, prevStats);
 		}
 		SharedPreferences storage = getSharedPreferences(PREFS_NAME, 0);
-	    SharedPreferences.Editor editor = storage.edit();
-	    editor.putString("prevStats", prevStats);
-	    editor.commit();
+		SharedPreferences.Editor editor = storage.edit();
+		editor.putString("prevStats", prevStats);
+		editor.commit();
 	}
 
 	@Override
@@ -366,6 +367,14 @@ public class StatsService extends Service {
 			int index = numScreenViews.size() - 1;
 			Integer currNumScreenViews = numScreenViews.get(index);
 			numScreenViews.set(index, currNumScreenViews + 1);
+
+			// Save num unlocks
+			SharedPreferences savedData = getSharedPreferences(
+					"considerateapp", 0);
+			SharedPreferences.Editor dataEdit = savedData.edit();
+			dataEdit.putInt("numScreenViews", numScreenViews.get(index));
+			dataEdit.commit();
+
 			System.out.println("NumScreenViews: " + numScreenViews.get(index));
 			return;
 		}
@@ -399,6 +408,7 @@ public class StatsService extends Service {
 			int index = numUnlocks.size() - 1;
 			Integer currNumUnlocks = numUnlocks.get(index);
 			numUnlocks.set(index, currNumUnlocks + 1);
+
 			System.out.println("NumUnlocks: " + numUnlocks.get(index));
 			sendBroadcast(updateUIIntent);
 			return;

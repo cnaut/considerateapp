@@ -39,7 +39,6 @@ public class StatsService extends Service {
 
 	private static final int numDays = 5; // num days to collect info for
 	ArrayList<Stats> sendDataQueue;
-	public static final String PREFS_NAME = "ConsiderateApp";
 	String prevStats = "";
 
 	// Timers
@@ -258,7 +257,7 @@ public class StatsService extends Service {
 		topAppsTimer.schedule(new topAppsTask(), 0, topAppsDelay);
 
 		// Load previously stored data that hasn't been sent yet
-		SharedPreferences storage = getSharedPreferences(PREFS_NAME, 0);
+		SharedPreferences storage = getSharedPreferences(ConsiderateAppActivity.prefsName, 0);
 		prevStats = storage.getString("prevStats", "");
 
 		Calendar firstExecutionDate = new GregorianCalendar();
@@ -302,7 +301,7 @@ public class StatsService extends Service {
 		if (sendDataQueue.size() != 0) {
 			prevStats = Stats.toJsonString(sendDataQueue, prevStats);
 		}
-		SharedPreferences storage = getSharedPreferences(PREFS_NAME, 0);
+		SharedPreferences storage = getSharedPreferences(ConsiderateAppActivity.prefsName, 0);
 		SharedPreferences.Editor editor = storage.edit();
 		editor.putString("prevStats", prevStats);
 		editor.commit();
@@ -362,7 +361,7 @@ public class StatsService extends Service {
 			Integer currNumScreenViews = numScreenViews.get(index);
 			numScreenViews.set(index, currNumScreenViews + 1);
 
-			// Save num unlocks
+			// Save num unlocks for phone score
 			SharedPreferences savedData = getSharedPreferences(
 					"considerateapp", 0);
 			SharedPreferences.Editor dataEdit = savedData.edit();

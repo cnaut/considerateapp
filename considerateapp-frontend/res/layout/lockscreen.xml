@@ -5,6 +5,7 @@
     android:orientation="vertical" >
 
     <ImageView
+        android:contentDescription="tree"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:scaleType="centerCrop"
@@ -75,6 +76,7 @@
                 android:background="@drawable/lockslider" />
 
             <ImageView
+                android:contentDescription="lock"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:layout_alignRight="@id/unlockSlider"
@@ -93,6 +95,7 @@
                 android:background="@drawable/lockslider" />
 
             <ImageView
+                android:contentDescription="icon"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:layout_alignLeft="@id/silentSlider"

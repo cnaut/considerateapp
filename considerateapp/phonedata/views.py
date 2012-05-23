@@ -52,6 +52,22 @@ def addstat(request):
    stat.save()	 
    return HttpResponse(stat.id)
 
+def addBatchStat(user, time, type, value):
+   stat = Stat(user=user, time_recorded=time, type=type, value=value)
+   stat.save()
+
+@csrf_exempt
+def batchstats(request):
+   data = getData(request)
+   userid = data['id'] 
+   usagedata = data['data']
+   for usagestat in usagedata:
+      addBatchStat(userid, usagestat['time'], "unlocks", usagestat['unlocks']) 
+      addBatchStat(userid, usagestat['time'], "checks", usagestat['checks']) 
+      for app in usagestat['apps']:
+	addBatchStat(userid, usagestat['time'], "app-" + app['name'] + "-time", app['timeonapp']) 
+   return HttpResponse("successful")
+
 @csrf_exempt
 def statform(request):
     form = StatForm()
@@ -83,8 +99,10 @@ def lboardsearch(request):
 
 def getData(request):
    data = None
-   if(request.POST):
-       data = request.POST
-   if(request.GET):
+   if(request.GET): 
        data = request.GET
+   else:
+       data = request.POST
+       data = data.items()[0][0]
+       data = json.loads(data)
    return data	

@@ -38,7 +38,7 @@ public class FirstBootService extends Service {
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		super.onStartCommand(intent, flags, startId);
 		Log.v("FirstBootService", "Testing startOnBoot");
-		SharedPreferences settings = getSharedPreferences("considerateapp", 0);
+		SharedPreferences settings = getSharedPreferences(ConsiderateAppActivity.prefsName, 0);
 		// retrieve user's start at boot pref
 		boolean boot = settings.getBoolean("boot", false);
 		if (!boot) {

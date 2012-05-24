@@ -38,7 +38,8 @@ public class FirstBootService extends Service {
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		super.onStartCommand(intent, flags, startId);
 		Log.v("FirstBootService", "Testing startOnBoot");
-		SharedPreferences settings = getSharedPreferences(ConsiderateAppActivity.prefsName, 0);
+		SharedPreferences settings = getSharedPreferences(
+				ConsiderateAppActivity.prefsName, 0);
 		// retrieve user's start at boot pref
 		boolean boot = settings.getBoolean("boot", false);
 		if (!boot) {
@@ -65,10 +66,9 @@ public class FirstBootService extends Service {
 				return;
 			Log.v("user unlocking", "Keyguard was completed by user");
 			// send myLock start intent
-			Intent i = new Intent(getApplicationContext(),
-					SleepMonitorService.class);
-
-			startService(i);
+			SleepMonitorService.start(getApplicationContext());
+			FlipService.start(getApplicationContext());
+			StatsService.start(getApplicationContext());
 			stopSelf();
 			return;
 

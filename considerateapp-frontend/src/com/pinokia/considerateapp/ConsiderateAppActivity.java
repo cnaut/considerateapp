@@ -1,22 +1,17 @@
 package com.pinokia.considerateapp;
 
-import android.database.Cursor;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.CursorLoader;
 import android.content.SharedPreferences;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
-import android.util.Log;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
@@ -36,7 +31,8 @@ public class ConsiderateAppActivity extends FragmentActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		super.setContentView(R.layout.viewpager_layout);
-		refreshWhitelist();
+		SleepMonitorService.start(getApplicationContext());
+		FlipService.start(getApplicationContext());
 		StatsService.start(getApplicationContext());
 		this.initialisePaging();
 	}
@@ -98,55 +94,13 @@ public class ConsiderateAppActivity extends FragmentActivity {
 		}
 	}
 
-	protected static boolean whitelistEnabled = false;
-
 	private void toggleWhitelist() {
-		whitelistEnabled = !whitelistEnabled;
-		FlipService.toggleService(getApplicationContext());
-		if (whitelistEnabled) {
-			refreshWhitelist();
+		if (FlipService.toggleService(getApplicationContext())) {
 			Toast.makeText(getApplicationContext(), "Whitelist is enabled.",
 					Toast.LENGTH_SHORT).show();
 		} else {
 			Toast.makeText(getApplicationContext(), "Whitelist is disabled.",
 					Toast.LENGTH_SHORT).show();
-		}
-	}
-
-	protected static ArrayList<String> whitelist;
-
-	private void refreshWhitelist() {
-		if (whitelistEnabled) {
-			whitelist = new ArrayList<String>();
-			CursorLoader loader1 = new CursorLoader(this,
-					ContactsContract.Contacts.CONTENT_URI, new String[] {
-							ContactsContract.Contacts._ID,
-							ContactsContract.Contacts.DISPLAY_NAME },
-					"starred=1 AND has_phone_number=1", null, null);
-			Cursor cCur = loader1.loadInBackground();
-
-			while (cCur.moveToNext()) {
-				String id = cCur.getString(cCur
-						.getColumnIndex(ContactsContract.Contacts._ID));
-
-				// String name =
-				// (cCur.getString(cCur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME)));
-				CursorLoader loader2 = new CursorLoader(this,
-						ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-						null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID
-								+ " = ?", new String[] { id }, null);
-				Cursor pCur = loader2.loadInBackground();
-
-				while (pCur.moveToNext()) {
-					String phoneNumber = pCur
-							.getString(pCur
-									.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-					whitelist.add(phoneNumber);
-					Log.d("whitelist", phoneNumber);
-				}
-				pCur.close();
-			}
-			cCur.close();
 		}
 	}
 

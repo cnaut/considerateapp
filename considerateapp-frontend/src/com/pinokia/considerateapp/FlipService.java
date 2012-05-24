@@ -5,6 +5,7 @@ import java.util.List;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -17,6 +18,7 @@ import android.provider.ContactsContract.PhoneLookup;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import android.widget.Toast;
 import java.util.Date;
 
 public class FlipService extends Service implements SensorEventListener {
@@ -44,27 +46,45 @@ public class FlipService extends Service implements SensorEventListener {
 	// Code to toggle the service
 	public static boolean toggleService(Context context) {
 		if (isRunning()) {
-			stop(context);
+			stop(context, true);
 			return false;
 		} else {
-			start(context);
+			start(context, true);
 			return true;
 		}
 	}
 
-	public static void start(Context context) {
-		Intent serviceIntent = new Intent(context, FlipService.class);
-		if (!isRunning())
-			context.startService(serviceIntent);
-                running = true;
+	private static void writePreference(boolean pref, Context c) {
+		SharedPreferences prefs = c.getSharedPreferences(ConsiderateAppActivity.prefsName, 0);
+		SharedPreferences.Editor prefsEdit = prefs.edit();
+		prefsEdit.putBoolean("considerate_mode", pref);
+		prefsEdit.commit();
 	}
 
-	public static void stop(Context context) {
-                Log.d("stopping!", "called stop");
+	public static void start(Context context, boolean showToast) {
+		if (isRunning()) return;
 		Intent serviceIntent = new Intent(context, FlipService.class);
-		if (isRunning())
-			context.stopService(serviceIntent);
-		running = false;
+		if (showToast){
+			Toast.makeText(context,
+							"Considerate Mode is enabled.",
+							Toast.LENGTH_SHORT).show();
+		}
+		context.startService(serviceIntent);
+		writePreference(true, context);
+        running = true;
+	}
+
+	public static void stop(Context context, boolean showToast) {
+		if (!isRunning()) return;
+		Intent serviceIntent = new Intent(context, FlipService.class);
+		if (showToast) {
+			Toast.makeText(context,
+							"Considerate Mode is disabled.",
+							Toast.LENGTH_SHORT).show();
+		}	
+		context.stopService(serviceIntent);
+		writePreference(false, context);
+        running = false;
 	}
 
 	@Override

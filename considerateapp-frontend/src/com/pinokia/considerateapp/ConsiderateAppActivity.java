@@ -81,71 +81,71 @@ public class ConsiderateAppActivity extends FragmentActivity {
 		System.out.println("OnResume: Main Activity");
 	}
 
-	// @Override
+	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.settings_menu, menu);
-		return true;
+		return(super.onCreateOptionsMenu(menu));
 	}
 
-    	@Override
-    	public boolean onOptionsItemSelected(MenuItem item) {
-    		switch (item.getItemId()) {
-        		case R.id.toggle_lockscreen:
-                    	toggleSleepMonitor();
-                    	return true;
-                	case R.id.whitelist_button:
-                    	toggleWhitelist();
-                    	return true;
-                default:
-                    return super.onOptionsItemSelected(item);
-            }
-        }
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+			case R.id.toggle_lockscreen:
+			toggleSleepMonitor();
+			return true;
+			case R.id.whitelist_button:
+			toggleWhitelist();
+			return true;
+			default:
+			return super.onOptionsItemSelected(item);
+		}
+	}
 
 
-    	private void toggleWhitelist() {
-        	FlipService.toggleService(getApplicationContext());
-                Log.d("toggling", "donetoggling");
-        	if(FlipService.isRunning()) {
-        	    refreshWhitelist();
-        	    Toast.makeText(getApplicationContext(),
-        	            	"Considerate Mode is enabled.",
-                	    	Toast.LENGTH_SHORT).show();
-        	} else {
-            		Toast.makeText(getApplicationContext(),
-             			"Considerate Mode is disabled.",
-                    		Toast.LENGTH_SHORT).show();
-        	}
-    	}
+	private void toggleWhitelist() {
+		FlipService.toggleService(getApplicationContext());
+		Log.d("toggling", "donetoggling");
+		if(FlipService.isRunning()) {
+			refreshWhitelist();
+			Toast.makeText(getApplicationContext(),
+				"Considerate Mode is enabled.",
+				Toast.LENGTH_SHORT).show();
+		} else {
+			Toast.makeText(getApplicationContext(),
+				"Considerate Mode is disabled.",
+				Toast.LENGTH_SHORT).show();
+		}
+	}
 
-    	protected static ArrayList<String> whitelist;
+	protected static ArrayList<String> whitelist;
 
-    	private void refreshWhitelist() {
+	private void refreshWhitelist() {
 		if (FlipService.isRunning()) {
 			whitelist = new ArrayList<String>();
 			CursorLoader loader1 = new CursorLoader(this,
-					ContactsContract.Contacts.CONTENT_URI, new String[] {
-							ContactsContract.Contacts._ID,
-							ContactsContract.Contacts.DISPLAY_NAME },
+				ContactsContract.Contacts.CONTENT_URI, new String[] {
+					ContactsContract.Contacts._ID,
+					ContactsContract.Contacts.DISPLAY_NAME },
 					"starred=1 AND has_phone_number=1", null, null);
 			Cursor cCur = loader1.loadInBackground();
 
 			while (cCur.moveToNext()) {
 				String id = cCur.getString(cCur
-						.getColumnIndex(ContactsContract.Contacts._ID));
+					.getColumnIndex(ContactsContract.Contacts._ID));
 
 				// String name =
 				// (cCur.getString(cCur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME)));
 				CursorLoader loader2 = new CursorLoader(this,
-						ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-						null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID
-								+ " = ?", new String[] { id }, null);
+					ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+					null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID
+					+ " = ?", new String[] { id }, null);
 				Cursor pCur = loader2.loadInBackground();
 
 				while (pCur.moveToNext()) {
 					String phoneNumber = pCur
-							.getString(pCur
-									.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+					.getString(pCur
+						.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
 					whitelist.add(phoneNumber);
 					Log.d("whitelist", phoneNumber);
 				}
@@ -159,15 +159,15 @@ public class ConsiderateAppActivity extends FragmentActivity {
 		SharedPreferences.Editor prefsEdit = prefs.edit();
 		if (SleepMonitorService.toggleService(getApplicationContext())) {
 			Toast.makeText(getApplicationContext(),
-					"Lockscreen is currently being replaced.",
-					Toast.LENGTH_SHORT).show();
+				"Lockscreen is currently being replaced.",
+				Toast.LENGTH_SHORT).show();
 			prefsEdit.putBoolean("boot", true);
 
 		} else {
 			Toast.makeText(getApplicationContext(),
-					"Lockscreen is no longer being replaced.",
-					Toast.LENGTH_SHORT).show();
-			prefsEdit.putBoolean("boot", true);
+				"Lockscreen is no longer being replaced.",
+				Toast.LENGTH_SHORT).show();
+			prefsEdit.putBoolean("boot", false);
 		}
 		prefsEdit.commit();
 	}

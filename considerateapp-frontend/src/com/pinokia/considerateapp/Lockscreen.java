@@ -44,13 +44,19 @@ public class Lockscreen extends Activity implements OnTouchListener {
 		super.onCreate(icicle);
 
 		Log.v("Lockscreen", "starting to create!");
-		// requestWindowFeature(android.view.Window.FEATURE_NO_TITLE);
-		getWindow().addFlags(
-				WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
-						// | WindowManager.LayoutParams.FLAG_FULLSCREEN
-						| WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
-
+		if (android.os.Build.VERSION.SDK_INT < 14)
+		{
+			requestWindowFeature(Window.FEATURE_NO_TITLE);
+			getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		}
 		setContentView(R.layout.lockscreen);
+		if (android.os.Build.VERSION.SDK_INT > 14)
+		{
+			View v = findViewById(android.R.id.content).getRootView();
+			//Right now doesn't work -- to enable this we need to make an
+			//action bar to replace our menus.
+			ICSNavHider.DisableNav(v);
+		}
 
 		phoneScore = (TextView) findViewById(R.id.phoneScore);
 

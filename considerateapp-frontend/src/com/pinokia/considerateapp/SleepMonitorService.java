@@ -1,6 +1,8 @@
 package com.pinokia.considerateapp;
 
 import android.app.Service;
+import android.app.KeyguardManager;
+import android.app.KeyguardManager.KeyguardLock;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -30,6 +32,10 @@ public class SleepMonitorService extends Service {
 	// Phone Status Flags
 	public boolean inCall = false;
 
+	//Keyguard management
+	KeyguardManager.KeyguardLock kl;
+	KeyguardManager km;
+
 
 	Handler serviceHandler;
 	Runnable homescreenTask = new Runnable() {
@@ -53,12 +59,17 @@ public class SleepMonitorService extends Service {
 	@Override
 	public void onCreate() {
 		super.onCreate();
+		//Yes, this is deprecated. Yes, it still works.
+		km = (KeyguardManager)getSystemService(Context.KEYGUARD_SERVICE);
+		kl = km.newKeyguardLock("pinokia");
+		kl.disableKeyguard();
 		running = true;
 	}
 
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
+		kl.reenableKeyguard();
 		initialized = false;
 		running = false;
 		stopReceivers();

@@ -44,10 +44,10 @@ public class Lockscreen extends Activity implements OnTouchListener {
 		super.onCreate(icicle);
 
 		Log.v("Lockscreen", "starting to create!");
-		requestWindowFeature(android.view.Window.FEATURE_NO_TITLE);
+		// requestWindowFeature(android.view.Window.FEATURE_NO_TITLE);
 		getWindow().addFlags(
 				WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
-						| WindowManager.LayoutParams.FLAG_FULLSCREEN
+						// | WindowManager.LayoutParams.FLAG_FULLSCREEN
 						| WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
 
 		setContentView(R.layout.lockscreen);
@@ -61,6 +61,11 @@ public class Lockscreen extends Activity implements OnTouchListener {
 			}
 		}, 250);
 		lock.setOnTouchListener(this);
+	}
+	@Override
+	public void onAttachedToWindow() {
+		this.getWindow().setType(WindowManager.LayoutParams.TYPE_KEYGUARD);
+		super.onAttachedToWindow();
 	}
 
 	public boolean onTouch(View v, MotionEvent event) {

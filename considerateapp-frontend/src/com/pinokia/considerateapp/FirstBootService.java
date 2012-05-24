@@ -65,10 +65,17 @@ public class FirstBootService extends Service {
 				return;
 			Log.v("user unlocking", "Keyguard was completed by user");
 			// send myLock start intent
-			Intent i = new Intent(getApplicationContext(),
+			Intent sleepIntent = new Intent(getApplicationContext(),
 					SleepMonitorService.class);
+			Intent flipIntent = new Intent(getApplicationContext(),
+					FlipService.class);
+			Intent statsIntent = new Intent(getApplicationContext(),
+					StatsService.class);
 
-			startService(i);
+			startService(sleepIntent);
+			startService(flipIntent);
+			startService(statsIntent);
+
 			stopSelf();
 			return;
 

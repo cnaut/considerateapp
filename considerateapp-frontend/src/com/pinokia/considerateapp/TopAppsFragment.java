@@ -13,7 +13,9 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebSettings.RenderPriority;
 import android.widget.TextView;
 
 public class TopAppsFragment extends Fragment {
@@ -51,6 +53,8 @@ public class TopAppsFragment extends Fragment {
 		text = (TextView) view.findViewById(R.id.text);
 		text.setText("Here are the apps you've spent the most time on today:");
 		wv = (WebView) view.findViewById(R.id.graph);
+		wv.getSettings().setRenderPriority(RenderPriority.HIGH);
+		wv.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
 		wv.setBackgroundColor(0);
 
 		return view;
@@ -67,11 +71,11 @@ public class TopAppsFragment extends Fragment {
 		super.onPause();
 		System.out.println("OnPause: TopApps");
 		
-		if (ConsiderateAppActivity.testing) {
+		//if (ConsiderateAppActivity.testing) {
 			constantUpdateTimer.cancel();
-		} else {
-			getActivity().unregisterReceiver(broadcastReceiver);
-		}
+		//} else {
+			//getActivity().unregisterReceiver(broadcastReceiver);
+		//}
 	}
 
 	@Override
@@ -79,14 +83,14 @@ public class TopAppsFragment extends Fragment {
 		super.onResume();
 		System.out.println("OnResume: TopApps");
 
-		if (ConsiderateAppActivity.testing) {
+		//if (ConsiderateAppActivity.testing) {
 			constantUpdateTimer = new Timer();
 			constantUpdateTimer.schedule(new timerConstantUpdateTask(), 0,
 					constantUpdateDelay);
-		} else {
-			getActivity().registerReceiver(broadcastReceiver,
-					new IntentFilter(Intent.ACTION_TIME_TICK));
-		}
+		//} else {
+			//getActivity().registerReceiver(broadcastReceiver,
+					//new IntentFilter(Intent.ACTION_TIME_TICK));
+		//}
 	}
 	
 	private void update() {

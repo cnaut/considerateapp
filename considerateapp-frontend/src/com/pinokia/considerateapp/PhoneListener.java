@@ -8,8 +8,7 @@ import android.util.Log;
 public class PhoneListener extends PhoneStateListener {
 
 	public void onCallStateChanged(int state, String incomingNumber) {
-		if (FlipService.isRunning() && FlipService.faceDown
-				&& ConsiderateAppActivity.whitelistEnabled) {
+		if (FlipService.isRunning() && FlipService.faceDown) {
 			switch (state) {
 			case TelephonyManager.CALL_STATE_IDLE:
 				Log.d("DEBUG", "IDLE");

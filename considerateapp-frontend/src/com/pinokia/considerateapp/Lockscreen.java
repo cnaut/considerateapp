@@ -1,10 +1,11 @@
 package com.pinokia.considerateapp;
 
+import java.util.ArrayList;
+
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -18,7 +19,6 @@ import android.widget.TextView;
 
 public class Lockscreen extends Activity implements OnTouchListener {
 	public int timeleft = 0;
-	public SharedPreferences savedData;
 	// flag off after we successfully gain focus.
 	// flag on when we send task to back
 	public boolean starting = true;
@@ -113,8 +113,9 @@ public class Lockscreen extends Activity implements OnTouchListener {
 	public void onResume() {
 		super.onResume();
 		Log.v("Lockscreen", "resuming!");
-		SharedPreferences savedData = getSharedPreferences(ConsiderateAppActivity.prefsName, 0);
-		int score = 99 - savedData.getInt("numScreenViews", 0);
+		ArrayList<Integer> numScreenViews = StatsService.getNumScreenViews();
+		int currNumScreenViews = numScreenViews.get(numScreenViews.size() - 1);
+		int score = 99 - currNumScreenViews;
 		System.out.println("Phone Score: " + score);
 		
 		phoneScore.setText(Integer.toString(score));

@@ -73,6 +73,10 @@ public class SleepMonitorService extends Service {
 		initialized = false;
 		running = false;
 		stopReceivers();
+
+		final TelephonyManager tm = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+		assert(tm != null);
+		tm.listen(Detector, PhoneStateListener.LISTEN_NONE);
 	}
 
 	@Override
@@ -105,11 +109,6 @@ public class SleepMonitorService extends Service {
 			inCall = (state==2);
 		}
 	};
-
-	public void onCallStart() {
-		// if (!shouldLock)
-
-	}
 
 	// Code to toggle the service.
 	public static boolean toggleService(Context context) {

@@ -361,13 +361,6 @@ public class StatsService extends Service {
 			Integer currNumScreenViews = numScreenViews.get(index);
 			numScreenViews.set(index, currNumScreenViews + 1);
 
-			// Save num unlocks for phone score
-			SharedPreferences savedData = getSharedPreferences(
-					"considerateapp", 0);
-			SharedPreferences.Editor dataEdit = savedData.edit();
-			dataEdit.putInt("numScreenViews", numScreenViews.get(index));
-			dataEdit.commit();
-
 			System.out.println("NumScreenViews: " + numScreenViews.get(index));
 			return;
 		}

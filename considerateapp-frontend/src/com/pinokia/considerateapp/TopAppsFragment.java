@@ -71,11 +71,11 @@ public class TopAppsFragment extends Fragment {
 		super.onPause();
 		System.out.println("OnPause: TopApps");
 		
-		if (ConsiderateAppActivity.testing) {
+		//if (ConsiderateAppActivity.testing) {
 			constantUpdateTimer.cancel();
-		} else {
-			getActivity().unregisterReceiver(broadcastReceiver);
-		}
+		//} else {
+			//getActivity().unregisterReceiver(broadcastReceiver);
+		//}
 	}
 
 	@Override
@@ -83,14 +83,14 @@ public class TopAppsFragment extends Fragment {
 		super.onResume();
 		System.out.println("OnResume: TopApps");
 
-		if (ConsiderateAppActivity.testing) {
+		//if (ConsiderateAppActivity.testing) {
 			constantUpdateTimer = new Timer();
 			constantUpdateTimer.schedule(new timerConstantUpdateTask(), 0,
 					constantUpdateDelay);
-		} else {
-			getActivity().registerReceiver(broadcastReceiver,
-					new IntentFilter(Intent.ACTION_TIME_TICK));
-		}
+		//} else {
+			//getActivity().registerReceiver(broadcastReceiver,
+					//new IntentFilter(Intent.ACTION_TIME_TICK));
+		//}
 	}
 	
 	private void update() {

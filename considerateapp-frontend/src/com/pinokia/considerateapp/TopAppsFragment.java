@@ -13,7 +13,9 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebSettings.RenderPriority;
 import android.widget.TextView;
 
 public class TopAppsFragment extends Fragment {
@@ -51,6 +53,8 @@ public class TopAppsFragment extends Fragment {
 		text = (TextView) view.findViewById(R.id.text);
 		text.setText("Here are the apps you've spent the most time on today:");
 		wv = (WebView) view.findViewById(R.id.graph);
+		wv.getSettings().setRenderPriority(RenderPriority.HIGH);
+		wv.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
 		wv.setBackgroundColor(0);
 
 		return view;

@@ -9,6 +9,7 @@ urlpatterns = patterns('',
     # Examples:
     url(r'^$', 'phonedata.views.home', name='home'),
     url(r'^profile$', 'phonedata.views.profile', name='profile'),
+    url(r'^admin$', 'phonedata.views.admin', name='admin'),
     url(r'^channel$', 'phonedata.views.channel', name='channel'),
     url(r'^adduser', 'phonedata.views.adduser', name='adduser'),
     url(r'^allusers', 'phonedata.views.allusers', name='alluser'),

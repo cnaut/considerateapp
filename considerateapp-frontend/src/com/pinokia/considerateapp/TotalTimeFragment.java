@@ -111,28 +111,28 @@ public class TotalTimeFragment extends Fragment {
 		super.onPause();
 		System.out.println("OnPause: TotalTime");
 
-		if (ConsiderateAppActivity.testing) {
+		//if (ConsiderateAppActivity.testing) {
 			constantUpdateTimer.cancel();
 			secondTimer.cancel();
-		} else {
-			getActivity().unregisterReceiver(broadcastReceiver);
-		}		
+		//} else {
+			//getActivity().unregisterReceiver(broadcastReceiver);
+		//}		
 	}
 
 	@Override
 	public void onResume() {
 		super.onResume();
 		
-		if (ConsiderateAppActivity.testing) {
+		//if (ConsiderateAppActivity.testing) {
 			constantUpdateTimer = new Timer();
 			constantUpdateTimer.schedule(new timerConstantUpdateTask(), 0,
 					constantUpdateDelay);
 			secondTimer = new Timer();
 			secondTimer.schedule(new timerSecondTask(), 0, secondDelay);
-		} else {
-			getActivity().registerReceiver(broadcastReceiver,
-					new IntentFilter(Intent.ACTION_TIME_TICK));
-		}
+		//} else {
+			//getActivity().registerReceiver(broadcastReceiver,
+					//new IntentFilter(Intent.ACTION_TIME_TICK));
+		//}
 	}
 	
 	private void update() {

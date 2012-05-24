@@ -3,7 +3,7 @@
 		<item android:id="@+id/toggle_lockscreen"
 			android:icon="@drawable/ic_toggle_lockscreen"
 			android:title="Toggle Lockscreen" />
-		<item android:id="@+id/whitelist_button"
+		<item android:id="@+id/toggle_consideratemode"
       android:icon="@drawable/ic_toggle_lockscreen"
       android:title="Toggle Considerate Mode" />
 </menu>

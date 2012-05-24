@@ -5,14 +5,20 @@ import java.util.List;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.media.AudioManager;
+import android.net.Uri;
 import android.os.IBinder;
+import android.provider.ContactsContract.PhoneLookup;
+import android.telephony.PhoneStateListener;
+import android.telephony.TelephonyManager;
 import android.util.Log;
-import android.widget.TextView;
+import android.widget.Toast;
 import java.util.Date;
 
 public class FlipService extends Service implements SensorEventListener {
@@ -26,14 +32,13 @@ public class FlipService extends Service implements SensorEventListener {
 		return running;
 	}
 
-	String tag = "CONSIDERATE_APP";
+	public static final String tag = "FLIP_SERVICE";
 	private SensorManager sensorManager;
 	private Sensor accelerometerSensor;
 	private static AudioManager am;
-	TextView flippedText;
 
-	protected static boolean faceDown = false;
-	protected static int prevAudioState;
+	private static boolean faceDown = false;
+	private static int prevAudioState;
 
 	public FlipService() {
 	}
@@ -41,24 +46,45 @@ public class FlipService extends Service implements SensorEventListener {
 	// Code to toggle the service
 	public static boolean toggleService(Context context) {
 		if (isRunning()) {
-			stop(context);
+			stop(context, true);
 			return false;
 		} else {
-			start(context);
+			start(context, true);
 			return true;
 		}
 	}
 
-	public static void start(Context context) {
-		Intent serviceIntent = new Intent(context, FlipService.class);
-		if (!isRunning())
-			context.startService(serviceIntent);
+	private static void writePreference(boolean pref, Context c) {
+		SharedPreferences prefs = c.getSharedPreferences(ConsiderateAppActivity.prefsName, 0);
+		SharedPreferences.Editor prefsEdit = prefs.edit();
+		prefsEdit.putBoolean("considerate_mode", pref);
+		prefsEdit.commit();
 	}
 
-	public static void stop(Context context) {
+	public static void start(Context context, boolean showToast) {
+		if (isRunning()) return;
 		Intent serviceIntent = new Intent(context, FlipService.class);
-		if (isRunning())
-			context.stopService(serviceIntent);
+		if (showToast){
+			Toast.makeText(context,
+							"Considerate Mode is enabled.",
+							Toast.LENGTH_SHORT).show();
+		}
+		context.startService(serviceIntent);
+		writePreference(true, context);
+        running = true;
+	}
+
+	public static void stop(Context context, boolean showToast) {
+		if (!isRunning()) return;
+		Intent serviceIntent = new Intent(context, FlipService.class);
+		if (showToast) {
+			Toast.makeText(context,
+							"Considerate Mode is disabled.",
+							Toast.LENGTH_SHORT).show();
+		}	
+		context.stopService(serviceIntent);
+		writePreference(false, context);
+        running = false;
 	}
 
 	@Override
@@ -70,16 +96,16 @@ public class FlipService extends Service implements SensorEventListener {
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
+                Log.d("destroying!", "called destroy");
 		running = false;
 		sensorManager.unregisterListener(this);
+		final TelephonyManager tm = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+		assert(tm != null);
+		tm.listen(phoneListener, PhoneStateListener.LISTEN_NONE);
 	}
 
 	public void onAccuracyChanged(Sensor sensor, int accuracy) {
 		// TODO Auto-generated method stub
-	}
-
-	public static void setToPrevAudioState() {
-		am.setRingerMode(prevAudioState);
 	}
 
 	private float error = (float) 0.2;
@@ -162,6 +188,10 @@ public class FlipService extends Service implements SensorEventListener {
 		// }
 		am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 		prevAudioState = am.getRingerMode();
+		
+		final TelephonyManager tm = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+		assert(tm != null);
+		tm.listen(phoneListener, PhoneStateListener.LISTEN_CALL_STATE);
 		return 1;
 	}
 
@@ -171,4 +201,38 @@ public class FlipService extends Service implements SensorEventListener {
 		return null;
 	}
 
+	PhoneStateListener phoneListener = new PhoneStateListener() {
+
+		public void onCallStateChanged(int state, String incomingNumber) {
+			if (isRunning() && faceDown) {
+				switch (state) {
+				case TelephonyManager.CALL_STATE_IDLE:
+					Log.d("DEBUG", "IDLE");
+					break;
+				case TelephonyManager.CALL_STATE_OFFHOOK:
+					Log.d("DEBUG", "OFFHOOK");
+					break;
+				case TelephonyManager.CALL_STATE_RINGING:
+					Uri uri = Uri.withAppendedPath(
+							PhoneLookup.CONTENT_FILTER_URI,
+							Uri.encode(incomingNumber));
+					Cursor contactLookup = getContentResolver().query(uri,
+							new String[] { PhoneLookup.STARRED }, null, null,
+							null);
+					if (contactLookup != null) {
+						assert (contactLookup.getCount() == 1);
+						contactLookup.moveToNext();
+						int starred = contactLookup.getInt(contactLookup
+								.getColumnIndex(PhoneLookup.STARRED));
+						if (starred == 1) {
+							am.setRingerMode(prevAudioState);
+							Log.d("DEBUG", "Turn to previous audio state");
+						}
+					}
+					Log.d("DEBUG", "RINGING");
+					break;
+				}
+			}
+		}
+	};
 }

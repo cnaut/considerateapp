@@ -18,8 +18,8 @@ import java.util.Vector;
 public class ConsiderateAppActivity extends FragmentActivity {
 
 	// testing or release mode?
-	public static final boolean testing = true;
-
+	public static final boolean testing = false;
+	
 	public static final int chartWidth = 500;
 	public static final int chartHeight = 220;
 
@@ -34,6 +34,10 @@ public class ConsiderateAppActivity extends FragmentActivity {
 		SleepMonitorService.start(getApplicationContext());
 		FlipService.start(getApplicationContext());
 		StatsService.start(getApplicationContext());
+                if (!testing)
+                    FlipService.start(getApplicationContext());
+                else
+                    FlipService.stop(getApplicationContext());
 		this.initialisePaging();
 	}
 
@@ -86,15 +90,15 @@ public class ConsiderateAppActivity extends FragmentActivity {
 		case R.id.toggle_lockscreen:
 			toggleSleepMonitor();
 			return true;
-		case R.id.whitelist_button:
-			toggleWhitelist();
+		case R.id.toggle_consideratemode:
+			toggleConsiderateMode();
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
 	}
 
-	private void toggleWhitelist() {
+	private void toggleConsiderateMode() {
 		if (FlipService.toggleService(getApplicationContext())) {
 			Toast.makeText(getApplicationContext(), "Whitelist is enabled.",
 					Toast.LENGTH_SHORT).show();

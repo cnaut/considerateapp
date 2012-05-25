@@ -1,15 +1,19 @@
 package com.pinokia.considerateapp;
 
 import android.app.Service;
+import android.app.KeyguardManager;
+import android.app.KeyguardManager.KeyguardLock;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.os.Handler;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import android.widget.Toast;
 
 public class SleepMonitorService extends Service {
 
@@ -29,6 +33,10 @@ public class SleepMonitorService extends Service {
 
 	// Phone Status Flags
 	public boolean inCall = false;
+
+	//Keyguard management
+	KeyguardManager.KeyguardLock kl;
+	KeyguardManager km;
 
 
 	Handler serviceHandler;
@@ -53,12 +61,17 @@ public class SleepMonitorService extends Service {
 	@Override
 	public void onCreate() {
 		super.onCreate();
+		//Yes, this is deprecated. Yes, it still works.
+		km = (KeyguardManager)getSystemService(Context.KEYGUARD_SERVICE);
+		kl = km.newKeyguardLock("pinokia");
+		kl.disableKeyguard();
 		running = true;
 	}
 
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
+		kl.reenableKeyguard();
 		initialized = false;
 		running = false;
 		stopReceivers();
@@ -102,24 +115,45 @@ public class SleepMonitorService extends Service {
 	// Code to toggle the service.
 	public static boolean toggleService(Context context) {
 		if (isRunning()) {
-			stop(context);
+			stop(context, true);
 			return false;
 		} else {
-			start(context);
+			start(context, true);
 			return true;
 		}
 	}
 
-	public static void start(Context context) {
-		Intent serviceIntent = new Intent(context, SleepMonitorService.class);
-		if (!isRunning())
-			context.startService(serviceIntent);
+	private static void writePreference(boolean pref, Context c) {
+		SharedPreferences prefs = c.getSharedPreferences(ConsiderateAppActivity.prefsName, 0);
+		SharedPreferences.Editor prefsEdit = prefs.edit();
+		prefsEdit.putBoolean("lockscreen", pref);
+		prefsEdit.commit();
 	}
 
-	public static void stop(Context context) {
+	public static void start(Context context, boolean showToast) {
+		if (isRunning()) return;
 		Intent serviceIntent = new Intent(context, SleepMonitorService.class);
-		if (isRunning())
-			context.stopService(serviceIntent);
+		if (showToast) {
+			Toast.makeText(context,
+							"Lockscreen is currently being replaced.",
+							Toast.LENGTH_SHORT).show();
+		}
+		context.startService(serviceIntent);
+		writePreference(true, context);
+		running = true;
+	}
+
+	public static void stop(Context context, boolean showToast) {
+		if (!isRunning()) return;
+		Intent serviceIntent = new Intent(context, SleepMonitorService.class);
+		if (showToast) {
+			Toast.makeText(context,
+							"Lockscreen is no longer being replaced.",
+							Toast.LENGTH_SHORT).show();
+		}
+		context.stopService(serviceIntent);
+		writePreference(false, context);
+		running = false;
 	}
 
 	// Start and stop receivers
@@ -128,12 +162,9 @@ public class SleepMonitorService extends Service {
 			return;
 		IntentFilter onFilter = new IntentFilter(Intent.ACTION_SCREEN_ON);
 		IntentFilter offFilter = new IntentFilter(Intent.ACTION_SCREEN_OFF);
-	// IntentFilter battfilter = new
-	// IntentFilter(Intent.ACTION_SCREEN_CHANGED);
 
 		registerReceiver(screenOn, onFilter);
 		registerReceiver(screenOff, offFilter);
-	// registerReceiver(battchange, battfilter);
 
 		active = true;
 	}

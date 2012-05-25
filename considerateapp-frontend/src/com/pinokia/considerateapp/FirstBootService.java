@@ -37,18 +37,6 @@ public class FirstBootService extends Service {
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		super.onStartCommand(intent, flags, startId);
-		Log.v("FirstBootService", "Testing startOnBoot");
-		SharedPreferences settings = getSharedPreferences(
-				ConsiderateAppActivity.prefsName, 0);
-		// retrieve user's start at boot pref
-		boolean boot = settings.getBoolean("boot", false);
-		if (!boot) {
-			// destroy the process because user doesn't have start at boot
-			// enabled
-			stopSelf();
-			return 1;
-		}
-
 		IntentFilter userunlock = new IntentFilter(Intent.ACTION_USER_PRESENT);
 
 		registerReceiver(unlockdone, userunlock);
@@ -62,12 +50,18 @@ public class FirstBootService extends Service {
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
+			SharedPreferences settings = getSharedPreferences(
+				ConsiderateAppActivity.prefsName, 0);
 			if (!intent.getAction().equals(present))
 				return;
 			Log.v("user unlocking", "Keyguard was completed by user");
 			// send myLock start intent
-			SleepMonitorService.start(getApplicationContext());
-			FlipService.start(getApplicationContext());
+			if (settings.getBoolean("lockscreen", false)) {
+				SleepMonitorService.start(getApplicationContext(), false);
+			}
+			if (settings.getBoolean("considerate_mode", false)) {
+				FlipService.start(getApplicationContext(), false);
+			}
 			StatsService.start(getApplicationContext());
 			stopSelf();
 			return;

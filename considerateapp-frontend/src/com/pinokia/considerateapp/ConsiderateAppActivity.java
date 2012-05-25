@@ -10,31 +10,33 @@ import android.content.SharedPreferences;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import java.util.List;
 import java.util.Vector;
 
 public class ConsiderateAppActivity extends FragmentActivity {
 
-	// testing or release mode?
 	public static final boolean testing = false;
 
 	private PagerAdapter mPagerAdapter;
-	private SharedPreferences prefs;
 	public static final String prefsName = "considerateapp";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		super.setContentView(R.layout.viewpager_layout);
-		SleepMonitorService.start(getApplicationContext());
-		FlipService.start(getApplicationContext());
+		SharedPreferences prefs = getSharedPreferences(prefsName, 0);
 		StatsService.start(getApplicationContext());
-                if (!testing)
-                    FlipService.start(getApplicationContext());
-                else
-                    FlipService.stop(getApplicationContext());
+		if (prefs.getBoolean("lockscreen", true)) {
+			SleepMonitorService.start(getApplicationContext(), false);
+		} else {
+			SleepMonitorService.stop(getApplicationContext(), false);
+		}
+		if (prefs.getBoolean("considerate_mode", true)) {
+			FlipService.start(getApplicationContext(), false);
+		} else {
+			FlipService.stop(getApplicationContext(), false);
+		}
 		this.initialisePaging();
 	}
 
@@ -71,25 +73,24 @@ public class ConsiderateAppActivity extends FragmentActivity {
 	@Override
 	public void onResume() {
 		super.onResume();
-		prefs = getSharedPreferences(prefsName, 0);
 		System.out.println("OnResume: Main Activity");
 	}
 
-	// @Override
+	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.settings_menu, menu);
-		return true;
+		return (super.onCreateOptionsMenu(menu));
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.toggle_lockscreen:
-			toggleSleepMonitor();
+			SleepMonitorService.toggleService(getApplicationContext());
 			return true;
 		case R.id.toggle_consideratemode:
-			toggleConsiderateMode();
+			FlipService.toggleService(getApplicationContext());
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
@@ -97,29 +98,10 @@ public class ConsiderateAppActivity extends FragmentActivity {
 	}
 
 	private void toggleConsiderateMode() {
-		if (FlipService.toggleService(getApplicationContext())) {
-			Toast.makeText(getApplicationContext(), "Whitelist is enabled.",
-					Toast.LENGTH_SHORT).show();
-		} else {
-			Toast.makeText(getApplicationContext(), "Whitelist is disabled.",
-					Toast.LENGTH_SHORT).show();
-		}
+		FlipService.toggleService(getApplicationContext());
 	}
 
 	protected void toggleSleepMonitor() {
-		SharedPreferences.Editor prefsEdit = prefs.edit();
-		if (SleepMonitorService.toggleService(getApplicationContext())) {
-			Toast.makeText(getApplicationContext(),
-					"Lockscreen is currently being replaced.",
-					Toast.LENGTH_SHORT).show();
-			prefsEdit.putBoolean("boot", true);
-
-		} else {
-			Toast.makeText(getApplicationContext(),
-					"Lockscreen is no longer being replaced.",
-					Toast.LENGTH_SHORT).show();
-			prefsEdit.putBoolean("boot", true);
-		}
-		prefsEdit.commit();
+		SleepMonitorService.toggleService(getApplicationContext());
 	}
 }

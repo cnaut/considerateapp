@@ -1,0 +1,34 @@
+<html>
+<head>
+	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}/css/bootstrap.css" />
+</head>
+
+<body>
+<div class="navbar">
+	<div class="navbar-inner">
+		<a class="brand" href="#">Admin</a>
+		<div class="container">
+			<ul class="nav">
+				<li><a href="userform">Add User</a></li>
+				<li><a href="statform">Add Stat</a></li>
+				<li><a href="allusers">View All Users</a></li>
+				<li><a href="lboardsearch">View Leaderboard</a></li>
+			</ul>
+		</div>
+	</div>
+</div>
+
+<div class="hero-unit">
+	<h3>Stats</h3>
+
+	<ul>
+		{% for stat in stats %}
+			<li>{{ stat.user }} - {{ stat.value }} - {{ stat.type }}</li>
+		{% endfor %}
+	</ul>
+</div>
+Stats
+
+
+</body>
+</html>

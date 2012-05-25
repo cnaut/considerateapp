@@ -18,6 +18,10 @@ def home(request):
 def profile(request):
     return render_to_response('profile.html')
 
+def admin(request):
+    stats = Stat.objects.all().order_by('-value')[0:100]
+    return render_to_response('admin.html', {'stats': stats}, context_instance=RequestContext(request))
+
 def channel(request):
    return HttpResponse('<script src="//connect.facebook.net/en_US/all.js"></script>')
 

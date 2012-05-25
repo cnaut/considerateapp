@@ -17,6 +17,8 @@ class War(models.Model):
     end_on = models.DateTimeField()
 
 class Battle(models.Model):
+    name = models.TextField()
+    creater = models.TextField()
     users = ListField()
     losers = ListField()
     lat = models.DecimalField(max_digits=8, decimal_places=4, null=True)

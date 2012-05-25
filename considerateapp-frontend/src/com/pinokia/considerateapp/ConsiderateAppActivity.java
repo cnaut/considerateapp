@@ -19,9 +19,6 @@ public class ConsiderateAppActivity extends FragmentActivity {
 
 	// testing or release mode?
 	public static final boolean testing = false;
-	
-	public static final int chartWidth = 500;
-	public static final int chartHeight = 220;
 
 	private PagerAdapter mPagerAdapter;
 	private SharedPreferences prefs;
@@ -60,6 +57,7 @@ public class ConsiderateAppActivity extends FragmentActivity {
 		} else {
 			this.mPagerAdapter = new MyPagerAdapter(fm, fragments);
 			ViewPager pager = (ViewPager) super.findViewById(R.id.viewpager);
+			pager.setOffscreenPageLimit(fragments.size() - 1);
 			pager.setAdapter(this.mPagerAdapter);
 		}
 	}

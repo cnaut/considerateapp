@@ -56,11 +56,11 @@ public class FlipService extends Service implements SensorEventListener {
 		Intent serviceIntent = new Intent(context, FlipService.class);
 		if (!isRunning())
 			context.startService(serviceIntent);
-                running = true;
+		running = true;
 	}
 
 	public static void stop(Context context) {
-                Log.d("stopping!", "called stop");
+		Log.d("stopping!", "called stop");
 		Intent serviceIntent = new Intent(context, FlipService.class);
 		if (isRunning())
 			context.stopService(serviceIntent);
@@ -76,11 +76,11 @@ public class FlipService extends Service implements SensorEventListener {
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-                Log.d("destroying!", "called destroy");
+		Log.d("destroying!", "called destroy");
 		running = false;
 		sensorManager.unregisterListener(this);
-		final TelephonyManager tm = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
-		assert(tm != null);
+		final TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+		assert (tm != null);
 		tm.listen(phoneListener, PhoneStateListener.LISTEN_NONE);
 	}
 
@@ -168,9 +168,9 @@ public class FlipService extends Service implements SensorEventListener {
 		// }
 		am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 		prevAudioState = am.getRingerMode();
-		
-		final TelephonyManager tm = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
-		assert(tm != null);
+
+		final TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+		assert (tm != null);
 		tm.listen(phoneListener, PhoneStateListener.LISTEN_CALL_STATE);
 		return 1;
 	}

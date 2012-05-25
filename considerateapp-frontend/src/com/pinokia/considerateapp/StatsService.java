@@ -37,7 +37,6 @@ public class StatsService extends Service {
 	// sources, it looks like it's the best way to do it.
 	protected static boolean running = false;
 
-	private static final int numDays = 5; // num days to collect info for
 	ArrayList<Stats> sendDataQueue;
 	String prevStats = "";
 
@@ -153,7 +152,7 @@ public class StatsService extends Service {
 
 	private void sendData() {
 		Stats stats = new Stats(System.currentTimeMillis(),
-				numUnlocks.get(numDays - 1), numScreenViews.get(numDays - 1),
+				numUnlocks.get(ChartView.numDays - 1), numScreenViews.get(ChartView.numDays - 1),
 				stopwatch.getTotalTime(), appsMap);
 		sendDataQueue.add(stats);
 
@@ -239,13 +238,13 @@ public class StatsService extends Service {
 		sendDataQueue = new ArrayList<Stats>(10);
 
 		// Set up arrays for NumUnlocksFragment and TotalTimeFragment
-		numScreenViews = new ArrayList<Integer>(numDays);
-		numUnlocks = new ArrayList<Integer>(numDays);
-		totalTime = new ArrayList<Long>(numDays);
+		numScreenViews = new ArrayList<Integer>(ChartView.numDays);
+		numUnlocks = new ArrayList<Integer>(ChartView.numDays);
+		totalTime = new ArrayList<Long>(ChartView.numDays);
 
 		updateUIIntent = new Intent(BROADCAST_ACTION);
 
-		for (int i = 0; i < numDays; i++) {
+		for (int i = 0; i < ChartView.numDays; i++) {
 			numScreenViews.add(0);
 			numUnlocks.add(0);
 			totalTime.add((long) 0);

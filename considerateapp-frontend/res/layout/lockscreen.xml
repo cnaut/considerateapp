@@ -55,7 +55,7 @@
         android:background="@drawable/dropshadow_corner" />
 
     <HorizontalScrollView
-        android:id="@+id/lock"
+        android:id="@+id/slider"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -64,6 +64,7 @@
         android:scrollbars="none" >
 
         <RelativeLayout
+            android:id="@+id/sliderTrack"
             android:layout_width="wrap_content"
             android:layout_height="80dp"
             android:orientation="horizontal" >

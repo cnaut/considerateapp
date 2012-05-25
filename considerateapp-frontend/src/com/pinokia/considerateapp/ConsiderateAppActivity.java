@@ -18,9 +18,6 @@ public class ConsiderateAppActivity extends FragmentActivity {
 
 	public static final boolean testing = false;
 
-	public static final int chartWidth = 500;
-	public static final int chartHeight = 220;
-
 	private PagerAdapter mPagerAdapter;
 	public static final String prefsName = "considerateapp";
 
@@ -32,12 +29,12 @@ public class ConsiderateAppActivity extends FragmentActivity {
 		StatsService.start(getApplicationContext());
 		if (prefs.getBoolean("lockscreen", true)) {
 			SleepMonitorService.start(getApplicationContext(), false);
-		} else{
+		} else {
 			SleepMonitorService.stop(getApplicationContext(), false);
 		}
 		if (prefs.getBoolean("considerate_mode", true)) {
 			FlipService.start(getApplicationContext(), false);
-		} else{
+		} else {
 			FlipService.stop(getApplicationContext(), false);
 		}
 		this.initialisePaging();
@@ -62,6 +59,7 @@ public class ConsiderateAppActivity extends FragmentActivity {
 		} else {
 			this.mPagerAdapter = new MyPagerAdapter(fm, fragments);
 			ViewPager pager = (ViewPager) super.findViewById(R.id.viewpager);
+			pager.setOffscreenPageLimit(fragments.size() - 1);
 			pager.setAdapter(this.mPagerAdapter);
 		}
 	}
@@ -82,7 +80,7 @@ public class ConsiderateAppActivity extends FragmentActivity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.settings_menu, menu);
-		return(super.onCreateOptionsMenu(menu));
+		return (super.onCreateOptionsMenu(menu));
 	}
 
 	@Override

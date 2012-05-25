@@ -55,36 +55,37 @@ public class FlipService extends Service implements SensorEventListener {
 	}
 
 	private static void writePreference(boolean pref, Context c) {
-		SharedPreferences prefs = c.getSharedPreferences(ConsiderateAppActivity.prefsName, 0);
+		SharedPreferences prefs = c.getSharedPreferences(
+				ConsiderateAppActivity.prefsName, 0);
 		SharedPreferences.Editor prefsEdit = prefs.edit();
 		prefsEdit.putBoolean("considerate_mode", pref);
 		prefsEdit.commit();
 	}
 
 	public static void start(Context context, boolean showToast) {
-		if (isRunning()) return;
+		if (isRunning())
+			return;
 		Intent serviceIntent = new Intent(context, FlipService.class);
-		if (showToast){
-			Toast.makeText(context,
-							"Considerate Mode is enabled.",
-							Toast.LENGTH_SHORT).show();
+		if (showToast) {
+			Toast.makeText(context, "Considerate Mode is enabled.",
+					Toast.LENGTH_SHORT).show();
 		}
 		context.startService(serviceIntent);
 		writePreference(true, context);
-        running = true;
+		running = true;
 	}
 
 	public static void stop(Context context, boolean showToast) {
-		if (!isRunning()) return;
+		if (!isRunning())
+			return;
 		Intent serviceIntent = new Intent(context, FlipService.class);
 		if (showToast) {
-			Toast.makeText(context,
-							"Considerate Mode is disabled.",
-							Toast.LENGTH_SHORT).show();
-		}	
+			Toast.makeText(context, "Considerate Mode is disabled.",
+					Toast.LENGTH_SHORT).show();
+		}
 		context.stopService(serviceIntent);
 		writePreference(false, context);
-        running = false;
+		running = false;
 	}
 
 	@Override
@@ -96,11 +97,11 @@ public class FlipService extends Service implements SensorEventListener {
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-                Log.d("destroying!", "called destroy");
+		Log.d("destroying!", "called destroy");
 		running = false;
 		sensorManager.unregisterListener(this);
-		final TelephonyManager tm = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
-		assert(tm != null);
+		final TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+		assert (tm != null);
 		tm.listen(phoneListener, PhoneStateListener.LISTEN_NONE);
 	}
 
@@ -188,9 +189,9 @@ public class FlipService extends Service implements SensorEventListener {
 		// }
 		am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 		prevAudioState = am.getRingerMode();
-		
-		final TelephonyManager tm = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
-		assert(tm != null);
+
+		final TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+		assert (tm != null);
 		tm.listen(phoneListener, PhoneStateListener.LISTEN_CALL_STATE);
 		return 1;
 	}

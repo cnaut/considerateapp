@@ -1,8 +1,12 @@
 package com.pinokia.considerateapp;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import org.achartengine.model.TimeSeries;
+import org.achartengine.model.XYMultipleSeriesDataset;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -14,20 +18,14 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebSettings;
-import android.webkit.WebSettings.RenderPriority;
-import android.webkit.WebView;
 import android.widget.TextView;
 
 public class TotalTimeFragment extends Fragment {
 
 	// global variables
-	private WebView wv;
 	private TextView text;
+	private ChartView chart;
 
-	private double max = 0.0;
-	String graphString = "";
-	
 	private Timer secondTimer;
 	private static final long secondDelay = 1000; // 1 second
 
@@ -62,17 +60,28 @@ public class TotalTimeFragment extends Fragment {
 
 	class timerConstantUpdateTask extends TimerTask {
 		public void run() {
-			update();
+			Activity a = getActivity();
+			if (a == null) {
+				// do nothing
+				// System.out.println("activity is null");
+			} else {
+				a.runOnUiThread(new Runnable() {
+					public void run() {
+						update();
+					}
+				});
+			}
 		}
 	}
-	
+
 	private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
+			System.out.println("Total Time Broadcast Received");
 			update();
 		}
 	};
-	
+
 	/** Called when the activity is first created. */
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -80,11 +89,8 @@ public class TotalTimeFragment extends Fragment {
 		super.onCreate(savedInstanceState);
 		View view = inflater.inflate(R.layout.stats_layout, container, false);
 		text = (TextView) view.findViewById(R.id.text);
-		wv = (WebView) view.findViewById(R.id.graph);
-		wv.getSettings().setRenderPriority(RenderPriority.HIGH);
-		wv.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
-		wv.setBackgroundColor(0);
-
+		chart = (ChartView) view.findViewById(R.id.chart);
+		chart.setType(ChartView.chartType.LINE);
 		return view;
 	}
 
@@ -111,63 +117,45 @@ public class TotalTimeFragment extends Fragment {
 		super.onPause();
 		System.out.println("OnPause: TotalTime");
 
-		//if (ConsiderateAppActivity.testing) {
+		if (ConsiderateAppActivity.testing) {
 			constantUpdateTimer.cancel();
-			secondTimer.cancel();
-		//} else {
-			//getActivity().unregisterReceiver(broadcastReceiver);
-		//}		
+		} else {
+			getActivity().unregisterReceiver(broadcastReceiver);
+		}
+		secondTimer.cancel();
 	}
 
 	@Override
 	public void onResume() {
 		super.onResume();
-		
-		//if (ConsiderateAppActivity.testing) {
+
+		if (ConsiderateAppActivity.testing) {
 			constantUpdateTimer = new Timer();
 			constantUpdateTimer.schedule(new timerConstantUpdateTask(), 0,
 					constantUpdateDelay);
-			secondTimer = new Timer();
-			secondTimer.schedule(new timerSecondTask(), 0, secondDelay);
-		//} else {
-			//getActivity().registerReceiver(broadcastReceiver,
-					//new IntentFilter(Intent.ACTION_TIME_TICK));
-		//}
+		} else {
+			getActivity().registerReceiver(broadcastReceiver,
+					new IntentFilter(Intent.ACTION_TIME_TICK));
+			update();
+		}
+		secondTimer = new Timer();
+		secondTimer.schedule(new timerSecondTask(), 0, secondDelay);
 	}
-	
+
 	private void update() {
 		ArrayList<Long> totalTime = StatsService.getTotalTime();
-		String plotPointsTotalTime = "";
-		if (totalTime == null) { // StatsService hasn't created it yet
-			plotPointsTotalTime = "0,0,0,0,0";
-		} else {
+		XYMultipleSeriesDataset data = new XYMultipleSeriesDataset();
+		TimeSeries time = new TimeSeries("Total Time");
 
-			int lastIndex = totalTime.size() - 1;
-			if (totalTime.get(lastIndex) > max)
-				max = totalTime.get(lastIndex);
-
-			for (int i = 0; i <= lastIndex; i++) {
-				plotPointsTotalTime
-					+= Double.toString((totalTime.get(i) / max) * 100.00) + ",";
-			}
-
-			plotPointsTotalTime
-				= plotPointsTotalTime.substring(0, plotPointsTotalTime.length() - 1);
+		Date today = new Date();
+		for (int i = 0; i < totalTime.size(); i++) {
+			Date date = new Date(today.getTime() - (totalTime.size() - 1 - i)
+					* 24 * 60 * 60 * 1000);
+			time.add(date, totalTime.get(i));
 		}
-
-		graphString = "<center><img src='http://1.chart.apis.google.com/chart"
-				+ "?chf=bg,s,67676700|c,s,67676700" // transparent background
-				+ "&chxl=0:|3 days ago|2 days ago|1 day ago|yesterday|today" // chart labels
-				+ "&chxr=0,1,5,1|1,0," + max + "" // axis range
-				+ "&chxs=0,000000,14,0,lt,000000|1,000000,14,1,l,000000" // chart axis style
-				+ "&chxt=x,y" // chart axis ordering
-				+ "&chs=" + ConsiderateAppActivity.chartWidth
-				+ "x" + ConsiderateAppActivity.chartHeight // chart size
-				+ "&cht=lc" // chart type
-				+ "&chco=58D9FC,EE58FC" // line colors
-				+ "&chd=t:" + plotPointsTotalTime // chart data
-				+ "&chls=3' />"; // line style (thickness)
-
-		wv.loadData(graphString, "text/html", "UTF-8");
+		data.addSeries(time);
+		chart.createChart(data);
+		chart.invalidate();
+		System.out.println("TOTAL TIME UPDATE");
 	}
 }

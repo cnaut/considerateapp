@@ -36,38 +36,39 @@ public class Lockscreen extends Activity implements OnTouchListener {
 	// event turns screen on
 
 	public TextView phoneScore;
+	private int sliderTrackWidth;
 
 	String tag = "LOCK SCREEN";
-	HorizontalScrollView lock;
+	HorizontalScrollView slider;
 
 	protected void onCreate(Bundle icicle) {
 		super.onCreate(icicle);
 
 		Log.v("Lockscreen", "starting to create!");
-		if (android.os.Build.VERSION.SDK_INT < 14)
-		{
+		if (android.os.Build.VERSION.SDK_INT < 14) {
 			requestWindowFeature(Window.FEATURE_NO_TITLE);
 			getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		}
 		setContentView(R.layout.lockscreen);
-		if (android.os.Build.VERSION.SDK_INT > 14)
-		{
+		if (android.os.Build.VERSION.SDK_INT > 14) {
 			View v = findViewById(android.R.id.content).getRootView();
-			//Right now doesn't work -- to enable this we need to make an
-			//action bar to replace our menus.
+			// Right now doesn't work -- to enable this we need to make an
+			// action bar to replace our menus.
 			ICSNavHider.DisableNav(v);
 		}
 
 		phoneScore = (TextView) findViewById(R.id.phoneScore);
 
-		lock = (HorizontalScrollView) findViewById(R.id.lock);
-		lock.postDelayed(new Runnable() {
+		slider = (HorizontalScrollView) findViewById(R.id.slider);
+		slider.postDelayed(new Runnable() {
 			public void run() {
-				lock.scrollTo(435, 0);
+				sliderTrackWidth = findViewById(R.id.sliderTrack).getWidth();
+				slider.scrollTo(sliderTrackWidth / 2 - slider.getWidth() / 2, 0);
 			}
 		}, 250);
-		lock.setOnTouchListener(this);
+		slider.setOnTouchListener(this);
 	}
+
 	@Override
 	public void onAttachedToWindow() {
 		this.getWindow().setType(WindowManager.LayoutParams.TYPE_KEYGUARD);
@@ -75,16 +76,18 @@ public class Lockscreen extends Activity implements OnTouchListener {
 	}
 
 	public boolean onTouch(View v, MotionEvent event) {
-		if (v.getId() == R.id.lock) {
+		if (v.getId() == R.id.slider) {
 			if (event.getAction() == MotionEvent.ACTION_DOWN
 					|| event.getAction() == MotionEvent.ACTION_MOVE) {
-				if (lock.getScrollX() < 200) {
+				if (slider.getScrollX() < sliderTrackWidth / 2
+						- slider.getWidth() * 7 / 8) {
 					Intent startMain = new Intent(Intent.ACTION_MAIN);
 					startMain.addCategory(Intent.CATEGORY_HOME);
 					startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 					startActivity(startMain);
 				}
-				if (lock.getScrollX() > 700) {
+				if (slider.getScrollX() > sliderTrackWidth / 2
+						- slider.getWidth() / 8) {
 					Intent intent = new Intent(this,
 							ConsiderateAppActivity.class);
 					startActivity(intent);
@@ -92,7 +95,7 @@ public class Lockscreen extends Activity implements OnTouchListener {
 				return false;
 			}
 			if (event.getAction() == MotionEvent.ACTION_UP) {
-				lock.scrollTo(435, 0);
+				slider.scrollTo(sliderTrackWidth / 2 - slider.getWidth() / 2, 0);
 				return true;
 			}
 		}
@@ -117,7 +120,7 @@ public class Lockscreen extends Activity implements OnTouchListener {
 		int currNumScreenViews = numScreenViews.get(numScreenViews.size() - 1);
 		int score = 99 - currNumScreenViews;
 		System.out.println("Phone Score: " + score);
-		
+
 		phoneScore.setText(Integer.toString(score));
 	}
 

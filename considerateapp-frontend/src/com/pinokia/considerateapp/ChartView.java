@@ -62,7 +62,9 @@ public class ChartView extends View {
 			renderer.setShowLegend(false);
 		} else {
 			renderer = new XYMultipleSeriesRenderer();
-			((XYMultipleSeriesRenderer) renderer).setXLabels(numDays + 1);
+			((XYMultipleSeriesRenderer) renderer).setXLabels(numDays);
+			((XYMultipleSeriesRenderer) renderer).setXLabelsColor(Color.BLACK);
+			((XYMultipleSeriesRenderer) renderer).setYLabelsColor(0, Color.BLACK);	
 		}
 		renderer.setLabelsColor(Color.BLACK);
 		renderer.setAxesColor(Color.BLACK);
@@ -114,7 +116,6 @@ public class ChartView extends View {
 			RectF bounds = new RectF(canvas.getClipBounds());
 			chart.draw(canvas, 0, 0, (int) canvas.getWidth(),
 					(int) bounds.height(), new Paint());
-			System.out.println("TYPE " + type + " DRAW");
 		}
 	}
 

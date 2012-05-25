@@ -77,6 +77,7 @@ public class TotalTimeFragment extends Fragment {
 	private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
+			System.out.println("Total Time Broadcast Received");
 			update();
 		}
 	};

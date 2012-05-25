@@ -4,31 +4,18 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.TreeMap;
 
-import org.achartengine.ChartFactory;
-import org.achartengine.GraphicalView;
-import org.achartengine.chart.PieChart;
 import org.achartengine.model.CategorySeries;
-import org.achartengine.renderer.DefaultRenderer;
-import org.achartengine.renderer.SimpleSeriesRenderer;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.os.Bundle;
-import android.os.Looper;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
-import android.webkit.WebSettings.RenderPriority;
 import android.widget.TextView;
 
 public class TopAppsFragment extends Fragment {
@@ -61,6 +48,7 @@ public class TopAppsFragment extends Fragment {
 	private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
+			System.out.println("Top Apps Broadcast Received");
 			update();
 		}
 	};

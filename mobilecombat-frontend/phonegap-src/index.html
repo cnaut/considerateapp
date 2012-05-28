@@ -1,6 +1,5 @@
 ﻿<!DOCTYPE html>
 <html>
-<<<<<<< HEAD
   <head>
     <!-- meta name="viewport" content="width=device-width, height=device-height, user-scalable=yes, initial-scale=2.0, maximum-scale=4.0, minimum-scale=1.0" / -->
     <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no;" />
@@ -151,6 +150,8 @@ function onFail() {
 }
 
 document.addEventListener('deviceready', function () {
+  window.location = 'nearby.html';
+
       try {
       FB.Cookie.setEnabled(true); // this seems to be duplicate to 'cookie: true' below, but it is IMPORTANT due to FB implementation logic.
       if (navigator.userAgent.toLowerCase().match(/android/)) {
@@ -158,7 +159,7 @@ document.addEventListener('deviceready', function () {
       } else if (navigator.userAgent.toLowerCase().match(/windows/)) {
         FB.init({ appId: "428814777134321", nativeInterface: PG.FB, useCachedDialogs: false });
       }
-      
+
       FB.init({ appId: "428814777134321", nativeInterface: CDV.FB, cookie: true });
       document.getElementById('data').innerHTML = "";
       getLoginStatus();

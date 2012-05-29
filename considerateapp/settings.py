@@ -124,6 +124,7 @@ INSTALLED_APPS = (
     'phonedata',
     'django.contrib.admin',
     'django_mongodb_engine',
+    'djangotoolbox',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 )

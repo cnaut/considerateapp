@@ -19,11 +19,11 @@
 </div>
 
 <div class="hero-unit">
-	<h1>Users</h1>
+	<h1>User - {{ id }}</h1>
 
 	<ul>
-		{% for user in users %}
-			<li><a href="/userstats/{{ user.phone_id }}">{{ user.phone_id }}</a></li>
+		{% for stat in stats %}
+			<li>{{ stat.type }} - {{ stat.value }} - {{ stat.time_recorded }}</li>
 		{% endfor %}
 	</ul>
 </div>

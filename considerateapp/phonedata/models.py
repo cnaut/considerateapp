@@ -3,7 +3,7 @@ from djangotoolbox.fields import ListField
 from djangotoolbox.fields import EmbeddedModelField
 
 class User(models.Model):
-    phone_id = models.TextField(unique=True)
+    phone_id = models.TextField()
     name = models.TextField()
     joined_on = models.DateTimeField(auto_now_add=True, null=True)
 

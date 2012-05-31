@@ -3,6 +3,7 @@ package com.pinokia.considerateapp;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -118,7 +119,13 @@ public class Lockscreen extends Activity implements OnTouchListener {
 		Log.v("Lockscreen", "resuming!");
 		ArrayList<Integer> numScreenViews = StatsService.getNumScreenViews();
 		int currNumScreenViews = numScreenViews.get(numScreenViews.size() - 1);
-		int score = 99 - currNumScreenViews;
+		
+		SharedPreferences prefs = this.getSharedPreferences(ConsiderateAppActivity.prefsName, 0);
+		int considerateTime = prefs.getInt("considerate_time", 0);
+		
+		int score = 99 - currNumScreenViews + considerateTime;
+		if (score > 99)
+			score == 99;
 		System.out.println("Phone Score: " + score);
 
 		phoneScore.setText(Integer.toString(score));

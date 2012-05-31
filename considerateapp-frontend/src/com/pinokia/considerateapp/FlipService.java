@@ -130,7 +130,7 @@ public class FlipService extends Service implements SensorEventListener {
 		if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
 			curr_z = event.values[2];
 			Log.v(tag, "ACCELEROMETER:" + curr_z);
-			if (prev_z < -9 && curr_z < -9
+			if (prev_z < -7 && curr_z < -7
 					&& isSimilarAcceleration(prev_z, curr_z)) {
 				if (startingTime == null) {
 					startingTime = new Date();
@@ -149,6 +149,13 @@ public class FlipService extends Service implements SensorEventListener {
 			prevAudioState = am.getRingerMode();
 			Log.i(tag, "going silent");
 			am.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+
+			SharedPreferences prefs = this.getSharedPreferences(
+				ConsiderateAppActivity.prefsName, 0);
+			int time = 5 + prefs.getInt("considerate_time", 0);
+			SharedPreferences.Editor prefsEdit = prefs.edit();
+			prefsEdit.putInt("considerate_time", time);
+			prefsEdit.commit();
 		} else if (faceDown && !newFaceDown) {
 			Log.i(tag, "ungoing silent");
 			// Change phone back to previous state

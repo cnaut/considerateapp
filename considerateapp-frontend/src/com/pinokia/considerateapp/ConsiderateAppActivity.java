@@ -37,6 +37,11 @@ public class ConsiderateAppActivity extends FragmentActivity {
 		} else {
 			FlipService.stop(getApplicationContext(), false);
 		}
+		
+		SharedPreferences.Editor prefsEdit = prefs.edit();
+		prefsEdit.putInt("considerate_times", 0);
+		prefsEdit.commit();
+		
 		this.initialisePaging();
 	}
 

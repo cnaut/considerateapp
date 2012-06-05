@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
   <head>
     <!-- meta name="viewport" content="width=device-width, height=device-height, user-scalable=yes, initial-scale=2.0, maximum-scale=4.0, minimum-scale=1.0" / -->
@@ -12,43 +12,44 @@
   <body>
     <script type="text/javascript" charset="utf-8" src="include.js"></script>
     <script type="text/javascript" src="httpRequest.js"></script>
-
+  
     <script type="text/javascript" charset="utf-8">
-
-      /**
+    
+      /*
       * Function called when page has finished loading.
       */
       function init() {
-            document.addEventListener("deviceready", function () {
-                  deviceReady = true;
-                  console.log("Device=" + device.platform + " " + device.version);
-            }, false);
-            window.setTimeout(function () {
-                  if (!deviceReady) {
-                        console.log("Error: PhoneGap did not initialize.  Demo will not run correctly.");
-                  }
-            }, 1000);
+      document.addEventListener("deviceready",
+      function () {
+      deviceReady = true;
+      console.log("Device=" + device.platform + " " + device.version);
+      }, false);
+      window.setTimeout(function () {
+      if (!deviceReady) {
+      console.log("Error: PhoneGap did not initialize.  Demo will not run correctly.");
       }
-
-      </script>
-
-
+      }, 1000);
+      }
+    
+    </script>
+  
+  
     <h1>Mobile Combat</h1>
     <button onclick="login()">Facebook Connect</button>
     
     <!--<button onclick="me()">Me</button>
-    <button onclick="getSession()">Get session</button>
-    <button onclick="getLoginStatus()">Get login</button>
-    <button onclick="logout()">Logout</button>-->
-
+	<button onclick="getSession()">Get session</button>
+	<button onclick="getLoginStatus()">Get login</button>
+	<button onclick="logout()">Logout</button>-->
+  
     <div id="data">loading ...</div>
-
+  
     <script>
       console.log("HERE");
       if (typeof cordova == 'undefined') console.log('Cordova variable does not exist. Check that you have included phonegap.js correctly');
       if (typeof CDV == 'undefined') console.log('CDV variable does not exist. Check that you have included pg-plugin-fb-connect.js correctly');
       if (typeof FB == 'undefined') console.log('FB variable does not exist. Check that you have included the Facebook JS SDK file.');
-
+    
       FB.Event.subscribe('auth.login', function (response) {
       console.log('auth.login event');
       console.log("AAAUUTHH response: " + JSON.stringify(response));
@@ -161,6 +162,6 @@
       }
       }, false);
     </script>
-<div id="log"></div>
+    <div id="log"></div>
 </body>
 </html>

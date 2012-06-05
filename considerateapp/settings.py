@@ -4,7 +4,7 @@ DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
-    # ('Your Name', 'your_email@example.com'),
+    ('Charles Naut', 'cnaut@stanford.edu'),
 )
 
 MANAGERS = ADMINS
@@ -34,7 +34,7 @@ TIME_ZONE = 'America/Chicago'
 # http://www.i18nguy.com/unicode/language-identifiers.html
 LANGUAGE_CODE = 'en-us'
 
-SITE_ID = 1
+SITE_ID=u'4fc2b9857193922d3a00001d'
 
 # If you set this to False, Django will make some optimizations so as not
 # to load the internationalization machinery.
@@ -122,8 +122,9 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'phonedata',
-    # Uncomment the next line to enable the admin:
-    # 'django.contrib.admin',
+    'django.contrib.admin',
+    'django_mongodb_engine',
+    'djangotoolbox',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 )

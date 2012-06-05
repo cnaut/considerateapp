@@ -33,6 +33,31 @@ def allusers(request):
     return response
 
 @csrf_exempt
+def allbattles(request):
+    battles = Battle.objects.all()
+   
+    battles_json = "["
+    first = True 
+    for battle in battles:
+	battle_json = ""
+    	if not first:
+		battle_json = ", "
+        else:
+		first = False
+	battle_json = battle_json + '{"id": "' + battle.id + '", "name": "' + battle.name + '", "users": ['
+    	battles_json += battle_json 
+		
+	users = battle.users
+	users = ','.join(users)
+	
+	battles_json += users + "]}"
+
+    battles_json += "]"
+    #json.dumps(battles_json)	    
+
+    return HttpResponse(battles_json)
+
+@csrf_exempt
 def adduser(request):
     data = None
     fbid = None
@@ -69,6 +94,27 @@ def userform(request):
 
 
 @csrf_exempt
+def createbattle(request):
+    fb_id = request.POST.get('fbid')
+    battle_name = request.POST.get('battlename')
+    users = [fb_id]
+    battle = Battle(creater=fb_id, name=battle_name, users=users)
+    battle.save()
+
+    response = battle.id 
+    return HttpResponse(response)
+
+@csrf_exempt
+def joinbattle(request):
+    fb_id = request.POST.get('fbid')
+    battle_id = request.POST.get('battle')
+    
+    battle = Battle.objects.get(id=battle_id)
+    battle.users.append(fb_id) 
+
+    return HttpResponse("success")
+
+@csrf_exempt
 def startbattle(request):
     data = json.loads(request.raw_post_data)
 
@@ -103,7 +149,6 @@ def declaredefeat(request):
     battle.save()
     print battle.losers
     return HttpResponse(battle.losers)
-
 
 @csrf_exempt
 def location(request):

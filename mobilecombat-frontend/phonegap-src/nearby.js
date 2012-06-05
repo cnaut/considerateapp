@@ -17,7 +17,7 @@ function joinBattle() {
 		       }, 
 		       function() {
 			   console.log("JOIN BATTLE FAIL");
-		       }, false, "");
+		       });
 }
 
 /*
@@ -45,7 +45,7 @@ function updateBattlesTable() {
     sendXmlhttpRequest("GET", null, "allbattles", onBattlesRequestSuccess, 
 		       function() {
 			   console.log("BATTLE REQUEST FAIL");
-		       }, false, "");
+		       });
 }
 
 function updateLocationsPopup(locations) {
@@ -89,7 +89,7 @@ function selectLocation() {
 		       },
 		       function() {
 			   console.log("CREATE BATTLE FAIL");
-		       }, false, "");
+		       });
 }
 
 /*

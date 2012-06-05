@@ -34,7 +34,7 @@ function countUp() {
   document.getElementById("message").innerHTML = "Begin " + count_up_time;
   //Every 5 seconds, check to see if the battle has ended 
   if (count_up_time % 5 == 0) {
-    sendXmlhttpRequest("POST", "id=" + userID, "getbattle", onGetBattleRequestSuccess, false, "");
+    sendXmlhttpRequest("POST", "id=" + userID, "getbattle", onGetBattleRequestSuccess);
   }
   count_up_time = count_up_time + 1;
 }
@@ -50,7 +50,7 @@ function onSuccess(acceleration) {
     if ((acceleration.x > accX + errorRange) || (acceleration.x < accX - errorRange) || (acceleration.y > accY + errorRange) || (acceleration.y < accY - errorRange) || (acceleration.z > accZ + errorRange) || (acceleration.z < accZ - errorRange)) {
       stopWatch();
       document.getElementById("message").innerHTML = "You Lose!";
-      sendXmlhttpRequest("GET", "userid=" + userID + "&battleid=" + battleID, "declaredefeat", false, "");
+      sendXmlhttpRequest("GET", "userid=" + userID + "&battleid=" + battleID, "declaredefeat");
       navigator.notification.alert("You lost the battle. Better luck next time.", endBattleCallback, "Defeat", "OK");
     }
   }

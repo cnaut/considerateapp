@@ -1,154 +1,147 @@
-﻿var battleID;
+﻿var battles;
 var userID;
-var maxNumPeopleInTable = 15;
-
+var accessToken;
+var NUM_LOCATIONS = 5;
 var users_timeout;
 
-var users;
 
-/*
-* Parse response from server and load users into table
-*/
-function onCombatantsRequestSuccess(serverResponse) {
-  ids = serverResponse;
-  if (ids.length != 0) {
-	sendFacebookRequest("GET", null, "?fields=id,name,picture&ids=" + ids, onFacebookSuccess, onFacebookFail, false, "");
-  }
-}
-
-function onCombatantsRequestFail(serverResponse) {
-
-}
-
-/*
-* Function called when nearby.html is opened.
-*/
-function getNearbyUsers() {
-  userID = window.name;
-  sendXmlhttpRequest("GET", null, "allusers", onCombatantsRequestSuccess, onCombatantsRequestFail, false, "");
+function joinBattle() {
+    console.log("JOINBATTLE:" + this.rowIndex);
+    var content
+	= "fbid=" + userID + "&battle=" + battles.battles[this.rowIndex].id;
+    console.log("JOINBATTLE:" + content);
+    sendXmlhttpRequest("POST", content, "joinbattle", 
+		       function() {
+			   console.log("JOIN BATTLE SUCCESS");
+			   window.location = 'battle.html';
+		       }, 
+		       function() {
+			   console.log("JOIN BATTLE FAIL");
+		       }, false, "");
 }
 
 /*
-* Load users dynamically onto table
+* Parse response from server and load battles into table
 */
-function onFacebookSuccess(serverResponse) {
-  console.log("FB Success: "+ serverResponse);
-  ids = ids.split(",");
-
-  users = jQuery.parseJSON(serverResponse);
-  var usersTable = document.getElementById('com_table');
-  var numToDisplay = ids.length;
-  if (numToDisplay > maxNumPeopleInTable) {
-    numToDisplay = maxNumPeopleInTable;
-  }
-
-  console.log("length: " +numToDisplay);
-  for (var i = 0; i < numToDisplay; i++) {
- 	  var row = usersTable.insertRow(i);
- 	  row.onclick = changeSelect;
- 	 
- 	 var photoCell = row.insertCell(0);
- 	 var photo = document.createElement("IMG");
- 	 
- 	 photo.setAttribute("src", users[ids[i]].picture);
- 	 photo.setAttribute("width", "50");
- 	 photo.setAttribute("height", "50");
-	 photoCell.appendChild(photo);
-
-     var nameCell = row.insertCell(1);
-     nameCell.className = "deselected";
-     nameCell.innerHTML = users[ids[i]].name;
-	 console.log("CHECKIN " + users[ids[i]].name); 	
-	 }
- 	//pollForBattle();
-}
-
-function onFacebookFail(serverResponse) {
-  console.log("FB Fail: " +serverResponse);
-}
-
-/*
-* Toggle whether or not a combatant is selected
-*/
-function changeSelect() {
-  var row = this;
-  var rowNum = row.rowIndex;
-  var cell = row.cells[1];
-  if (cell.className === "selected") {
-    cell.className = "deselected";
-    console.log("CHECKIN " + rowNum + " deselected");
-  } else {
-    cell.className = "selected";
-    console.log("CHECKIN " + rowNum + " selected");
-  }
-}
-
-/* 
-* Save the battleID returned by the server after
-* we send them the combatants and start the battle
-*/
-function onBattleRequestSuccess(serverResponse) {
-  // On success, save the returned unique battle ID
-  battleID = serverResponse;
-  window.location = 'battle.html';
-  console.log("CHECKIN TO BATTLE " + battleID);
-}
-
-function onBattleRequestFail(serverResponse) {
-
-}
-
-/*
-* Send combatants to the server
-*/
-function sendBattleRequest() {
-  var usersTable = document.getElementById('com_table').rows;
-  var selectedUsers = new Array();
-  for (var i = 0; i < usersTable.length; i++) {
-    cell = usersTable[i].cells[1];
-    if (cell.className === "selected") {		
-      selectedUsers.push(ids[i]);
+function onBattlesRequestSuccess(serverResponse) {
+    var table = document.getElementById('battles_table');
+    while (table.rows.length > 0)
+	table.deleteRow(0);
+    battles = jQuery.parseJSON(serverResponse);
+    for (var i = 0; i < battles.battles.length; i++) {
+ 	var row = table.insertRow(i);
+	row.onclick = joinBattle;
+ 	
+ 	var cell = row.insertCell(0);
+	cell.innerHTML = "" + battles.battles[i].name;
+	var buttonCell = row.insertCell(1);
     }
-  }
-  var JSONtext = "{\"users\":" + JSON.stringify(selectedUsers, null) + "}";
-  console.log("CHECKIN " + JSONtext);
-
-  sendXmlhttpRequest("POST", JSONtext, "startbattle", onBattleRequestSuccess, onBattleRequestFail, false, "");
 }
 
-// Get nearby users once phone loads
+/*
+ * Function called when nearby.html is opened.
+ */
+function updateBattlesTable() {
+    sendXmlhttpRequest("GET", null, "allbattles", onBattlesRequestSuccess, 
+		       function() {
+			   console.log("BATTLE REQUEST FAIL");
+		       }, false, "");
+}
+
+function updateLocationsPopup(locations) {
+    console.log("LOCATIONS RETURNED:" + locations.data.length);
+    var popup = document.getElementById("popup");
+    popup.innerHTML = "<form name='locationform'>";
+    for (var i = 0; i < NUM_LOCATIONS; i++) {
+	var place = locations.data[i].name;
+	popup.innerHTML
+	    += "<input type='radio' id='radio" + i
+	    + "' value='" + place + "'>"
+	    + place + "</input><br />";
+    }
+    popup.innerHTML
+	+= "<button id='fight_button'>Let's fight!</button>"
+	+ "<button id='cancel'>Cancel</button></form>";
+    document.getElementById("fight_button").addEventListener("click", selectLocation, false);
+    document.getElementById("cancel").addEventListener("click", closePopup, false);
+    popup.className = "open";
+}
+
+function closePopup() {
+    document.getElementById("popup").className = "closed";
+}
+
+function selectLocation() {
+    var i;
+    for (i = 0; i < NUM_LOCATIONS; i++) {
+        if (document.getElementById("radio" + i).checked)
+            break;
+    }
+    var content
+	= "fbid=" + userID
+	+ "&battlename=" + document.getElementById("radio" + i).value;
+    console.log("SELECT LOCATION:" + content);
+    sendXmlhttpRequest("POST", content, "createbattle", 
+		       function() {
+			   console.log("CREATE BATTLE SUCCESS");
+			   closePopup();
+			   window.location = 'battle.html';
+		       },
+		       function() {
+			   console.log("CREATE BATTLE FAIL");
+		       }, false, "");
+}
+
+/*
+ * Create Battle
+ */
+function createBattle() {
+    navigator.geolocation.getCurrentPosition(
+	function(position) {
+	    console.log("LOCATION SUCCESS");
+	    var latlng = position.coords.latitude + "," + position.coords.longitude;
+	    var dest = "/search?type=place&center=" + latlng + "&access_token=" + accessToken;
+	    FB.api(dest, function (item) {
+		if (item.error) {
+		    console.log("FACEBOOK LOCATION FAIL");
+		    console.log(JSON.stringify(item.error));
+		} else {
+		    console.log("FACEBOOK LOCATION SUCCESS");
+		    console.log("item" + JSON.stringify(item));
+		    updateLocationsPopup(item);
+		}
+	    });
+	},
+	function() {
+	    console.log("LOCATION FAIL");
+	}
+    );
+}
+
+/*
+ * Load battles table
+ */
 function onDeviceReady() {
-  console.log("CHECKIN");
-  document.getElementById("fight_button").addEventListener("click", sendBattleRequest, false);
-  getNearbyUsers();
+    console.log("CHECKIN");
+    accessToken = window.name;
+    FB.api("/me?fields=id&access_token=" + accessToken, function (item) {
+        if (item.error) {
+	    console.log("FACEBOOK USER FAIL");
+            console.log(JSON.stringify(item.error));
+        } else {
+	    console.log("FACEBOOK USER SUCCESS");
+            userID = item.id;
+	    console.log("GOT ID userID: " + userID);
+	    document.getElementById("create_battle_button").addEventListener("click", createBattle, false);
+	    poll(updateBattlesTable);
+        }
+    });
 }
 
 document.addEventListener("deviceready", onDeviceReady, false);
 
-var poll = 0;
-
-function onPollRequestSuccess(serverResponse) {
-  poll = poll + 1;
-  console.log("BattleID:  " + serverResponse);
-  console.log("Number:  " + poll + " for " + userID);
-
-  clearTimeout(users_timeout);
-
-  if (serverResponse != "no battle") {
-    console.log("Let's battle!");
-    window.location = 'battle.html';
-  } else {
-    console.log("pollForBattle()");
-    users_timeout = setTimeout(pollForBattle, 10000);
-  }
-}
-
-function onPollRequestFail(serverResponse) {
-  clearTimeout(users_timeout);
-  users_timeout = setTimeout(pollForBattle, 10000);
-}
-
-function pollForBattle() {
-  var user = "{\"id\":\"" + userID + "\"}";
-  sendXmlhttpRequest("POST", user, "getbattle", onPollRequestSuccess, onPollRequestFail, false, "");
+function poll(pollFunction) {
+    pollFunction();
+    clearTimeout(users_timeout);
+    users_timeout = setTimeout(poll(pollFunction), 10000);
 }

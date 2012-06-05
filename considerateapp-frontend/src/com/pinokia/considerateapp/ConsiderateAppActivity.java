@@ -39,7 +39,7 @@ public class ConsiderateAppActivity extends FragmentActivity {
 		}
 		
 		SharedPreferences.Editor prefsEdit = prefs.edit();
-		prefsEdit.putInt("considerate_times", 0);
+		prefsEdit.putInt("phonescore", 99);
 		prefsEdit.commit();
 		
 		this.initialisePaging();

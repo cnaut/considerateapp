@@ -152,9 +152,9 @@ public class FlipService extends Service implements SensorEventListener {
 
 			SharedPreferences prefs = this.getSharedPreferences(
 				ConsiderateAppActivity.prefsName, 0);
-			int time = 5 + prefs.getInt("considerate_time", 0);
+			int score = 5 + prefs.getInt("phonescore", 99);
 			SharedPreferences.Editor prefsEdit = prefs.edit();
-			prefsEdit.putInt("considerate_time", time);
+			prefsEdit.putInt("phonescore", score);
 			prefsEdit.commit();
 		} else if (faceDown && !newFaceDown) {
 			Log.i(tag, "ungoing silent");

@@ -117,15 +117,22 @@ public class Lockscreen extends Activity implements OnTouchListener {
 	public void onResume() {
 		super.onResume();
 		Log.v("Lockscreen", "resuming!");
-		ArrayList<Integer> numScreenViews = StatsService.getNumScreenViews();
-		int currNumScreenViews = numScreenViews.get(numScreenViews.size() - 1);
 		
 		SharedPreferences prefs = this.getSharedPreferences(ConsiderateAppActivity.prefsName, 0);
-		int considerateTime = prefs.getInt("considerate_time", 0);
+		int score = prefs.getInt("phonescore", 0);
 		
-		int score = 99 - currNumScreenViews + considerateTime;
+		ArrayList<Integer> numScreenViews = StatsService.getNumScreenViews();
+		int currNumScreenViews = numScreenViews.get(numScreenViews.size() - 1);
+		score -= currNumScreenViews;
+		
 		if (score > 99)
-			score == 99;
+			score = 99;
+		if (score < 0)
+			score = 0;
+		
+		SharedPreferences.Editor prefsEdit = prefs.edit();
+		prefsEdit.putInt("phonescore", score);
+		
 		System.out.println("Phone Score: " + score);
 
 		phoneScore.setText(Integer.toString(score));

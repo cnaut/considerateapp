@@ -76,19 +76,27 @@ public class Lockscreen extends Activity implements OnTouchListener {
 		super.onAttachedToWindow();
 	}
 
+	private void unlock()
+	{
+		StatsService.incrementUnlocks();
+
+		Intent startMain = new Intent(Intent.ACTION_MAIN);
+		startMain.addCategory(Intent.CATEGORY_HOME);
+		startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		startActivity(startMain);
+	}
+
 	public boolean onTouch(View v, MotionEvent event) {
 		if (v.getId() == R.id.slider) {
 			if (event.getAction() == MotionEvent.ACTION_DOWN
 					|| event.getAction() == MotionEvent.ACTION_MOVE) {
 				if (slider.getScrollX() < sliderTrackWidth / 2
 						- slider.getWidth() * 7 / 8) {
-					Intent startMain = new Intent(Intent.ACTION_MAIN);
-					startMain.addCategory(Intent.CATEGORY_HOME);
-					startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-					startActivity(startMain);
+					unlock();
 				}
 				if (slider.getScrollX() > sliderTrackWidth / 2
 						- slider.getWidth() / 8) {
+					StatsService.incrementUnlocks();
 					Intent intent = new Intent(this,
 							ConsiderateAppActivity.class);
 					startActivity(intent);

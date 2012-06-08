@@ -287,6 +287,22 @@ public class StatsService extends Service {
 		}
 	}
 
+	public static void incrementUnlocks()
+	{
+		int index = numUnlocks.size() - 1;
+		Integer currNumUnlocks = numUnlocks.get(index);
+		numUnlocks.set(index, currNumUnlocks + 1);
+		System.out.println("NumUnlocks: " + numUnlocks.get(index));
+	}
+
+	public static void incrementChecks()
+	{
+		int index = numScreenViews.size() - 1;
+		Integer currNumScreenViews = numScreenViews.get(index);
+		numScreenViews.set(index, currNumScreenViews + 1);
+		System.out.println("NumScreenViews: " + numScreenViews.get(index));
+	}
+
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
@@ -356,11 +372,8 @@ public class StatsService extends Service {
 			if (!intent.getAction().equals(OnIntent))
 				return;
 
-			int index = numScreenViews.size() - 1;
-			Integer currNumScreenViews = numScreenViews.get(index);
-			numScreenViews.set(index, currNumScreenViews + 1);
+			incrementChecks();
 
-			System.out.println("NumScreenViews: " + numScreenViews.get(index));
 			return;
 		}
 	};
@@ -390,11 +403,11 @@ public class StatsService extends Service {
 			stopwatch.start();
 			userPresent = true;
 
-			int index = numUnlocks.size() - 1;
-			Integer currNumUnlocks = numUnlocks.get(index);
-			numUnlocks.set(index, currNumUnlocks + 1);
+			if(!SleepMonitorService.isRunning())
+			{
+				incrementUnlocks();
+			}
 
-			System.out.println("NumUnlocks: " + numUnlocks.get(index));
 			sendBroadcast(updateUIIntent);
 			return;
 		}

@@ -16,6 +16,9 @@ from phonedata.forms import LbSearchForm
 def home(request):
     return render_to_response('home.html')
 
+def landing(request):
+    return render_to_response('landing.html')
+
 def profile(request):
     return render_to_response('profile.html')
 
@@ -37,7 +40,7 @@ def dataview(request):
     checkssize = checks.count()
     avgchecks = numchecks / checkssize
 
-    return render_to_response('admin.html', {'users': users, 'numusers': numusers, 'avgchecks': avgchecks}, context_instance=RequestContext(request))
+    return render_to_response('admin.html', {'users': users, 'numusers': numusers, 'numchecks': numchecks, 'avgchecks': avgchecks}, context_instance=RequestContext(request))
 
 def userstats(request, phoneid):
     stats = Stat.objects.filter(user=phoneid).order_by('type')

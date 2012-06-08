@@ -6,7 +6,7 @@
 <body>
 <div class="navbar">
 	<div class="navbar-inner">
-		<a class="brand" href="#">Admin</a>
+		<a class="brand" href="/dataview">Data Viewer</a>
 		<div class="container">
 			<ul class="nav">
 				<li><a href="userform">Add User</a></li>
@@ -20,7 +20,8 @@
 
 <div class="hero-unit">
 	<h1>User - {{ id }}</h1>
-
+	<h2>Number of checks: {{ numchecks }}</h2>
+	<h2>Checks per hour: {{ avgchecks }}</h2>
 	<ul>
 		{% for stat in stats %}
 			<li>{{ stat.type }} - {{ stat.value }} - {{ stat.time_recorded }}</li>

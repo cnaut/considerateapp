@@ -36,7 +36,7 @@ def allusers(request):
 def allbattles(request):
     battles = Battle.objects.all()
    
-    battles_json = "["
+    battles_json = '{"battles": ['
     first = True 
     for battle in battles:
 	battle_json = ""
@@ -52,7 +52,7 @@ def allbattles(request):
 	
 	battles_json += users + "]}"
 
-    battles_json += "]"
+    battles_json += "]}"
     #json.dumps(battles_json)	    
 
     return HttpResponse(battles_json)

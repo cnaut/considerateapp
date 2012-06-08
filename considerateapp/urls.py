@@ -7,7 +7,8 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     # Examples:
-    url(r'^$', 'phonedata.views.home', name='home'),
+    url(r'^$', 'phonedata.views.landing', name='landing'),
+    url(r'^home$', 'phonedata.views.home', name='home'),
     url(r'^profile$', 'phonedata.views.profile', name='profile'),
     url(r'^dataview$', 'phonedata.views.dataview', name='dataview'),
     url(r'^userstats/(\d+)/$', 'phonedata.views.userstats', name='userstats'),

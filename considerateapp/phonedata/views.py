@@ -4,6 +4,7 @@ from django.template import RequestContext
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views.decorators.csrf import csrf_exempt
 from django.db import models
+from django.db.models import Sum
 
 from phonedata.models import User
 from phonedata.models import Stat
@@ -15,16 +16,41 @@ from phonedata.forms import LbSearchForm
 def home(request):
     return render_to_response('home.html')
 
+def landing(request):
+    return render_to_response('landing.html')
+
 def profile(request):
     return render_to_response('profile.html')
 
+def get_num_checks(checks):
+    numchecks = 0
+    for check in checks:
+	numchecks += int(check.value) 
+    return numchecks
+
 def dataview(request):
     users = User.objects.all()
-    return render_to_response('admin.html', {'users': users}, context_instance=RequestContext(request))
+    numusers = users.count()
+
+    stats = Stat.objects.all()
+    
+    checks = stats.filter(type="checks")
+    print(checks.count())
+    numchecks = get_num_checks(checks)
+    checkssize = checks.count()
+    avgchecks = numchecks / checkssize
+
+    return render_to_response('admin.html', {'users': users, 'numusers': numusers, 'numchecks': numchecks, 'avgchecks': avgchecks}, context_instance=RequestContext(request))
 
 def userstats(request, phoneid):
     stats = Stat.objects.filter(user=phoneid).order_by('type')
-    return render_to_response('userstats.html', {'id': phoneid, 'stats': stats}, context_instance=RequestContext(request))
+    
+    checks = stats.filter(type="checks")
+    numchecks = get_num_checks(checks) 
+    checkssize = checks.count()
+    avgchecks = numchecks / checkssize
+
+    return render_to_response('userstats.html', {'id': phoneid, 'stats': stats, 'numchecks': numchecks, 'avgchecks': avgchecks}, context_instance=RequestContext(request))
 
 def channel(request):
    return HttpResponse('<script src="//connect.facebook.net/en_US/all.js"></script>')

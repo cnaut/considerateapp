@@ -19,7 +19,8 @@ public class Stats {
 
 		this.timeOnApps = new TreeMap<String, Double>();
 		this.timeOnApps.putAll(timeOnApps);
-	}
+	
+		}
 	
 	public String toJsonString() {
 		String timeOnAppsString = "";

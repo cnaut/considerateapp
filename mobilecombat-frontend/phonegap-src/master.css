@@ -36,4 +36,14 @@ td.deselected
     color: white;
 }
 
+div.opened
+{
+	display: inline;
+}
+
+div.closed
+{
+	display: none;
+}
+
 

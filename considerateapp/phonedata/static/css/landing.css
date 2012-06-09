@@ -2,10 +2,56 @@
   padding-left: 10px;
 }
 
+#header-title {
+  font-size: 56px;
+  color: #58D8FB;
+}
+
+#small-title {
+  font-size: 26px;
+}
+
+
 #content {
+  margin-left: 40px;
   padding: 20px;
 }
 
+#phoneimg {
+  margin-right: 40px;
+}
+
+#info {
+  margin-top: 70px;
+  float: left;
+}
+
 .points {
+  background-color: #DCDCDC;
+  margin-bottom: 50px;
+  padding: 10px;
+  -webkit-border-radius: 15px;
+  -moz-border-radius: 15px;
+  border-radius: 15px;
+  -moz-box-shadow: 10px 10px 5px #888;
+  -webkit-box-shadow: 10px 10px 5px #888;
+  box-shadow: 10px 10px 5px #888;
+}
+
+.point {
   text-align: center;
+}
+
+#buttons {
+  margin-left: auto;
+}
+
+.socialbutton {
+  margin-top: -5px;
+  margin-left: -15px;
+}
+
+.socialimg {
+  width: 50%;
+  height: 50%;
 }

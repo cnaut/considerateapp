@@ -24,6 +24,7 @@ urlpatterns = patterns('',
     url(r'^lboardsearch', 'phonedata.views.lboardsearch', name='lsearch'),
     # url(r'^considerateapp/', include('considerateapp.foo.urls')),
 
+    url(r'^img/(?P<path>.*)$', 'django.views.static.serve', {'document_root': '/home/cnaut/meandmyphone/considerateapp/phonedata/static/img/'}),
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 

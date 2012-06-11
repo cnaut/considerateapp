@@ -138,6 +138,9 @@ public class Lockscreen extends Activity implements OnTouchListener {
         ArrayList<Integer> numScreenViews = StatsService.getNumScreenViews();
         int currNumScreenViews = numScreenViews.get(numScreenViews.size() - 1);
         score -= currNumScreenViews;
+        ArrayList<Integer> numUnlocks = StatsService.getNumUnlocks();
+	int currNumUnlocks = numUnlocks.get(numUnlocks.size() - 1);
+	score -= currNumUnlocks;
 
         if (score > 99)
             score = 99;

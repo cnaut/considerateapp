@@ -5,7 +5,7 @@ from django.template import RequestContext
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views.decorators.csrf import csrf_exempt
 from django.db import models
-from django.db.models import Sum
+from django.db.models import Max, Min, Sum
 
 from phonedata.models import User
 from phonedata.models import Stat
@@ -45,17 +45,27 @@ def dataview(request):
 
 def userstats(request, phoneid):
     stats = Stat.objects.filter(user=phoneid).order_by('type', 'time_recorded')
-   
-    #for stat in stats:
-	#stat.time_recorded = time.strftime("%a, %d %b %Y %H:%M%S +0000", time.gmtime(float(stat.time_recorded)))
+  
+    extreme_times = Stat.objects.aggregate(Max('time_recorded'), Min('time_recorded')) 
+    earliest_time = time.strftime("%a, %d %b %Y %H:%M%S", time.gmtime(float(extreme_times['time_recorded__min']) / 1000))
+    latest_time = time.strftime("%a, %d %b %Y %H:%M%S", time.gmtime(float(extreme_times['time_recorded__max']) / 1000))
+    duration = (float(extreme_times['time_recorded__max']) - float(extreme_times['time_recorded__min'])) / 86400000
+ 
+    for stat in stats:
+     	stat.time_recorded = time.strftime("%a, %d %b %Y %H:%M%S", time.gmtime(float(stat.time_recorded) / 1000))
+	 
+	checks = {}	
+	if(stat.type == "checks"):
+	  stat.type = "funs"  
 
     checks = stats.filter(type="checks")
     numchecks = get_num_checks(checks) 
     checkssize = checks.count()
     avgchecks = numchecks / checkssize
 
-    return render_to_response('userstats.html', {'id': phoneid, 'stats': stats, 'numchecks': numchecks, 'avgchecks': avgchecks}, context_instance=RequestContext(request))
+    return render_to_response('userstats.html', {'id': phoneid, 'stats': stats, 'numchecks': numchecks, 'avgchecks': avgchecks, 'earliest_time':earliest_time, 'latest_time': latest_time, 'duration': duration}, context_instance=RequestContext(request))
 
+#Used for facebook connect settings
 def channel(request):
    return HttpResponse('<script src="//connect.facebook.net/en_US/all.js"></script>')
 
@@ -94,6 +104,7 @@ def addBatchStat(user, time, type, value):
    stat = Stat(user=user, time_recorded=time, type=type, value=value)
    stat.save()
 
+#Recieves json object for a user's stats broken down by hour
 @csrf_exempt
 def batchstats(request):
    data = getData(request)

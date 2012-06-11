@@ -10,14 +10,7 @@ import android.os.IBinder;
 import android.util.Log;
 
 public class FirstBootService extends Service {
-	// this will be started when myLock is shut off due to idle timeout, or at
-	// bootup it starts everything up once we receive user present broadcast
-	// (meaning the lockscreen was completed) just bridges the gap between an
-	// idle timeout or first startup and the user authentication of their
-	// pattern
-
-	// TODO possible that pattern setting won't be able to get set back to on if
-	// a battery pull is done before idle timer finishes?
+    // This simply gets called from BootReceiver when the phone boots up 
 
 	@Override
 	public IBinder onBind(Intent arg0) {
@@ -34,6 +27,7 @@ public class FirstBootService extends Service {
 		unregisterReceiver(unlockdone);
 	}
 
+        // Wait to launch everything until after the first time the user unlocks the phone
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		super.onStartCommand(intent, flags, startId);

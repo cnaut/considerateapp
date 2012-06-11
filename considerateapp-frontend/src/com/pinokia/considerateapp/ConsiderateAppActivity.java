@@ -16,6 +16,7 @@ import java.util.Vector;
 
 public class ConsiderateAppActivity extends FragmentActivity {
 
+        //When testing is on, we clear the charts more often (so we can run thru multiple day cycles)
 	public static final boolean testing = false;
 
 	private PagerAdapter mPagerAdapter;
@@ -26,6 +27,8 @@ public class ConsiderateAppActivity extends FragmentActivity {
 		super.onCreate(savedInstanceState);
 		super.setContentView(R.layout.viewpager_layout);
 		SharedPreferences prefs = getSharedPreferences(prefsName, 0);
+                //Start the StatsService, as well as the lockscreen and considerate mode
+                //if the SharedPreferences indicate to.
 		StatsService.start(getApplicationContext());
 		if (prefs.getBoolean("lockscreen", true)) {
 			SleepMonitorService.start(getApplicationContext(), false);
@@ -69,18 +72,7 @@ public class ConsiderateAppActivity extends FragmentActivity {
 		}
 	}
 
-	@Override
-	public void onPause() {
-		super.onPause();
-		System.out.println("OnPause: Main Activity");
-	}
-
-	@Override
-	public void onResume() {
-		super.onResume();
-		System.out.println("OnResume: Main Activity");
-	}
-
+        // Load the menu from an xml file.
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getMenuInflater();
@@ -88,6 +80,7 @@ public class ConsiderateAppActivity extends FragmentActivity {
 		return (super.onCreateOptionsMenu(menu));
 	}
 
+        // The menu buttons don't give individual callbacks, so we process them here.
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {

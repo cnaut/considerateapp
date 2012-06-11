@@ -20,6 +20,9 @@ def home(request):
 def landing(request):
     return render_to_response('landing.html')
 
+def info(request):
+    return render_to_response('info.html')
+
 def profile(request):
     return render_to_response('profile.html')
 

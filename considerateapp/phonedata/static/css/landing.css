@@ -39,7 +39,8 @@
 
 #buttons {
   margin-top: -29px;
-  margin-left: auto;
+  margin-left: 55px;
+  position: relative;
 }
 
 .socialbutton {
@@ -50,4 +51,20 @@
 .socialimg {
   width: 50%;
   height: 50%;
+}
+
+#moreinfo {
+ margin-top: 19px;
+ font-size: 25px;
+ margin-left: -20px;
+}
+
+#moreinfo a {
+  position: relative;
+
+}
+
+#homelink {
+  text-align: center;
+  margin-top: 15px; 
 }

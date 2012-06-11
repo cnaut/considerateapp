@@ -1,32 +1,24 @@
 #top-header {
-  padding-left: 10px;
-}
-
-#header-title {
-  font-size: 56px;
-  color: #58D8FB;
-}
-
-#small-title {
-  font-size: 26px;
+  padding-left: 15px;
 }
 
 
 #content {
-  margin-left: 25px;
+  margin-left: 15px;
   padding: 10px;
 }
 
 #phoneimg {
-  margin-right: 90px;
+  margin-right: 70px;
 }
 
 #video {
-  margin-top: 60px;
+  margin-top: 19px;
 }
 
 #info {
-  margin-top: 20px;
+  margin-top: 15px;
+  margin-left: 10px;
   float: left;
 }
 
@@ -47,6 +39,7 @@
 }
 
 #buttons {
+  margin-top: -29px;
   margin-left: auto;
 }
 

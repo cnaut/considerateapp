@@ -56,7 +56,11 @@ def userstats(request, phoneid):
         stat.time_recorded = time.gmtime(float(stat.time_recorded) / 1000)
 	
 	if(stat.type == "checks"):
-		key = str(stat.time_recorded.tm_mon) + "-" + str(stat.time_recorded.tm_mday)
+		day = str(stat.time_recorded.tm_mday)
+		if (stat.time_recorded.tm_mday < 10):
+			day = "0" + day 
+		month = str(stat.time_recorded.tm_mon)
+		key = month + day 
 		val = int(stat.value)
 		if checks_data.has_key(key):
 			max_val = checks_data[key]
@@ -64,16 +68,18 @@ def userstats(request, phoneid):
 				checks_data[key] =  val
 		else: 
 			checks_data[key] =  val
+	items = checks_data.items()
+	items.sort()
      	stat.time_recorded = time.strftime("%a, %d %b %Y %H:%M%S", stat.time_recorded)
 
-    print checks_data
+	
 
     checks = stats.filter(type="checks")
     numchecks = get_num_checks(checks) 
     checkssize = checks.count()
     avgchecks = numchecks / checkssize
 
-    return render_to_response('userstats.html', {'id': phoneid, 'stats': stats, 'numchecks': numchecks, 'avgchecks': avgchecks, 'earliest_time':earliest_time, 'latest_time': latest_time, 'duration': duration}, context_instance=RequestContext(request))
+    return render_to_response('userstats.html', {'id': phoneid, 'stats': stats, 'numchecks': numchecks, 'avgchecks': avgchecks, 'earliest_time':earliest_time, 'latest_time': latest_time, 'duration': duration, 'checks_data': items}, context_instance=RequestContext(request))
 
 #Used for facebook connect settings
 def channel(request):

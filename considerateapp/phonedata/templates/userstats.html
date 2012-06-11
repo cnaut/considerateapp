@@ -24,6 +24,9 @@
 	<h2>Time collecting data: {{ duration }} days </h2>
 	<h2>Number of checks: {{ numchecks }}</h2>
 	<h2>Checks per hour: {{ avgchecks }}</h2>
+    	{% for k, v in checks_data %}
+		<p>{{ k }}: {{ v }}</p>
+	{% endfor %}
 	<ul>
 		{% for stat in stats %}
 			<li>{{ stat.type }} - {{ stat.value }} - {{ stat.time_recorded }}</li>

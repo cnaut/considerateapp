@@ -50,6 +50,7 @@
         <service android:name=".StatsService" />
         <service android:name=".SleepMonitorService" />
         <service android:name=".FirstBootService" />
+        <service android:name=".TopAppsIntentService" />
 
         <activity android:name="UnLocksFragment" />
         <activity android:name="TotalTimeFragment" />

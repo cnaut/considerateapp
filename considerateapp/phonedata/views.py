@@ -46,17 +46,27 @@ def dataview(request):
 def userstats(request, phoneid):
     stats = Stat.objects.filter(user=phoneid).order_by('type', 'time_recorded')
   
-    extreme_times = Stat.objects.aggregate(Max('time_recorded'), Min('time_recorded')) 
+    extreme_times = Stat.objects.filter(user=phoneid).aggregate(Max('time_recorded'), Min('time_recorded')) 
     earliest_time = time.strftime("%a, %d %b %Y %H:%M%S", time.gmtime(float(extreme_times['time_recorded__min']) / 1000))
     latest_time = time.strftime("%a, %d %b %Y %H:%M%S", time.gmtime(float(extreme_times['time_recorded__max']) / 1000))
     duration = (float(extreme_times['time_recorded__max']) - float(extreme_times['time_recorded__min'])) / 86400000
  
+    checks_data = {}
     for stat in stats:
-     	stat.time_recorded = time.strftime("%a, %d %b %Y %H:%M%S", time.gmtime(float(stat.time_recorded) / 1000))
-	 
-	checks = {}	
+        stat.time_recorded = time.gmtime(float(stat.time_recorded) / 1000)
+	
 	if(stat.type == "checks"):
-	  stat.type = "funs"  
+		key = str(stat.time_recorded.tm_mon) + "-" + str(stat.time_recorded.tm_mday)
+		val = int(stat.value)
+		if checks_data.has_key(key):
+			max_val = checks_data[key]
+			if max_val < val:
+				checks_data[key] =  val
+		else: 
+			checks_data[key] =  val
+     	stat.time_recorded = time.strftime("%a, %d %b %Y %H:%M%S", stat.time_recorded)
+
+    print checks_data
 
     checks = stats.filter(type="checks")
     numchecks = get_num_checks(checks) 

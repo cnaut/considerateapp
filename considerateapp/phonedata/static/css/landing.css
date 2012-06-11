@@ -13,16 +13,20 @@
 
 
 #content {
-  margin-left: 40px;
-  padding: 20px;
+  margin-left: 25px;
+  padding: 10px;
 }
 
 #phoneimg {
-  margin-right: 40px;
+  margin-right: 90px;
+}
+
+#video {
+  margin-top: 60px;
 }
 
 #info {
-  margin-top: 70px;
+  margin-top: 20px;
   float: left;
 }
 

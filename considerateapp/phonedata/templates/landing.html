@@ -1,22 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}static/css/bootstrap.css" />
-	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}static/css/landing.css" />
+  <title>Considerate App - Redefine Social</title>
+
+  <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}static/css/bootstrap.css" />
+  <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}static/css/landing.css" />
 </head>
 
 <body>
 <div class="page-header" id="top-header">
-  <h1>Considerate App <small>"Redefine Social"</small></h2>
+  <div id="logoimg"> <img src="{{ STATIC_URL }}static/img/considerate_app_logo.png" alt="logo" /> </div>
 </div>
 
 <div id="content"> 
-  <div class="row">
-    <div class="span4 points"><h2>Know yourself.</h2><p>View your phone statistics. Educate yourself about your phone usage.</div>
-    <div class="span4 points"><h2>Be purposeful.</h2><p>Replace your lockscreen with your phone score. Remind yourself to use the phone only when you mean to.</p></div>
-    <div class="span4 points"><h2>Stay in the moment.</h2><p>Flip your phone face down to silence all but the most important notifications.</div>
+  <div id="phoneimg" class="span3"><img src="{{ STATIC_URL }}static/img/lockscreen.png" alt="lockscreen" /> </div>
+  <div id="video" class="row"><iframe width="470" height="400" src="http://www.youtube.com/embed/QH2-TGUlwu4" frameborder="0" allowfullscreen></iframe></div>
+  <div id="info">
+    <div class="row points">
+      <div class="span3 point"><h2>Know yourself.</h2><p>View your phone statistics. Educate yourself about your phone usage.</div>
+      <div class="span3 point"><h2>Be purposeful.</h2><p>Replace your lockscreen with your phone score. Remind yourself to use the phone only when you mean to.</p></div>
+      <div class="span4 point"><h2>Stay in the moment.</h2><p>Flip your phone face down to silence all but the most important notifications.</div>
+    </div>
+    <div id="buttons" class="row">
+      <div class="span3 offset2"><a href="http://play.google.com/store/apps/details?id=com.pinokia.considerateapp" target="_blank">
+        <img alt="Get it on Google Play" src="http://www.android.com/images/brand/get_it_on_play_logo_large.png"/>
+      </a></div>
+      <div class="span2 socialbutton"><a href="http://twitter.com/considerateapp" target="_blank">
+        <img class="socialimg" alt="Twitter" src="{{ STATIC_URL }}static/img/twitter-icon.png" />
+      </a></div>
+      <div class="span2 socialbutton"><a href="http://blog.considerateapp.com" target="_blank">
+        <img class="socialimg" alt="Tumblr" src="{{ STATIC_URL }}static/img/tumbler-icon.png" />
+      </a></div>
+    </div>
   </div>
-<div>
+</div>
 
 </body>
 </html>

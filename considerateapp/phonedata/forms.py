@@ -3,7 +3,7 @@ from django.db import models
 from phonedata.models import User
 
 class UserForm(forms.Form):
-    name = forms.CharField()
+    phone_id = forms.CharField()
 
 class UserStatChoiceField(forms.ModelChoiceField):
     def label_from_instance(self, obj):

@@ -2,6 +2,6 @@
     {% csrf_token %}
     <h2>Add New User</h2>
     {{ form.non_field_errors }}
-    {{ form.name }}
+    Phone id: {{ form.phone_id }}
     <input type="submit" value="Add User" />
 </form>

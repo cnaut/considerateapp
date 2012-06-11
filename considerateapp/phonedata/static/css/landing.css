@@ -1,11 +1,54 @@
 #top-header {
-  padding-left: 10px;
+  padding-left: 15px;
 }
 
+
 #content {
-  padding: 20px;
+  margin-left: 15px;
+  padding: 10px;
+}
+
+#phoneimg {
+  margin-right: 70px;
+}
+
+#video {
+  margin-top: 19px;
+}
+
+#info {
+  margin-top: 15px;
+  margin-left: 10px;
+  float: left;
 }
 
 .points {
+  background-color: #DCDCDC;
+  margin-bottom: 50px;
+  padding: 10px;
+  -webkit-border-radius: 15px;
+  -moz-border-radius: 15px;
+  border-radius: 15px;
+  -moz-box-shadow: 10px 10px 5px #888;
+  -webkit-box-shadow: 10px 10px 5px #888;
+  box-shadow: 10px 10px 5px #888;
+}
+
+.point {
   text-align: center;
+}
+
+#buttons {
+  margin-top: -29px;
+  margin-left: auto;
+}
+
+.socialbutton {
+  margin-top: -5px;
+  margin-left: -15px;
+}
+
+.socialimg {
+  width: 50%;
+  height: 50%;
 }

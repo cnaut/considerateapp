@@ -1,4 +1,5 @@
 import json
+import time
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.http import HttpResponse, HttpResponseRedirect
@@ -43,8 +44,11 @@ def dataview(request):
     return render_to_response('admin.html', {'users': users, 'numusers': numusers, 'numchecks': numchecks, 'avgchecks': avgchecks}, context_instance=RequestContext(request))
 
 def userstats(request, phoneid):
-    stats = Stat.objects.filter(user=phoneid).order_by('type')
-    
+    stats = Stat.objects.filter(user=phoneid).order_by('type', 'time_recorded')
+   
+    #for stat in stats:
+	#stat.time_recorded = time.strftime("%a, %d %b %Y %H:%M%S +0000", time.gmtime(float(stat.time_recorded)))
+
     checks = stats.filter(type="checks")
     numchecks = get_num_checks(checks) 
     checkssize = checks.count()
@@ -57,9 +61,9 @@ def channel(request):
 
 @csrf_exempt
 def adduser(request):
-   data = getData(request);
+   data = request.POST
    
-   user = User(name=data.get("name"))
+   user = User(phone_id=data.get("phone_id"))
    user.save()
    response = user.id
 
